@@ -1,0 +1,17 @@
+{% extends "layouts/govuk.njk" %}
+
+{% set title = "Page not found" %}
+
+{% block main %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Page not found</h1>
+      <p class="govuk-body">If you typed the web address, check it is correct.</p>
+      <p class="govuk-body">If you pasted the web address, check you copied the entire address.</p>
+      <p class="govuk-body">If the web address is correct or you selected a link or button, <a href="{{ feedbackUrl }}" class="govuk-link">contact us</a> if you need to speak to someone about this service.</p>
+      <p class="govuk-body">
+        <a href="/" class="govuk-link">Return to the homepage</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

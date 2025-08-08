@@ -1,0 +1,43 @@
+{
+  "name": "expressjs-monorepo-template",
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "e2e-tests",
+    "libs/*"
+  ],
+  "scripts": {
+    "test": "turbo test",
+    "test:coverage": "turbo test -- --coverage",
+    "test:changed": "turbo test --filter='...[HEAD^1]'",
+    "test:e2e": "yarn workspace e2e-tests run test:e2e",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write --unsafe .",
+    "lint:fix-safe": "biome lint --write .",
+    "lint:fix-changed": "turbo lint:fix --filter='...[HEAD^1]'",
+    "lint:changed": "turbo lint --filter='...[HEAD^1]'",
+    "build": "turbo build",
+    "start:api": "yarn workspace @hmcts/api run dev",
+    "start:web": "yarn workspace @hmcts/web run dev",
+    "start:db": "yarn workspace @hmcts/postgres run dev",
+    "dev": "yarn workspace @hmcts/postgres run generate && concurrently \"yarn:start:*\""
+  },
+  "keywords": [],
+  "author": "HMCTS",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@biomejs/biome": "2.1.4",
+    "@types/node": "22.17.0",
+    "@types/supertest": "6.0.3",
+    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/ui": "3.2.4",
+    "concurrently": "9.2.0",
+    "supertest": "7.1.4",
+    "turbo": "2.5.5",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  },
+  "packageManager": "yarn@4.9.2"
+}

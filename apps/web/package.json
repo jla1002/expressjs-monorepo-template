@@ -1,0 +1,45 @@
+{
+  "name": "@hmcts/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "scripts": {
+    "dev": "nodemon --watch src --watch '../../libs/*/src/views' --ext ts,njk --exec tsx src/server.ts",
+    "build": "tsc && yarn sass",
+    "sass": "sass src/assets/scss:public/css --style=compressed",
+    "sass:watch": "sass src/assets/scss:public/css --watch",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "@hmcts/auth": "workspace:*",
+    "@hmcts/govuk-frontend": "workspace:*",
+    "@hmcts/i18n": "workspace:*",
+    "@hmcts/monitoring": "workspace:*",
+    "@hmcts/nunjucks": "workspace:*",
+    "@hmcts/postgres": "workspace:*",
+    "compression": "1.8.1",
+    "cookie-parser": "1.4.7",
+    "express": "5.1.0",
+    "express-session": "1.18.2",
+    "govuk-frontend": "5.2.0",
+    "helmet": "8.1.0",
+    "nunjucks": "3.2.4"
+  },
+  "devDependencies": {
+    "@types/compression": "1.8.1",
+    "@types/cookie-parser": "1.4.9",
+    "@types/express": "5.0.3",
+    "@types/express-session": "1.18.2",
+    "@types/node": "24.2.1",
+    "@types/nunjucks": "3.2.6",
+    "@types/supertest": "6.0.3",
+    "nodemon": "3.0.2",
+    "sass": "1.69.7",
+    "supertest": "7.1.4",
+    "tsx": "4.7.0"
+  }
+}

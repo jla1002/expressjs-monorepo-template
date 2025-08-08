@@ -1,0 +1,27 @@
+{
+  "name": "@hmcts/monitoring",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0"
+  },
+  "dependencies": {
+    "applicationinsights": "2.9.1",
+    "winston": "3.17.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "24.2.1"
+  }
+}

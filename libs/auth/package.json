@@ -1,0 +1,27 @@
+{
+  "name": "@hmcts/auth",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0"
+  },
+  "dependencies": {
+    "bcryptjs": "3.0.2",
+    "jsonwebtoken": "9.0.2",
+    "zod": "4.0.15"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "3.0.0",
+    "@types/express": "5.0.3",
+    "@types/jsonwebtoken": "9.0.10",
+    "@types/node": "24.2.1"
+  }
+}

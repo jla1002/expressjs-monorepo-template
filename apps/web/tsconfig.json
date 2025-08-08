@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
+  "references": [
+    { "path": "../../libs/auth" },
+    { "path": "../../libs/nunjucks" },
+    { "path": "../../libs/govuk-frontend" },
+    { "path": "../../libs/i18n" },
+    { "path": "../../libs/monitoring" },
+    { "path": "../postgres" }
+  ]
+}

@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  firstName       String   @map("first_name")
+  lastName        String   @map("last_name")
+  passwordHash    String   @map("password_hash")
+  isActive        Boolean  @default(true) @map("is_active")
+  role            UserRole @default(USER)
+  tenantId        String   @map("tenant_id")
+  preferredLocale String   @default("en") @map("preferred_locale")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  tenant   Tenant       @relation(fields: [tenantId], references: [id])
+  sessions UserSession[]
+  cases    Case[]
+
+  @@index([email])
+  @@index([tenantId])
+  @@map("user")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("user_session")
+}
+
+model Tenant {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  courtType   String   @map("court_type")
+  isActive    Boolean  @default(true) @map("is_active")
+  settings    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users User[]
+  cases Case[]
+
+  @@index([slug])
+  @@map("tenant")
+}
+
+model Case {
+  id            String     @id @default(cuid())
+  caseNumber    String     @unique @map("case_number")
+  title         String
+  description   String?
+  status        CaseStatus @default(OPEN)
+  priority      Priority   @default(MEDIUM)
+  tenantId      String     @map("tenant_id")
+  assignedToId  String?    @map("assigned_to_id")
+  metadata      Json       @default("{}")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  closedAt      DateTime?  @map("closed_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  assignedTo User?      @relation(fields: [assignedToId], references: [id])
+  documents  Document[]
+  notes      CaseNote[]
+
+  @@index([caseNumber])
+  @@index([tenantId])
+  @@index([status])
+  @@index([assignedToId])
+  @@map("case")
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  caseId      String       @map("case_id")
+  fileName    String       @map("file_name")
+  fileType    String       @map("file_type")
+  fileSize    Int          @map("file_size")
+  storageUrl  String       @map("storage_url")
+  category    String
+  uploadedBy  String       @map("uploaded_by")
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId])
+  @@map("document")
+}
+
+model CaseNote {
+  id        String   @id @default(cuid())
+  caseId    String   @map("case_id")
+  content   String
+  authorId  String   @map("author_id")
+  isPrivate Boolean  @default(false) @map("is_private")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId])
+  @@map("case_note")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+  VIEWER
+}
+
+enum CaseStatus {
+  OPEN
+  IN_PROGRESS
+  PENDING_REVIEW
+  CLOSED
+  ARCHIVED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
