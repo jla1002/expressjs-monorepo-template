@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "@testcontainers/postgresql": "11.5.1",
-    "@types/node": "24.2.1",
     "prisma": "5.8.1",
     "testcontainers": "11.5.1"
   }
