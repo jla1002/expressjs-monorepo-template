@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 export interface AuthenticatedRequest extends Request {
@@ -6,7 +6,6 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     email: string;
     role: string;
-    tenantId: string;
   };
 }
 
@@ -25,7 +24,6 @@ export function authenticate() {
         id: decoded.userId,
         email: decoded.email,
         role: decoded.role,
-        tenantId: decoded.tenantId,
       };
 
       next();

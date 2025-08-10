@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "nodenext",
     "baseUrl": ".",
     "paths": {
       "@hmcts/api": ["apps/api/src"],

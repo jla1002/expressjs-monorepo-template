@@ -1,6 +1,6 @@
-export * from "./middleware/govuk-assets.js";
 export * from "./config/govuk-config.js";
 export * from "./config/nunjucks-config.js";
+export * from "./middleware/govuk-assets.js";
 
 import type { Express } from "express";
 import type { Environment } from "nunjucks";

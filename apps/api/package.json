@@ -11,7 +11,9 @@
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "dependencies": {
     "@hmcts/auth": "workspace:*",
@@ -26,7 +28,6 @@
     "@types/compression": "1.8.1",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.3",
-    "@types/node": "24.2.1",
     "@types/supertest": "6.0.2",
     "nodemon": "3.0.2",
     "supertest": "7.1.4"

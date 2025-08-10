@@ -1,5 +1,5 @@
-export * from './middleware/locale-middleware.js';
-export * from './services/translation-service.js';
+export * from "./middleware/locale-middleware.js";
+export * from "./services/translation-service.js";
 
 // Placeholder exports for future expansion
 export interface I18nConfig {
@@ -18,12 +18,12 @@ export interface I18nConfig {
 /**
  * Placeholder function for i18n initialization
  * This will be expanded to set up the full i18n system
- * 
+ *
  * @param config - i18n configuration options
  */
 export function initializeI18n(config?: I18nConfig): void {
   // TODO: Implement initialization logic
-  console.log('i18n module initialized with config:', config);
+  console.log("i18n module initialized with config:", config);
 }
 
 /**
@@ -31,7 +31,7 @@ export function initializeI18n(config?: I18nConfig): void {
  * Default: English (en) and Welsh (cy)
  */
 export function getSupportedLocales(): string[] {
-  return (process.env.SUPPORTED_LOCALES || 'en,cy').split(',');
+  return (process.env.SUPPORTED_LOCALES || "en,cy").split(",");
 }
 
 /**

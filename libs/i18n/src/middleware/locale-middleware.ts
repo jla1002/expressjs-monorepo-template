@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 export interface LocaleRequest extends Request {
   locale?: string;
@@ -37,7 +37,7 @@ export function localeMiddleware() {
 
     // TODO: Implement translation function
     // Placeholder translation function
-    req.t = (key: string, options?: any) => {
+    req.t = (key: string, _options?: any) => {
       // This would normally look up translations from loaded files
       return key;
     };

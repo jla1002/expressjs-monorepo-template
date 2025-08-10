@@ -1,6 +1,5 @@
 import * as appInsights from "applicationinsights";
 import winston from "winston";
-import type { Request, Response } from "express";
 
 export interface TrackRequestOptions {
   name: string;
