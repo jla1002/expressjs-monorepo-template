@@ -1,6 +1,6 @@
-import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
+import { PostgreSqlContainer } from "@testcontainers/postgresql";
 
 const execAsync = promisify(exec);
 

@@ -12,7 +12,10 @@
     "sass:watch": "sass src/assets/scss:public/css --watch",
     "start": "node dist/server.js",
     "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "dependencies": {
     "@hmcts/auth": "workspace:*",

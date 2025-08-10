@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { Response, NextFunction } from "express";
+import type { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
-import { authenticate, type AuthenticatedRequest } from "./authenticate.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { type AuthenticatedRequest, authenticate } from "./authenticate.js";
 
 vi.mock("jsonwebtoken");
 

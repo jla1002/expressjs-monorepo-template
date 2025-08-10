@@ -9,9 +9,9 @@
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "biome check .",
     "format": "biome format --write .",
-    "type-check": "tsc --noEmit"
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "peerDependencies": {
     "express": "^5.1.0",
