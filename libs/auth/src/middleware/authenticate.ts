@@ -6,7 +6,6 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     email: string;
     role: string;
-    tenantId: string;
   };
 }
 
@@ -25,7 +24,6 @@ export function authenticate() {
         id: decoded.userId,
         email: decoded.email,
         role: decoded.role,
-        tenantId: decoded.tenantId,
       };
 
       next();
