@@ -6,7 +6,7 @@ import type { Express } from "express";
 import type { AuthenticatedRequest } from "./middleware/authenticate.js";
 
 export function errorHandler() {
-  return (err: Error, req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+  return (err: Error, _req: Express.Request, res: Express.Response, _next: Express.NextFunction) => {
     console.error("Auth error:", err);
     res.status(500).json({ error: "Internal server error" });
   };

@@ -37,7 +37,7 @@ export function localeMiddleware() {
 
     // TODO: Implement translation function
     // Placeholder translation function
-    req.t = (key: string, options?: any) => {
+    req.t = (key: string, _options?: any) => {
       // This would normally look up translations from loaded files
       return key;
     };

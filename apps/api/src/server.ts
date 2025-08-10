@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { createApp } from "./app.js";
 
 const PORT = process.env.API_PORT || 3001;

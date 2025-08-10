@@ -19,11 +19,11 @@ export function createApp(): Express {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.get("/health", (req, res) => {
+  app.get("/health", (_req, res) => {
     res.json({ status: "healthy" });
   });
 
-  app.get("/health/ready", async (req, res) => {
+  app.get("/health/ready", async (_req, res) => {
     try {
       res.json({ status: "ready" });
     } catch {
@@ -31,11 +31,11 @@ export function createApp(): Express {
     }
   });
 
-  app.use((req, res) => {
+  app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });
   });
 
-  app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ error: "Internal server error" });
   });

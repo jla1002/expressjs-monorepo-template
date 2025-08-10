@@ -3,8 +3,8 @@ import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -46,19 +46,19 @@ export function createApp(): Express {
 
   app.use("/public", express.static(path.join(__dirname, "../public")));
 
-  app.get("/health", (req, res) => {
+  app.get("/health", (_req, res) => {
     res.json({ status: "healthy" });
   });
 
-  app.get("/", (req, res) => {
+  app.get("/", (_req, res) => {
     res.send("<h1>HMCTS Web Application</h1><p>GOV.UK Frontend integration pending...</p>");
   });
 
-  app.use((req, res) => {
+  app.use((_req, res) => {
     res.status(404).send("<h1>404 - Page not found</h1>");
   });
 
-  app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err.stack);
     res.status(500).send("<h1>500 - Something went wrong</h1>");
   });

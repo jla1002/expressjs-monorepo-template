@@ -1,6 +1,6 @@
 import type { Environment } from "nunjucks";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,7 +50,7 @@ function addGovukFilters(env: Environment): void {
     const ampm = hours >= 12 ? "pm" : "am";
     hours = hours % 12;
     hours = hours ? hours : 12;
-    const minutesStr = minutes < 10 ? "0" + minutes : minutes;
+    const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
     return `${hours}:${minutesStr}${ampm}`;
   });
 

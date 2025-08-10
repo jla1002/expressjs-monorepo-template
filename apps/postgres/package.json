@@ -7,6 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "dev": "node --import tsx ./scripts/dev.ts",
     "generate": "prisma generate",
     "migrate": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
@@ -18,7 +19,9 @@
     "@prisma/client": "5.8.1"
   },
   "devDependencies": {
+    "@testcontainers/postgresql": "11.5.1",
     "@types/node": "24.2.1",
-    "prisma": "5.8.1"
+    "prisma": "5.8.1",
+    "testcontainers": "11.5.1"
   }
 }
