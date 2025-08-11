@@ -68,7 +68,7 @@ export async function createApp(): Promise<Express> {
     app.use("/assets", express.static(path.join(__dirname, "../assets")));
   }
 
-  const nunjucksEnv = configureNunjucks(app, [path.join(__dirname, "pages/")]);
+  const nunjucksEnv = configureNunjucks(app, ["node_modules/govuk-frontend/dist", "node_modules/@hmcts/govuk-frontend/views", path.join(__dirname, "pages/")]);
 
   const assetHelpers = createAssetHelpers();
   Object.entries(assetHelpers).forEach(([name, value]) => {

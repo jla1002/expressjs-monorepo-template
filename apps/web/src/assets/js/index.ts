@@ -1,3 +1,3 @@
-// Place your client side JavaScript here
+import { initAll } from "govuk-frontend";
 
-console.log("=== Starting client side scripts ===");
+initAll();

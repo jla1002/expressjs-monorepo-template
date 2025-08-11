@@ -11,9 +11,6 @@ export async function configureGovUK(app: Express, nunjucksEnv: Environment): Pr
   nunjucksEnv.addFilter("govukErrorSummary", govukErrorSummary);
   nunjucksEnv.addGlobal("phase", process.env.PHASE || "beta");
 
-  // add the layout to view paths
-  // (nunjucksEnv as any).loader.searchPaths.push(path.join(__dirname, "../layouts"));
-
   // add any locals used by govuk-frontend layouts
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.pageUrl = req.originalUrl;

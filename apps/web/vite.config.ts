@@ -2,9 +2,8 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  root: "src/assets",
   build: {
-    outDir: "../../dist/assets",
+    outDir: "dist/assets",
     emptyOutDir: true,
     rollupOptions: {
       input: {
@@ -36,13 +35,15 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "govuk-frontend/dist/govuk/all";`,
+        quietDeps: true,
+        loadPaths: ["node_modules"],
       },
     },
     devSourcemap: true,
   },
   resolve: {
     extensions: [".ts", ".js", ".scss", ".css"],
+    preserveSymlinks: true,
   },
   publicDir: false,
 });
