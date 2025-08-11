@@ -5,7 +5,12 @@
     "paths": {
       "@hmcts/api": ["apps/api/src"],
       "@hmcts/postgres": ["apps/database/src"],
-      "@hmcts/web": ["apps/web/src"]
+      "@hmcts/web": ["apps/web/src"],
+      "@hmcts/nunjucks": ["libs/nunjucks/src"],
+      "@hmcts/govuk-frontend": ["libs/govuk-frontend/src"],
+      "@hmcts/auth": ["libs/auth/src"],
+      "@hmcts/i18n": ["libs/i18n/src"],
+      "@hmcts/monitoring": ["libs/monitoring/src"],
     },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

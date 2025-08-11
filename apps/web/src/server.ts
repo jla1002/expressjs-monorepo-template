@@ -1,12 +1,18 @@
 import { createApp } from "./app.js";
 
-const PORT = process.env.WEB_PORT || 3000;
-const app = createApp();
+const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🌐 Web server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-});
+async function startServer() {
+  const app = await createApp();
+
+  const server = app.listen(PORT, () => {
+    console.log(`🌐 Web server running on http://localhost:${PORT}`);
+  });
+
+  return server;
+}
+
+const server = await startServer();
 
 process.on("SIGTERM", () => {
   console.log("SIGTERM signal received: closing HTTP server");

@@ -6,3 +6,7 @@
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Error package for error handling
+- Cookie banner
+- Basic router
+- Add health and live check to monitoring package
+- Using JS after build has run

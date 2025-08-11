@@ -6,13 +6,7 @@ import nunjucks from "nunjucks";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function configureNunjucks(app: Express): nunjucks.Environment {
-  const viewPaths = [
-    path.join(__dirname, "../../../../apps/web/src/views"),
-    path.join(__dirname, "../../../../libs/*/src/views"),
-    path.join(__dirname, "../../views"),
-  ];
-
+export function configureNunjucks(app: Express, viewPaths: string[]): nunjucks.Environment {
   const env = nunjucks.configure(viewPaths, {
     autoescape: true,
     express: app,
