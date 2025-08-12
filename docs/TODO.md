@@ -10,3 +10,4 @@
 - Basic router
 - Add health and live check to monitoring package
 - Using JS after build has run
+- Copy njk files into build (using Vite?)
