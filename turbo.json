@@ -4,12 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**", "public/**"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["db:generate"]
+      "outputs": ["dist/**", "build/**"]
     },
     "test": {
       "dependsOn": ["^build"],

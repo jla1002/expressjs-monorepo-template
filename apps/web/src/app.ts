@@ -1,17 +1,35 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { configureGovUK } from "@hmcts/govuk-frontend";
+import { configureNunjucks } from "@hmcts/nunjucks";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
 import session from "express-session";
 import helmet from "helmet";
+import * as IndexPage from "./pages/index/index.js";
+import { createAssetHelpers } from "./utils/assets.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function createApp(): Express {
+export async function createApp(): Promise<Express> {
   const app = express();
+
+  // Set up HMR and vite asset loading when in dev mode
+  if (process.env.NODE_ENV !== "production") {
+    const { createServer } = await import("vite");
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: "custom",
+      root: path.join(__dirname, "assets"),
+    });
+
+    app.use(vite.middlewares);
+
+    app.locals.vite = vite;
+  }
 
   app.use(
     helmet({
@@ -31,9 +49,10 @@ export function createApp(): Express {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
+  // TODO move to session package with redis set up
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "development-secret-change-me",
+      secret: process.env.SESSION_SECRET || "development",
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -44,16 +63,28 @@ export function createApp(): Express {
     }),
   );
 
-  app.use("/public", express.static(path.join(__dirname, "../public")));
+  // Serve static assets from dist/assets in production, Vite middleware handles dev
+  if (process.env.NODE_ENV === "production") {
+    app.use("/assets", express.static(path.join(__dirname, "../assets")));
+  }
 
+  const nunjucksEnv = configureNunjucks(app, ["node_modules/govuk-frontend/dist", "node_modules/@hmcts/govuk-frontend/views", path.join(__dirname, "pages/")]);
+
+  const assetHelpers = createAssetHelpers();
+  Object.entries(assetHelpers).forEach(([name, value]) => {
+    nunjucksEnv.addGlobal(name, value);
+  });
+
+  configureGovUK(app, nunjucksEnv);
+
+  // TODO move to monitoring and add proper liveness and readiness checks
   app.get("/health", (_req, res) => {
     res.json({ status: "healthy" });
   });
 
-  app.get("/", (_req, res) => {
-    res.send("<h1>HMCTS Web Application</h1><p>GOV.UK Frontend integration pending...</p>");
-  });
+  app.get("/", IndexPage.GET);
 
+  // TODO add error handling middleware (maybe as part of govuk-frontend?)
   app.use((_req, res) => {
     res.status(404).send("<h1>404 - Page not found</h1>");
   });
