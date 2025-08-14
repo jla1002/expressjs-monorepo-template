@@ -3,6 +3,10 @@ import { MonitoringService } from "../services/monitoring-service.js";
 
 let monitoringService: MonitoringService | null = null;
 
+export function resetMonitoringService() {
+  monitoringService = null;
+}
+
 export function monitoringMiddleware() {
   if (!monitoringService && process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     monitoringService = new MonitoringService(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
@@ -29,8 +33,12 @@ export function monitoringMiddleware() {
           },
         });
       }
+    });
 
-      console.log(`${req.method} ${req.path} - ${res.statusCode} - ${duration}ms`);
+    res.on("error", (err) => {
+      if (monitoringService) {
+        monitoringService.trackException(err);
+      }
     });
 
     next();
