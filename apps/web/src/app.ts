@@ -10,6 +10,7 @@ import session from "express-session";
 import helmet from "helmet";
 import * as IndexPage from "./pages/index/index.js";
 import { createAssetHelpers } from "./utils/assets.js";
+import { healthcheck } from "@hmcts/monitoring";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,10 +78,7 @@ export async function createApp(): Promise<Express> {
 
   configureGovUK(app, nunjucksEnv);
 
-  // TODO move to monitoring and add proper liveness and readiness checks
-  app.get("/health", (_req, res) => {
-    res.json({ status: "healthy" });
-  });
+  app.use(healthcheck.configure());
 
   app.get("/", IndexPage.GET);
 

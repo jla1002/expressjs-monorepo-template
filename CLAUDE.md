@@ -281,3 +281,9 @@ When developing:
 - Write tests for new functionality
 - Consider Welsh language from the start
 
+## Core Principles
+
+* **YAGNI**: You Aren't Gonna Need It - Don't add speculative functionality or features. Always take the simplest approach. Don't use a class unless you have shared state
+* **KISS**: Keep It Simple, Stupid - Avoid unnecessary complexity. Write code that is easy to understand and maintain.
+* **Immutable**: Data should be immutable by default. Use const and avoid mutations to ensure predictable state.
+* **Side Effects**: Functions should have no side effects. Avoid modifying external state or relying on mutable data.
