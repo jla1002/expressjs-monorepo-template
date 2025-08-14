@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
+    },
+    "context7": {
+      "type": "sse",
+      "url": "https://mcp.context7.com/sse"
+    },
+    "mcp-atlassian": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--env-file", "~/.jira-mcp.env",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ]
+    }
+  }
+}
