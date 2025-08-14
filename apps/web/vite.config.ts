@@ -1,5 +1,6 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
   build: {
@@ -46,4 +47,19 @@ export default defineConfig({
     preserveSymlinks: true,
   },
   publicDir: false,
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: "src/pages/**/*.{njk,html}",
+          dest: "../pages",
+          rename: (_fileName, _fileExtension, fullPath) => {
+            // Preserve directory structure by extracting path after 'src/pages/'
+            const relativePath = fullPath.split("src/pages/")[1];
+            return relativePath;
+          },
+        },
+      ],
+    }),
+  ],
 });

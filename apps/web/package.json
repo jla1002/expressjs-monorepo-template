@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "nodemon --watch src --watch '../../**/*' --ext ts,njk --exec tsx src/server.ts",
     "build": "tsc && vite build",
+    "clean": "rm -rf dist",
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
@@ -41,6 +42,7 @@
     "nodemon": "3.0.2",
     "sass-embedded": "1.90.0",
     "supertest": "7.1.4",
-    "vite": "6.0.7"
+    "vite": "6.0.7",
+    "vite-plugin-static-copy": "^3.1.1"
   }
 }
