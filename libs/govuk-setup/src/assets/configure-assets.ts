@@ -36,6 +36,14 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, o
       server: { middlewareMode: true },
       appType: "custom",
       root: viteRoot,
+      css: {
+        preprocessorOptions: {
+          scss: {
+            quietDeps: true,
+            silenceDeprecations: ["mixed-decls"],
+          },
+        },
+      },
     });
 
     app.use(viteServer.middlewares);
