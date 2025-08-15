@@ -698,9 +698,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/govuk-frontend@workspace:*, @hmcts/govuk-frontend@workspace:libs/govuk-frontend":
+"@hmcts/govuk-setup@workspace:*, @hmcts/govuk-setup@workspace:libs/govuk-setup":
   version: 0.0.0-use.local
-  resolution: "@hmcts/govuk-frontend@workspace:libs/govuk-frontend"
+  resolution: "@hmcts/govuk-setup@workspace:libs/govuk-setup"
   dependencies:
     "@types/express": "npm:5.0.3"
     "@types/nunjucks": "npm:3.2.6"
@@ -709,6 +709,7 @@ __metadata:
     govuk-frontend: ^5.2.0
     nunjucks: ^3.2.4
     sass-embedded: ^1.90.0
+    vite: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -723,18 +724,6 @@ __metadata:
     i18next-http-middleware: "npm:3.5.0"
   peerDependencies:
     express: ^5.1.0
-  languageName: unknown
-  linkType: soft
-
-"@hmcts/nunjucks@workspace:*, @hmcts/nunjucks@workspace:libs/nunjucks":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/nunjucks@workspace:libs/nunjucks"
-  dependencies:
-    "@types/express": "npm:5.0.3"
-    "@types/nunjucks": "npm:3.2.6"
-  peerDependencies:
-    express: ^5.1.0
-    nunjucks: ^3.2.4
   languageName: unknown
   linkType: soft
 
@@ -755,9 +744,8 @@ __metadata:
   dependencies:
     "@hmcts/auth": "workspace:*"
     "@hmcts/cloud-native-platform": "workspace:*"
-    "@hmcts/govuk-frontend": "workspace:*"
+    "@hmcts/govuk-setup": "workspace:*"
     "@hmcts/i18n": "workspace:*"
-    "@hmcts/nunjucks": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@types/compression": "npm:1.8.1"
     "@types/cookie-parser": "npm:1.4.9"
@@ -3310,7 +3298,7 @@ __metadata:
     "@vitest/ui": "npm:3.2.4"
     concurrently: "npm:9.2.0"
     supertest: "npm:7.1.4"
-    tsx: "npm:4.20.3"
+    tsx: "npm:^4.20.4"
     turbo: "npm:2.5.5"
     typescript: "npm:5.9.2"
     vitest: "npm:3.2.4"
@@ -5886,9 +5874,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:4.20.3":
-  version: 4.20.3
-  resolution: "tsx@npm:4.20.3"
+"tsx@npm:^4.20.4":
+  version: 4.20.4
+  resolution: "tsx@npm:4.20.4"
   dependencies:
     esbuild: "npm:~0.25.0"
     fsevents: "npm:~2.3.3"
@@ -5898,7 +5886,7 @@ __metadata:
       optional: true
   bin:
     tsx: dist/cli.mjs
-  checksum: 10c0/6ff0d91ed046ec743fac7ed60a07f3c025e5b71a5aaf58f3d2a6b45e4db114c83e59ebbb078c8e079e48d3730b944a02bc0de87695088aef4ec8bbc705dc791b
+  checksum: 10c0/2deb24b0c689031962901f29fc3411bc9a3753780e9a39b8bf0233dba7fc59dc8f9732f6ebbfe16f498fc27b6adf1eeecfa46360d1161081aafffaaa26371998
   languageName: node
   linkType: hard
 

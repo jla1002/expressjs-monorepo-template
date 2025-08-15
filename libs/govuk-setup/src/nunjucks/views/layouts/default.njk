@@ -4,7 +4,9 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
-  {% include cssEntry("css/index.scss") %}
+  {% if process.env.NODE_ENV == 'production' %}
+    <link href="{{ cssEntry }}" rel="stylesheet">
+  {% endif %}
 
   <!-- {{ userCase.id }} -->
   <!-- Google Tag Manager -->
@@ -52,7 +54,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% block error_summary %}
-        {% include "common/error/summary.njk" %}
+        {# Error summary would go here #}
       {% endblock %}
 
       {% block page_content %}
@@ -96,5 +98,10 @@
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  {% include jsEntry("js/index.ts") %}
+  {% if process.env.NODE_ENV == 'production' %}
+    <script src="{{ jsEntry }}"></script>
+  {% else %}
+    <script type="module" src="/@vite/client"></script>
+    <script type="module" src="{{ jsEntry }}"></script>
+  {% endif %}
 {% endblock %}

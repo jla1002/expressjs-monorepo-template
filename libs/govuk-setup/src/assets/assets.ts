@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export interface AssetOptions {
+  viteRoot: string;
+  distPath: string;
+  entries: Record<string, string>;
+}
 
 interface ManifestEntry {
   file: string;
@@ -21,10 +23,10 @@ let manifest: ViteManifest | null = null;
 /**
  * Load the Vite manifest file for production asset resolution
  */
-function loadManifest(): ViteManifest {
+function loadManifest(distPath: string): ViteManifest {
   if (manifest !== null) return manifest;
 
-  const manifestPath = path.join(__dirname, "../assets/.vite/manifest.json");
+  const manifestPath = path.join(distPath, "assets/.vite/manifest.json");
 
   try {
     if (fs.existsSync(manifestPath)) {
@@ -43,26 +45,31 @@ function loadManifest(): ViteManifest {
 /**
  * Get the actual filename for a Vite entry point
  */
-function getAssetPath(entryKey: string): string {
+function getAssetPath(entryKey: string, distPath: string): string {
   const isProduction = process.env.NODE_ENV === "production";
 
   if (isProduction) {
     // In production, resolve hashed filename from manifest
-    const manifest = loadManifest();
+    const manifest = loadManifest(distPath);
     const entry = manifest[entryKey];
 
     entryKey = entry?.file || entryKey;
+    return `/assets/${entryKey}`;
   }
 
-  return `/assets/${entryKey}`;
+  // In development, Vite serves assets at root
+  return `/${entryKey}`;
 }
 
 /**
  * Create Nunjucks globals for asset paths
  */
-export function createAssetHelpers() {
-  return {
-    jsEntry: getAssetPath("js/index.ts"),
-    cssEntry: getAssetPath("css/index.scss"),
-  };
+export function createAssetHelpers(entries: Record<string, string>, distPath: string): Record<string, string> {
+  const helpers: Record<string, string> = {};
+
+  for (const [name, entryPath] of Object.entries(entries)) {
+    helpers[name] = getAssetPath(entryPath, distPath);
+  }
+
+  return helpers;
 }

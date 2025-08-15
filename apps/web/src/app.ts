@@ -1,8 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { healthcheck } from "@hmcts/cloud-native-platform";
-import { configureGovUK } from "@hmcts/govuk-frontend";
-import { configureNunjucks } from "@hmcts/nunjucks";
+import { configureGovuk, errorHandler, notFoundHandler } from "@hmcts/govuk-setup";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
@@ -10,7 +9,6 @@ import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import * as IndexPage from "./pages/index/index.js";
-import { createAssetHelpers } from "./utils/assets.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +16,7 @@ const __dirname = path.dirname(__filename);
 export async function createApp(): Promise<Express> {
   const app = express();
 
-  // Set up HMR and vite asset loading when in dev mode
+  // Configure Vite first in development for asset handling
   if (process.env.NODE_ENV !== "production") {
     const { createServer } = await import("vite");
     const vite = await createServer({
@@ -26,10 +24,7 @@ export async function createApp(): Promise<Express> {
       appType: "custom",
       root: path.join(__dirname, "assets"),
     });
-
     app.use(vite.middlewares);
-
-    app.locals.vite = vite;
   }
 
   app.use(
@@ -38,9 +33,10 @@ export async function createApp(): Promise<Express> {
         directives: {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "*.googletagmanager.com"],
+          scriptSrc: ["'self'", "*.googletagmanager.com", process.env.NODE_ENV !== "production" && "ws://localhost:5173"].filter(Boolean) as string[],
           imgSrc: ["'self'", "data:", "*.google-analytics.com"],
           fontSrc: ["'self'", "data:"],
+          connectSrc: process.env.NODE_ENV !== "production" ? ["'self'", "ws://localhost:5173"] : ["'self'"],
         },
       },
     }),
@@ -64,33 +60,26 @@ export async function createApp(): Promise<Express> {
     }),
   );
 
-  // Serve static assets from dist/assets in production, Vite middleware handles dev
-  if (process.env.NODE_ENV === "production") {
-    app.use("/assets", express.static(path.join(__dirname, "../assets")));
-  }
-
-  const nunjucksEnv = configureNunjucks(app, ["node_modules/govuk-frontend/dist", "node_modules/@hmcts/govuk-frontend/views", path.join(__dirname, "pages/")]);
-
-  const assetHelpers = createAssetHelpers();
-  Object.entries(assetHelpers).forEach(([name, value]) => {
-    nunjucksEnv.addGlobal(name, value);
+  // Configure Nunjucks and asset helpers
+  await configureGovuk(app, {
+    viewPaths: [path.join(__dirname, "pages/")],
+    assets: {
+      viteRoot: path.join(__dirname, "assets"),
+      distPath: path.join(__dirname, "../dist"),
+      entries: {
+        jsEntry: "js/index.ts",
+        cssEntry: "css/index.scss",
+      },
+    },
   });
-
-  configureGovUK(app, nunjucksEnv);
 
   app.use(healthcheck.configure());
 
   app.get("/", IndexPage.GET);
 
-  // TODO add error handling middleware (maybe as part of govuk-frontend?)
-  app.use((_req, res) => {
-    res.status(404).send("<h1>404 - Page not found</h1>");
-  });
-
-  app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    console.error(err.stack);
-    res.status(500).send("<h1>500 - Something went wrong</h1>");
-  });
+  // Error handling middleware from govuk-setup (must be last)
+  app.use(notFoundHandler());
+  app.use(errorHandler());
 
   return app;
 }
