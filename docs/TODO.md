@@ -1,10 +1,10 @@
 - Work out how i18n should work
 - Find a place for the team name
-- Basic Playwright test, with Axe
 - Infrastructure folder for terraform
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Cookie banner
 - Basic router
-- rename to @hmcts/express-govuk-starter
 - add config to apps/web and apps/api (and set up cnp on api)
+- Fix issues on homepage, add service name
+- Add properties volume or replace it
