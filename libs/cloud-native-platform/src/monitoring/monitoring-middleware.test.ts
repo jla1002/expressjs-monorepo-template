@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MonitoringService } from "./monitoring-service.js";
 import { monitoringMiddleware, resetMonitoringService } from "./monitoring-middleware.js";
+import { MonitoringService } from "./monitoring-service.js";
 
 vi.mock("./monitoring-service.js");
 

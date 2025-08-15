@@ -1,20 +1,19 @@
 {
   "compilerOptions": {
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
       "@hmcts/api": ["apps/api/src"],
       "@hmcts/postgres": ["apps/database/src"],
       "@hmcts/web": ["apps/web/src"],
-      "@hmcts/nunjucks": ["libs/nunjucks/src"],
-      "@hmcts/govuk-frontend": ["libs/govuk-frontend/src"],
-      "@hmcts/auth": ["libs/auth/src"],
-      "@hmcts/i18n": ["libs/i18n/src"],
+      "@hmcts/express-govuk-starter": ["libs/express-govuk-starter/src"],
       "@hmcts/cloud-native-platform": ["libs/cloud-native-platform/src"],
     },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": false
   }
 }

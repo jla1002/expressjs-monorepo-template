@@ -17,11 +17,8 @@
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
-    "@hmcts/auth": "workspace:*",
     "@hmcts/cloud-native-platform": "workspace:*",
-    "@hmcts/govuk-frontend": "workspace:*",
-    "@hmcts/i18n": "workspace:*",
-    "@hmcts/nunjucks": "workspace:*",
+    "@hmcts/express-govuk-starter": "workspace:*",
     "@hmcts/postgres": "workspace:*",
     "compression": "1.8.1",
     "cookie-parser": "1.4.7",
@@ -40,9 +37,9 @@
     "@types/nunjucks": "3.2.6",
     "@types/supertest": "6.0.3",
     "nodemon": "3.0.2",
-    "sass-embedded": "1.90.0",
+    "sass": "1.90.0",
     "supertest": "7.1.4",
-    "vite": "6.0.7",
+    "vite": "7.1.1",
     "vite-plugin-static-copy": "^3.1.1"
   }
 }
