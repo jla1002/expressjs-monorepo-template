@@ -1,5 +1,5 @@
 {
-  "name": "@hmcts/monitoring",
+  "name": "@hmcts/cloud-native-platform",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",

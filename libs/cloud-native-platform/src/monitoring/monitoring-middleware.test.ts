@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MonitoringService } from "../services/monitoring-service.js";
+import { MonitoringService } from "./monitoring-service.js";
 import { monitoringMiddleware, resetMonitoringService } from "./monitoring-middleware.js";
 
-vi.mock("../services/monitoring-service.js");
+vi.mock("./monitoring-service.js");
 
 describe("monitoringMiddleware", () => {
   let req: Partial<Request>;

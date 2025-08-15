@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { MonitoringService } from "../services/monitoring-service.js";
+import { MonitoringService } from "./monitoring-service.js";
 
 let monitoringService: MonitoringService | null = null;
 

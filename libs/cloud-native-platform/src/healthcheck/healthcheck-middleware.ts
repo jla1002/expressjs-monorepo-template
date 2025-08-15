@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
-import type { HealthCheck } from "../services/healthcheck.js";
+import type { HealthCheck } from "./healthcheck.js";
 
 export interface HealthCheckConfig {
   checks?: Record<string, HealthCheck>;

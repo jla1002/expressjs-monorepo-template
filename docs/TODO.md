@@ -8,4 +8,4 @@
 - Error package for error handling
 - Cookie banner
 - Basic router
-- Add health and live check to monitoring package
+- Combine nunjucks and govuk-frontend into govuk-setup

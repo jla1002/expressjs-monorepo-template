@@ -657,7 +657,7 @@ __metadata:
   resolution: "@hmcts/api@workspace:apps/api"
   dependencies:
     "@hmcts/auth": "workspace:*"
-    "@hmcts/monitoring": "workspace:*"
+    "@hmcts/cloud-native-platform": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@types/compression": "npm:1.8.1"
     "@types/cors": "npm:2.8.19"
@@ -682,6 +682,17 @@ __metadata:
     bcryptjs: "npm:3.0.2"
     jsonwebtoken: "npm:9.0.2"
     zod: "npm:4.0.15"
+  peerDependencies:
+    express: ^5.1.0
+  languageName: unknown
+  linkType: soft
+
+"@hmcts/cloud-native-platform@workspace:*, @hmcts/cloud-native-platform@workspace:libs/cloud-native-platform":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/cloud-native-platform@workspace:libs/cloud-native-platform"
+  dependencies:
+    "@types/express": "npm:5.0.3"
+    applicationinsights: "npm:2.9.1"
   peerDependencies:
     express: ^5.1.0
   languageName: unknown
@@ -715,17 +726,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/monitoring@workspace:*, @hmcts/monitoring@workspace:libs/monitoring":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/monitoring@workspace:libs/monitoring"
-  dependencies:
-    "@types/express": "npm:5.0.3"
-    applicationinsights: "npm:2.9.1"
-  peerDependencies:
-    express: ^5.1.0
-  languageName: unknown
-  linkType: soft
-
 "@hmcts/nunjucks@workspace:*, @hmcts/nunjucks@workspace:libs/nunjucks":
   version: 0.0.0-use.local
   resolution: "@hmcts/nunjucks@workspace:libs/nunjucks"
@@ -754,9 +754,9 @@ __metadata:
   resolution: "@hmcts/web@workspace:apps/web"
   dependencies:
     "@hmcts/auth": "workspace:*"
+    "@hmcts/cloud-native-platform": "workspace:*"
     "@hmcts/govuk-frontend": "workspace:*"
     "@hmcts/i18n": "workspace:*"
-    "@hmcts/monitoring": "workspace:*"
     "@hmcts/nunjucks": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@types/compression": "npm:1.8.1"

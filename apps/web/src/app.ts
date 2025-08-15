@@ -1,5 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { healthcheck } from "@hmcts/cloud-native-platform";
 import { configureGovUK } from "@hmcts/govuk-frontend";
 import { configureNunjucks } from "@hmcts/nunjucks";
 import compression from "compression";
@@ -10,7 +11,6 @@ import session from "express-session";
 import helmet from "helmet";
 import * as IndexPage from "./pages/index/index.js";
 import { createAssetHelpers } from "./utils/assets.js";
-import { healthcheck } from "@hmcts/monitoring";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

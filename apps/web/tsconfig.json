@@ -12,7 +12,7 @@
     { "path": "../../libs/nunjucks" },
     { "path": "../../libs/govuk-frontend" },
     { "path": "../../libs/i18n" },
-    { "path": "../../libs/monitoring" },
+    { "path": "../../libs/cloud-native-platform" },
     { "path": "../postgres" }
   ]
 }

@@ -10,7 +10,7 @@
       "@hmcts/govuk-frontend": ["libs/govuk-frontend/src"],
       "@hmcts/auth": ["libs/auth/src"],
       "@hmcts/i18n": ["libs/i18n/src"],
-      "@hmcts/monitoring": ["libs/monitoring/src"],
+      "@hmcts/cloud-native-platform": ["libs/cloud-native-platform/src"],
     },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
