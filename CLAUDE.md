@@ -154,6 +154,12 @@ describe('UserService', () => {
 - **ES Modules**: Use `"type": "module"` in all package.json files
 - **Express**: Version 5.x only (`"express": "5.1.0"`)
 - **Imports**: Use workspace aliases (`@hmcts/*`)
+  - **IMPORTANT**: Always add `.js` extension to relative imports (e.g., `import { foo } from "./bar.js"`)
+  - This is required for ESM with Node.js "nodenext" module resolution
+  - Applies even when importing TypeScript files (they compile to .js)
+  - **Enforcement**: TypeScript will error on missing `.js` extensions with:
+    - `"module": "nodenext"` and `"moduleResolution": "nodenext"` in tsconfig.json
+    - Error: "Relative import paths need explicit file extensions in ECMAScript imports"
 - **Formatting**: Biome with 160 character line width
 - **Linting**: Fix all Biome warnings before commit
 - **No CommonJS**: Use `import`/`export`, never `require()`/`module.exports`
@@ -172,7 +178,7 @@ describe('UserService', () => {
 ## Welsh Language Implementation
 
 ```typescript
-// libs/i18n/src/middleware/locale.ts
+// libs/i18n/src/locale-middleware.ts
 export function localeMiddleware() {
   return (req: Request, res: Response, next: NextFunction) => {
     const locale = req.query.lng || req.cookies.locale || 'en';

@@ -7,11 +7,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"],
-  "references": [
-    { "path": "../../libs/auth" },
-    { "path": "../../libs/govuk-setup" },
-    { "path": "../../libs/i18n" },
-    { "path": "../../libs/cloud-native-platform" },
-    { "path": "../postgres" }
-  ]
+  "references": [{ "path": "../../libs/govuk-setup" }, { "path": "../../libs/cloud-native-platform" }, { "path": "../postgres" }]
 }

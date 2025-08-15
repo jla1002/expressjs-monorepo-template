@@ -8,7 +8,7 @@ export interface HealthCheckConfig {
 }
 
 export function configure(config: HealthCheckConfig = {}): RequestHandler {
-  const { checks = {}, readinessChecks = checks, buildInfo } = config;
+  const { checks = {}, readinessChecks = checks } = config;
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.path === "/health/liveness" || req.path === "/liveness") {

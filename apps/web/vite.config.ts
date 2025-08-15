@@ -1,5 +1,5 @@
+import { resolve } from "node:path";
 import { createBaseViteConfig } from "@hmcts/govuk-setup";
-import { resolve } from "path";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 

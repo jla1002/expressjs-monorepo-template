@@ -17,10 +17,8 @@
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
-    "@hmcts/auth": "workspace:*",
     "@hmcts/cloud-native-platform": "workspace:*",
     "@hmcts/govuk-setup": "workspace:*",
-    "@hmcts/i18n": "workspace:*",
     "@hmcts/postgres": "workspace:*",
     "compression": "1.8.1",
     "cookie-parser": "1.4.7",

@@ -8,7 +8,7 @@ export interface SecurityOptions {
 }
 
 export function configureNonce() {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     res.locals.cspNonce = crypto.randomBytes(16).toString("base64");
     next();
   };
