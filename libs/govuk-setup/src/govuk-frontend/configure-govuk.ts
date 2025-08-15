@@ -19,8 +19,7 @@ export interface GovukSetupOptions {
 export async function configureGovuk(app: Express, options: GovukSetupOptions = {}): Promise<nunjucks.Environment> {
   const { viewPaths = [], phase = "beta", assets } = options;
 
-  const projectRoot = path.resolve(__dirname, "../../../..");
-  const govukFrontendPath = path.join(projectRoot, "node_modules/govuk-frontend/dist");
+  const govukFrontendPath = "../../node_modules/govuk-frontend/dist";
   const govukSetupViews = path.join(__dirname, "../nunjucks/views");
   const allViewPaths = [govukFrontendPath, govukSetupViews, ...viewPaths];
 

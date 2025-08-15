@@ -4,7 +4,7 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
-  {% if process.env.NODE_ENV == 'production' %}
+  {% if isProduction %}
     <link href="{{ cssEntry }}" rel="stylesheet">
   {% endif %}
 
@@ -98,7 +98,7 @@
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  {% if process.env.NODE_ENV == 'production' %}
+  {% if isProduction %}
     <script src="{{ jsEntry }}"></script>
   {% else %}
     <script type="module" src="/@vite/client"></script>

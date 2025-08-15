@@ -16,19 +16,16 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, o
   const isProduction = process.env.NODE_ENV === "production";
 
   if (!isProduction) {
-    // Skip Vite setup if already configured (check for vite in app.locals)
-    if (!app.locals.vite) {
-      // Set up HMR and vite asset loading when in dev mode
-      const { createServer } = await import("vite");
-      viteServer = await createServer({
-        server: { middlewareMode: true },
-        appType: "custom",
-        root: viteRoot,
-      });
+    // Set up HMR and vite asset loading in dev mode
+    const { createServer } = await import("vite");
+    viteServer = await createServer({
+      server: { middlewareMode: true },
+      appType: "custom",
+      root: viteRoot,
+    });
 
-      app.use(viteServer.middlewares);
-      app.locals.vite = viteServer;
-    }
+    app.use(viteServer.middlewares);
+    app.locals.vite = viteServer;
   } else {
     // Serve static assets from dist/assets in production
     app.use("/assets", express.static(path.join(distPath, "assets")));

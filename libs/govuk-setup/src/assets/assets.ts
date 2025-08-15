@@ -51,7 +51,7 @@ function getAssetPath(entryKey: string, distPath: string): string {
   if (isProduction) {
     // In production, resolve hashed filename from manifest
     const manifest = loadManifest(distPath);
-    const entry = manifest[entryKey];
+    const entry = manifest[`src/assets/${entryKey}`];
 
     entryKey = entry?.file || entryKey;
     return `/assets/${entryKey}`;

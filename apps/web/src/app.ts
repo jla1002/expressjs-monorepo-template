@@ -16,31 +16,20 @@ const __dirname = path.dirname(__filename);
 export async function createApp(): Promise<Express> {
   const app = express();
 
-  // Configure Vite first in development for asset handling
-  if (process.env.NODE_ENV !== "production") {
-    const { createServer } = await import("vite");
-    const vite = await createServer({
-      server: { middlewareMode: true },
-      appType: "custom",
-      root: path.join(__dirname, "assets"),
-    });
-    app.use(vite.middlewares);
-  }
-
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "*.googletagmanager.com", process.env.NODE_ENV !== "production" && "ws://localhost:5173"].filter(Boolean) as string[],
-          imgSrc: ["'self'", "data:", "*.google-analytics.com"],
-          fontSrc: ["'self'", "data:"],
-          connectSrc: process.env.NODE_ENV !== "production" ? ["'self'", "ws://localhost:5173"] : ["'self'"],
-        },
-      },
-    }),
-  );
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: {
+  //       directives: {
+  //         defaultSrc: ["'self'"],
+  //         styleSrc: ["'self'", "'unsafe-inline'"],
+  //         scriptSrc: ["'self'", "*.googletagmanager.com", process.env.NODE_ENV !== "production" && "ws://localhost:5173"].filter(Boolean) as string[],
+  //         imgSrc: ["'self'", "data:", "*.google-analytics.com"],
+  //         fontSrc: ["'self'", "data:"],
+  //         connectSrc: process.env.NODE_ENV !== "production" ? ["'self'", "ws://localhost:5173"] : ["'self'"],
+  //       },
+  //     },
+  //   }),
+  // );
 
   app.use(compression());
   app.use(express.urlencoded({ extended: true }));
