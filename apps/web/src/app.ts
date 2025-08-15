@@ -1,13 +1,12 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { healthcheck } from "@hmcts/cloud-native-platform";
-import { configureGovuk, configureHelmet, configureNonce, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
+import { configureGovuk, configureHelmet, configureNonce, createSimpleRouter, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
 import session from "express-session";
-import * as IndexPage from "./pages/index/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +20,7 @@ export async function createApp(): Promise<Express> {
   app.use(compression());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
+  app.use(healthcheck.configure());
 
   // TODO move to session package with redis set up
   app.use(
@@ -49,11 +49,8 @@ export async function createApp(): Promise<Express> {
     },
   });
 
-  app.use(healthcheck.configure());
+  app.use(createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
 
-  app.get("/", IndexPage.GET);
-
-  // Error handling middleware from govuk-setup (must be last)
   app.use(notFoundHandler());
   app.use(errorHandler());
 
