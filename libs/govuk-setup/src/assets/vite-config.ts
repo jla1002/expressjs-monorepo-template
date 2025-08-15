@@ -1,4 +1,5 @@
 import type { UserConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 /**
  * Base Vite configuration for HMCTS applications
@@ -47,5 +48,26 @@ export function createBaseViteConfig(): UserConfig {
       preserveSymlinks: true,
     },
     publicDir: false,
+    plugins: [
+      viteStaticCopy({
+        targets: [
+          {
+            // Copy GOV.UK Frontend fonts
+            src: "../../node_modules/govuk-frontend/dist/govuk/assets/fonts/*",
+            dest: "fonts",
+          },
+          {
+            // Copy GOV.UK Frontend images
+            src: "../../node_modules/govuk-frontend/dist/govuk/assets/images/*",
+            dest: "images",
+          },
+          {
+            // Copy GOV.UK Frontend manifest.json
+            src: "../../node_modules/govuk-frontend/dist/govuk/assets/manifest.json",
+            dest: ".",
+          },
+        ],
+      }),
+    ],
   };
 }

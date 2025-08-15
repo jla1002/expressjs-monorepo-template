@@ -27,6 +27,11 @@ export default defineConfig(
               return relativePath;
             },
           },
+          {
+            // Copy app-specific images
+            src: "src/assets/images/**/*",
+            dest: "images",
+          },
         ],
       }),
     ],

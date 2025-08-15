@@ -2,10 +2,8 @@
 - Find a place for the team name
 - Basic Playwright test, with Axe
 - Infrastructure folder for terraform
-- Example globals and filters for nunjucks
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
-- Error package for error handling
 - Cookie banner
 - Basic router
-- Combine nunjucks and govuk-frontend into govuk-setup
+- rename to @hmcts/express-govuk-starter

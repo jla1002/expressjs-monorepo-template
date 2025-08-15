@@ -1,4 +1,5 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 import express from "express";
 import type nunjucks from "nunjucks";
@@ -16,6 +17,19 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, o
   const isProduction = process.env.NODE_ENV === "production";
 
   if (!isProduction) {
+    // Serve GOV.UK Frontend assets in development (before Vite middleware)
+    // Find the GOV.UK Frontend package reliably using import.meta.url
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+    const govukFrontendPath = path.join(currentDir, "../../../../node_modules/govuk-frontend/dist/govuk/assets");
+
+    app.use("/assets/fonts", express.static(path.join(govukFrontendPath, "fonts")));
+    app.use("/assets/images", express.static(path.join(govukFrontendPath, "images")));
+    app.use("/assets/manifest.json", express.static(govukFrontendPath));
+
+    // Also serve app-specific images in development
+    const appImagesPath = path.join(viteRoot, "images");
+    app.use("/assets/images", express.static(appImagesPath));
+
     // Set up HMR and vite asset loading in dev mode
     const { createServer } = await import("vite");
     viteServer = await createServer({
