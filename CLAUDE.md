@@ -80,7 +80,7 @@ model Case {
 
 1. **Create module structure**:
 ```bash
-mkdir -p libs/my-feature/{src,tests}
+mkdir -p libs/my-feature/src
 ```
 
 2. **Package.json requirements**:
@@ -101,18 +101,10 @@ mkdir -p libs/my-feature/{src,tests}
 }
 ```
 
-3. **Export pattern**:
-```typescript
-// libs/my-feature/src/index.ts
-export * from './routes/index.js';
-export * from './middleware/index.js';
-export * from './services/index.js';
-```
-
 ### Express Middleware Pattern
 
 ```typescript
-// libs/auth/src/middleware/authenticate.ts
+// libs/auth/src/authenticate-middleware.ts
 import type { Request, Response, NextFunction } from 'express';
 
 export function authenticate() {
@@ -125,16 +117,6 @@ export function authenticate() {
     }
   };
 }
-```
-
-### Nunjucks View Organization
-
-```
-libs/[module]/src/views/
-├── layouts/              # Layout templates
-├── pages/                # Full page templates
-├── partials/             # Reusable components
-└── macros/               # Nunjucks macros
 ```
 
 ## Testing Strategy
@@ -202,31 +184,6 @@ export function localeMiddleware() {
 }
 ```
 
-## Azure Application Insights
-
-```typescript
-// libs/monitoring/src/services/app-insights.ts
-import { TelemetryClient } from 'applicationinsights';
-
-export class MonitoringService {
-  private client: TelemetryClient;
-
-  trackRequest(req: Request, res: Response) {
-    this.client.trackNodeHttpRequest({
-      request: req,
-      response: res
-    });
-  }
-
-  trackException(error: Error, properties?: Record<string, any>) {
-    this.client.trackException({
-      exception: error,
-      properties
-    });
-  }
-}
-```
-
 ## Common Pitfalls to Avoid
 
 1. **Don't put business logic in apps/** - Use libs/ modules
@@ -244,7 +201,6 @@ export class MonitoringService {
 
 ### 1. Feature Development
 - Create feature module in libs/
-- Add routes, middleware, services
 - Write co-located tests
 - Import in relevant app
 
@@ -283,7 +239,8 @@ When developing:
 
 ## Core Principles
 
-* **YAGNI**: You Aren't Gonna Need It - Don't add speculative functionality or features. Always take the simplest approach. Don't use a class unless you have shared state
+* **YAGNI**: You Aren't Gonna Need It - Don't add speculative functionality or features. Always take the simplest approach. 
+* **Functional style** favour a simple functional approach. Don't use a class unless you have shared state
 * **KISS**: Keep It Simple, Stupid - Avoid unnecessary complexity. Write code that is easy to understand and maintain.
 * **Immutable**: Data should be immutable by default. Use const and avoid mutations to ensure predictable state.
 * **Side Effects**: Functions should have no side effects. Avoid modifying external state or relying on mutable data.

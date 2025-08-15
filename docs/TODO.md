@@ -7,3 +7,4 @@
 - Cookie banner
 - Basic router
 - rename to @hmcts/express-govuk-starter
+- add config to apps/web and apps/api (and set up cnp on api)
