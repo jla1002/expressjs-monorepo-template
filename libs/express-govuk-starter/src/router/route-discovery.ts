@@ -14,29 +14,46 @@ export function discoverRoutes(pagesDir: string): DiscoveredRoute[] {
 function scanDirectory(dir: string, rootDir: string, routes: DiscoveredRoute[]): void {
   const entries = readdirSync(dir, { withFileTypes: true });
 
+  // Check if this directory has an index file
+  const hasIndexTs = entries.some((e) => e.isFile() && e.name === "index.ts");
+  const hasIndexJs = entries.some((e) => e.isFile() && e.name === "index.js");
+
+  // Prefer .ts over .js when both exist
+  if (hasIndexTs) {
+    const fullPath = join(dir, "index.ts");
+    const relativePath = relative(rootDir, fullPath);
+    const urlPath = filePathToUrlPath(relativePath);
+    routes.push({
+      relativePath,
+      urlPath,
+      absolutePath: fullPath,
+    });
+  } else if (hasIndexJs) {
+    const fullPath = join(dir, "index.js");
+    const relativePath = relative(rootDir, fullPath);
+    const urlPath = filePathToUrlPath(relativePath);
+    routes.push({
+      relativePath,
+      urlPath,
+      absolutePath: fullPath,
+    });
+  }
+
+  // Recursively scan subdirectories
   for (const entry of entries) {
     if (entry.name.startsWith(".")) {
       continue;
     }
 
-    const fullPath = join(dir, entry.name);
-
     if (entry.isDirectory()) {
+      const fullPath = join(dir, entry.name);
       scanDirectory(fullPath, rootDir, routes);
-    } else if (entry.isFile() && entry.name === "index.ts") {
-      const relativePath = relative(rootDir, fullPath);
-      const urlPath = filePathToUrlPath(relativePath);
-      routes.push({
-        relativePath,
-        urlPath,
-        absolutePath: fullPath,
-      });
     }
   }
 }
 
 function filePathToUrlPath(filePath: string): string {
-  const segments = filePath.split(sep).filter((s) => s !== "index.ts");
+  const segments = filePath.split(sep).filter((s) => s !== "index.ts" && s !== "index.js");
 
   if (segments.length === 0) {
     return "/";

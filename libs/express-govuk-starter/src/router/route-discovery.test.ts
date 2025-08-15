@@ -64,18 +64,22 @@ describe("route-discovery", () => {
       expect(routes[0].urlPath).toBe("/");
     });
 
-    it("should only consider index.ts files", () => {
+    it("should only consider index.ts and index.js files", () => {
       writeFileSync(join(testDir, "index.ts"), "");
       writeFileSync(join(testDir, "other.ts"), "");
-      writeFileSync(join(testDir, "index.js"), "");
+      writeFileSync(join(testDir, "other.js"), "");
 
       mkdirSync(join(testDir, "about"), { recursive: true });
       writeFileSync(join(testDir, "about", "about.ts"), "");
 
+      mkdirSync(join(testDir, "posts"), { recursive: true });
+      writeFileSync(join(testDir, "posts", "index.js"), "");
+
       const routes = discoverRoutes(testDir);
 
-      expect(routes).toHaveLength(1);
-      expect(routes[0].urlPath).toBe("/");
+      expect(routes).toHaveLength(2);
+      const paths = routes.map((r) => r.urlPath).sort();
+      expect(paths).toEqual(["/", "/posts"]);
     });
 
     it("should handle deeply nested routes", () => {
