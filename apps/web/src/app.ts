@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { healthcheck } from "@hmcts/cloud-native-platform";
-import { configureGovuk, configureHelmet, configureNonce, errorHandler, notFoundHandler } from "@hmcts/govuk-setup";
+import { configureGovuk, configureHelmet, configureNonce, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";

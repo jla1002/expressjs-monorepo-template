@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@hmcts/cloud-native-platform": "workspace:*",
-    "@hmcts/govuk-setup": "workspace:*",
+    "@hmcts/express-govuk-starter": "workspace:*",
     "@hmcts/postgres": "workspace:*",
     "compression": "1.8.1",
     "cookie-parser": "1.4.7",

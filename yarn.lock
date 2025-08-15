@@ -493,9 +493,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/govuk-setup@workspace:*, @hmcts/govuk-setup@workspace:libs/govuk-setup":
+"@hmcts/express-govuk-starter@workspace:*, @hmcts/express-govuk-starter@workspace:libs/express-govuk-starter":
   version: 0.0.0-use.local
-  resolution: "@hmcts/govuk-setup@workspace:libs/govuk-setup"
+  resolution: "@hmcts/express-govuk-starter@workspace:libs/express-govuk-starter"
   dependencies:
     "@types/express": "npm:5.0.3"
     "@types/nunjucks": "npm:3.2.6"
@@ -526,7 +526,7 @@ __metadata:
   resolution: "@hmcts/web@workspace:apps/web"
   dependencies:
     "@hmcts/cloud-native-platform": "workspace:*"
-    "@hmcts/govuk-setup": "workspace:*"
+    "@hmcts/express-govuk-starter": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@types/compression": "npm:1.8.1"
     "@types/cookie-parser": "npm:1.4.9"
