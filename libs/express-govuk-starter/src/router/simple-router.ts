@@ -1,0 +1,166 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Express, Router } from "express";
+import { Router as expressRouter } from "express";
+import { discoverRoutes, sortRoutes } from "./route-discovery.js";
+import { extractHandlers, loadRouteModule, normalizeHandlers } from "./route-loader.js";
+import type { Handler, MountSpec, RouteEntry } from "./types.js";
+
+export function createSimpleRouter(...mounts: MountSpec[]): Router {
+  const router = expressRouter();
+
+  if (mounts.length === 0) {
+    throw new Error("At least one mount specification is required");
+  }
+
+  // Use setImmediate to defer route loading to the next iteration of the event loop
+  // This allows the router to be returned synchronously while still loading routes
+  // before any HTTP requests can be processed
+  setImmediate(async () => {
+    try {
+      const allRoutes = await discoverAndLoadRoutes(mounts);
+      validateRoutes(allRoutes);
+      mountRoutes(router, allRoutes);
+    } catch (error) {
+      console.error("Failed to initialize file-system router:", error);
+    }
+  });
+
+  return router;
+}
+
+async function discoverAndLoadRoutes(mounts: MountSpec[]): Promise<RouteEntry[]> {
+  const allRoutes: RouteEntry[] = [];
+
+  for (const mountSpec of mounts) {
+    const mountRoutes = await processMountSpec(mountSpec);
+    allRoutes.push(...mountRoutes);
+  }
+
+  return allRoutes;
+}
+
+async function processMountSpec(mountSpec: MountSpec): Promise<RouteEntry[]> {
+  const pagesDir = resolve(mountSpec.pagesDir);
+
+  if (!existsSync(pagesDir)) {
+    throw new Error(`Pages directory does not exist: ${pagesDir}`);
+  }
+
+  const prefix = normalizePrefix(mountSpec.prefix || "");
+  const routes = discoverAndSortRoutes(pagesDir);
+
+  const routeEntries: RouteEntry[] = [];
+
+  for (const route of routes) {
+    const moduleRoutes = await loadModuleRoutes(route, prefix, mountSpec);
+    routeEntries.push(...moduleRoutes);
+  }
+
+  return routeEntries;
+}
+
+function discoverAndSortRoutes(pagesDir: string) {
+  const discoveredRoutes = discoverRoutes(pagesDir);
+  return sortRoutes(discoveredRoutes);
+}
+
+async function loadModuleRoutes(
+  route: { absolutePath: string; urlPath: string; relativePath: string },
+  prefix: string,
+  mountSpec: MountSpec,
+): Promise<RouteEntry[]> {
+  const module = await loadRouteModule(route.absolutePath);
+  const handlers = extractHandlers(module);
+  const routeEntries: RouteEntry[] = [];
+
+  const fullPath = buildFullPath(prefix, route.urlPath);
+
+  // Add method handlers
+  for (const [method, handlerExport] of handlers.entries()) {
+    routeEntries.push({
+      path: fullPath,
+      method,
+      handlers: normalizeHandlers(handlerExport),
+      sourcePath: route.absolutePath,
+      mountSpec,
+    });
+  }
+
+  // Add error handler if present
+  // Note: Error handlers have 4 params (err, req, res, next) vs regular handlers with 3
+  // Express handles this difference internally based on function arity
+  if (module.onError) {
+    routeEntries.push({
+      path: fullPath,
+      method: "use",
+      // Cast to any[] first to bypass TypeScript's strict checking
+      // Express internally handles both 3-param and 4-param handlers
+      handlers: [module.onError] as any as Handler[],
+      sourcePath: route.absolutePath,
+      mountSpec,
+    });
+  }
+
+  return routeEntries;
+}
+
+function buildFullPath(prefix: string, urlPath: string): string {
+  if (prefix === "/") {
+    return urlPath;
+  }
+  return `${prefix}${urlPath === "/" ? "" : urlPath}`;
+}
+
+function normalizePrefix(prefix: string): string {
+  if (!prefix || prefix === "/") {
+    return "/";
+  }
+
+  let normalized = prefix;
+
+  if (!normalized.startsWith("/")) {
+    normalized = `/${normalized}`;
+  }
+
+  if (normalized.endsWith("/") && normalized !== "/") {
+    normalized = normalized.slice(0, -1);
+  }
+
+  return normalized;
+}
+
+function validateRoutes(routes: RouteEntry[]): void {
+  const routeMap = new Map<string, RouteEntry>();
+
+  for (const route of routes) {
+    const key = `${route.method.toUpperCase()} ${route.path}`;
+
+    if (routeMap.has(key)) {
+      const existing = routeMap.get(key)!;
+      throw new Error(
+        `Route conflict detected:\n` +
+          `  ${key}\n` +
+          `  Defined in:\n` +
+          `    1. ${existing.sourcePath} (mount: ${existing.mountSpec.pagesDir})\n` +
+          `    2. ${route.sourcePath} (mount: ${route.mountSpec.pagesDir})`,
+      );
+    }
+
+    routeMap.set(key, route);
+  }
+}
+
+function mountRoutes(router: Router | Express, routes: RouteEntry[]): void {
+  for (const route of routes) {
+    const { path, method, handlers } = route;
+
+    if (method === "use") {
+      (router as any).use(path, ...handlers);
+    } else if (method === "all") {
+      (router as any).all(path, ...handlers);
+    } else {
+      (router as any)[method](path, ...handlers);
+    }
+  }
+}

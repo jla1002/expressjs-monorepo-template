@@ -17,7 +17,7 @@ describe("index page", () => {
     it("should render index template with title", async () => {
       await GET(req as Request, res as Response);
 
-      expect(res.render).toHaveBeenCalledWith("index/index", {
+      expect(res.render).toHaveBeenCalledWith("index", {
         title: "HMCTS Monorepo Template",
       });
     });
