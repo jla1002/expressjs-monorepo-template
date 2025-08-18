@@ -1,16 +1,15 @@
 import type { NextFunction, Request, Response } from "express";
 import { MonitoringService } from "./monitoring-service.js";
 
-let monitoringService: MonitoringService | null = null;
 
-export function resetMonitoringService() {
-  monitoringService = null;
-}
+export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: Request, res: Response, next: NextFunction) => void {
+  const { serviceName, appInsightsConnectionString, enabled = true } = config;
 
-export function monitoringMiddleware() {
-  if (!monitoringService && process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    monitoringService = new MonitoringService(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
-  }
+  if (!enabled) {
+    return (req: Request, res: Response, next: NextFunction) => next();
+  } 
+
+  const monitoringService = new MonitoringService(appInsightsConnectionString, serviceName);
 
   return (req: Request, res: Response, next: NextFunction) => {
     const startTime = Date.now();
@@ -28,8 +27,7 @@ export function monitoringMiddleware() {
           properties: {
             method: req.method,
             path: req.path,
-            userAgent: req.headers["user-agent"],
-            tenantId: (req as any).user?.tenantId,
+            userAgent: req.headers["user-agent"]
           },
         });
       }
@@ -43,4 +41,10 @@ export function monitoringMiddleware() {
 
     next();
   };
+}
+
+export type MonitoringMiddlewareConfig = {
+  serviceName: string;
+  appInsightsConnectionString: string;
+  enabled?: boolean;
 }

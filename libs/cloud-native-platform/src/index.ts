@@ -5,11 +5,11 @@ export * from "./healthcheck/healthcheck.js";
 export * from "./monitoring/monitoring-middleware.js";
 export * from "./monitoring/monitoring-service.js";
 export { addFromAzureVault } from "./properties-volume/azure-vault.js";
-// Properties volume exports
-export { addTo } from "./properties-volume/properties.js";
+export { configurePropertiesVolume } from "./properties-volume/properties.js";
 
-export const healthcheck = {
-  configure,
+export const healthcheck = configure;
+
+export const hc = {
   web,
   raw,
   up,

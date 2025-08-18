@@ -1,0 +1,9 @@
+{
+  "port": "PORT",
+  "session": {
+    "secret": "SESSION_SECRET"
+  },
+  "applicationInsights": {
+    "connectionString": "APPLICATION_INSIGHTS_CONNECTION_STRING"
+  }
+}

@@ -1,10 +1,13 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { deepMerge } from "./utils.js";
+import fs from "node:fs";
+import { addFromAzureVault } from "./azure-vault.js";
 
 export interface AddToOptions {
   mountPoint?: string;
   failOnError?: boolean;
+  chartPath?: string;
 }
 
 export interface Config {
@@ -17,8 +20,12 @@ const DEFAULT_MOUNT_POINT = "/mnt/secrets";
  * Adds properties from mounted volume to configuration object
  * Matches the API of @hmcts/properties-volume addTo function
  */
-export function addTo(config: Config, options: AddToOptions = {}): void {
-  const { mountPoint = DEFAULT_MOUNT_POINT, failOnError = true } = options;
+export async function configurePropertiesVolume(config: Config, options: AddToOptions = {}): Promise<void> {
+  const { mountPoint = DEFAULT_MOUNT_POINT, failOnError = true, chartPath } = options;
+
+  if (chartPath && process.env.NODE_ENV !== "production" && fs.existsSync(chartPath)) {
+    return await addFromAzureVault(config, { pathToHelmChart: chartPath });
+  }
 
   try {
     if (!existsSync(mountPoint)) {
