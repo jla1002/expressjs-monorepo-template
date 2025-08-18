@@ -1,8 +1,7 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import fs, { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { deepMerge } from "./utils.js";
-import fs from "node:fs";
 import { addFromAzureVault } from "./azure-vault.js";
+import { deepMerge } from "./utils.js";
 
 export interface AddToOptions {
   mountPoint?: string;

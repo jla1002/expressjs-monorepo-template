@@ -3,11 +3,11 @@ import { fileURLToPath } from "node:url";
 import { configurePropertiesVolume, healthcheck, monitoringMiddleware } from "@hmcts/cloud-native-platform";
 import { configureGovuk, configureHelmet, configureNonce, createSimpleRouter, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
 import compression from "compression";
+import config from "config";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
 import session from "express-session";
-import config from "config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -1,13 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import { MonitoringService } from "./monitoring-service.js";
 
-
 export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: Request, res: Response, next: NextFunction) => void {
   const { serviceName, appInsightsConnectionString, enabled = true } = config;
 
   if (!enabled) {
     return (req: Request, res: Response, next: NextFunction) => next();
-  } 
+  }
 
   const monitoringService = new MonitoringService(appInsightsConnectionString, serviceName);
 
@@ -27,7 +26,7 @@ export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: 
           properties: {
             method: req.method,
             path: req.path,
-            userAgent: req.headers["user-agent"]
+            userAgent: req.headers["user-agent"],
           },
         });
       }
@@ -47,4 +46,4 @@ export type MonitoringMiddlewareConfig = {
   serviceName: string;
   appInsightsConnectionString: string;
   enabled?: boolean;
-}
+};
