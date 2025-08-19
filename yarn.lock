@@ -681,7 +681,6 @@ __metadata:
   dependencies:
     "@prisma/client": "npm:6.14.0"
     "@testcontainers/postgresql": "npm:11.5.1"
-    config: "npm:3.3.12"
     prisma: "npm:6.14.0"
     testcontainers: "npm:11.5.1"
   languageName: unknown
