@@ -64,22 +64,35 @@ describe("route-discovery", () => {
       expect(routes[0].urlPath).toBe("/");
     });
 
-    it("should only consider index.ts and index.js files", () => {
+    it("should discover non-index .ts and .js files", () => {
       writeFileSync(join(testDir, "index.ts"), "");
-      writeFileSync(join(testDir, "other.ts"), "");
-      writeFileSync(join(testDir, "other.js"), "");
+      writeFileSync(join(testDir, "privacy-policy.ts"), "");
+      writeFileSync(join(testDir, "terms-of-service.js"), "");
 
       mkdirSync(join(testDir, "about"), { recursive: true });
-      writeFileSync(join(testDir, "about", "about.ts"), "");
+      writeFileSync(join(testDir, "about", "team.ts"), "");
 
       mkdirSync(join(testDir, "posts"), { recursive: true });
       writeFileSync(join(testDir, "posts", "index.js"), "");
 
       const routes = discoverRoutes(testDir);
 
-      expect(routes).toHaveLength(2);
+      expect(routes).toHaveLength(5);
       const paths = routes.map((r) => r.urlPath).sort();
-      expect(paths).toEqual(["/", "/posts"]);
+      expect(paths).toEqual(["/", "/about/team", "/posts", "/privacy-policy", "/terms-of-service"]);
+    });
+
+    it("should prefer .ts files over .js files for the same route", () => {
+      // Create both .ts and .js files with the same name
+      writeFileSync(join(testDir, "contact.ts"), "");
+      writeFileSync(join(testDir, "contact.js"), "");
+
+      const routes = discoverRoutes(testDir);
+
+      expect(routes).toHaveLength(1);
+      expect(routes[0].urlPath).toBe("/contact");
+      // Should prefer .ts file
+      expect(routes[0].relativePath).toBe("contact.ts");
     });
 
     it("should handle deeply nested routes", () => {
@@ -97,6 +110,28 @@ describe("route-discovery", () => {
       writeFileSync(join(testDir, "invalid!route", "index.ts"), "");
 
       expect(() => discoverRoutes(testDir)).toThrow("Invalid route segment: invalid!route");
+    });
+  });
+
+  describe("real-world scenario", () => {
+    it("should handle mixed index and non-index files like privacy-policy.ts", () => {
+      // Simulate a real app structure
+      writeFileSync(join(testDir, "index.ts"), "");
+      writeFileSync(join(testDir, "privacy-policy.ts"), "");
+      writeFileSync(join(testDir, "terms.ts"), "");
+
+      mkdirSync(join(testDir, "admin"), { recursive: true });
+      writeFileSync(join(testDir, "admin", "index.ts"), "");
+      writeFileSync(join(testDir, "admin", "settings.ts"), "");
+
+      mkdirSync(join(testDir, "api", "users"), { recursive: true });
+      writeFileSync(join(testDir, "api", "users", "index.ts"), "");
+      writeFileSync(join(testDir, "api", "users", "profile.ts"), "");
+
+      const routes = discoverRoutes(testDir);
+      const paths = routes.map((r) => r.urlPath).sort();
+
+      expect(paths).toEqual(["/", "/admin", "/admin/settings", "/api/users", "/api/users/profile", "/privacy-policy", "/terms"]);
     });
   });
 
