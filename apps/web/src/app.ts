@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function createApp(): Promise<Express> {
-  await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "charts/values.yaml") });
+  await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "../helm/values.yaml") });
 
   const app = express();
 

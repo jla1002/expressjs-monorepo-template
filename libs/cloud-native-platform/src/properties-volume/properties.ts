@@ -20,13 +20,14 @@ const DEFAULT_MOUNT_POINT = "/mnt/secrets";
  * Matches the API of @hmcts/properties-volume addTo function
  */
 export async function configurePropertiesVolume(config: Config, options: AddToOptions = {}): Promise<void> {
-  const { mountPoint = DEFAULT_MOUNT_POINT, failOnError = true, chartPath } = options;
-
-  if (chartPath && process.env.NODE_ENV !== "production" && fs.existsSync(chartPath)) {
-    return await addFromAzureVault(config, { pathToHelmChart: chartPath });
-  }
+  const isProd = process.env.NODE_ENV === "production";
+  const { mountPoint = DEFAULT_MOUNT_POINT, failOnError = isProd, chartPath } = options;
 
   try {
+    if (chartPath && !isProd && fs.existsSync(chartPath)) {
+      return await addFromAzureVault(config, { pathToHelmChart: chartPath });
+  }
+
     if (!existsSync(mountPoint)) {
       const message = `Mount point ${mountPoint} does not exist`;
       if (failOnError) {

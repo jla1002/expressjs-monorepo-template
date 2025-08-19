@@ -65,14 +65,9 @@ async function processVault(config: Config, vault: any): Promise<void> {
     return;
   }
 
-  // Construct vault URI
-  const vaultUri = `https://${vaultName}.vault.azure.net/`;
-
-  // Create Azure credential and secret client
+  const vaultUri = `https://${vaultName}-aat.vault.azure.net/`;
   const credential = new DefaultAzureCredential();
   const client = new SecretClient(vaultUri, credential);
-
-  // Process all secrets in parallel
   const secretPromises = secrets.map((secret: StructuredOrUnstructuredSecret) => processSecret(client, secret));
 
   try {
