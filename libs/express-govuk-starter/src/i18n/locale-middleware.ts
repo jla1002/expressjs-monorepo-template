@@ -68,3 +68,45 @@ export function translationMiddleware(translations: Translations) {
     next();
   };
 }
+
+export function renderInterceptorMiddleware() {
+  return (_req: Request, res: Response, next: NextFunction) => {
+    const originalRender = res.render.bind(res);
+
+    res.render = (view: string, options?: any, callback?: any) => {
+      // Handle different function signatures
+      let opts = options;
+      let cb = callback;
+
+      if (typeof options === "function") {
+        cb = options;
+        opts = {};
+      }
+
+      // If options contains both 'en' and 'cy' keys, select based on locale
+      if (opts && typeof opts === "object" && "en" in opts && "cy" in opts) {
+        const locale = res.locals.locale || "en";
+        const selectedContent = opts[locale] || opts.en || {};
+
+        // Merge selected content with existing locals
+        opts = {
+          ...res.locals,
+          ...selectedContent,
+        };
+      } else if (opts && typeof opts === "object") {
+        // Merge provided options with locals
+        opts = {
+          ...res.locals,
+          ...opts,
+        };
+      } else {
+        // Use locals if no options provided
+        opts = res.locals;
+      }
+
+      return originalRender(view, opts, cb);
+    };
+
+    next();
+  };
+}

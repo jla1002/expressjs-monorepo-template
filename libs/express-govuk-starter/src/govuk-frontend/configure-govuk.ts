@@ -4,7 +4,7 @@ import type { Express, NextFunction, Request, Response } from "express";
 import nunjucks from "nunjucks";
 import type { AssetOptions } from "../assets/assets.js";
 import { configureAssets } from "../assets/configure-assets.js";
-import { localeMiddleware, translationMiddleware } from "../i18n/locale-middleware.js";
+import { localeMiddleware, renderInterceptorMiddleware, translationMiddleware } from "../i18n/locale-middleware.js";
 import { loadTranslations } from "../i18n/translation-loader.js";
 import { currencyFilter, dateFilter, govukErrorSummaryFilter, kebabCaseFilter, timeFilter } from "../nunjucks/filters/index.js";
 
@@ -33,6 +33,7 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   if (i18nContentPath) {
     const translations = await loadTranslations(i18nContentPath);
     app.use(localeMiddleware());
+    app.use(renderInterceptorMiddleware());
     app.use(translationMiddleware(translations));
   }
 
