@@ -11,6 +11,12 @@ vi.mock("applicationinsights", () => {
     flush: vi.fn((options: any) => {
       options.callback();
     }),
+    context: {
+      tags: {},
+      keys: {
+        cloudRole: "cloudRole",
+      },
+    },
   };
 
   const mockSetup = {
@@ -51,7 +57,7 @@ describe("MonitoringService", () => {
 
   describe("constructor", () => {
     it("should setup Application Insights with correct configuration", () => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
 
       expect(appInsights.setup).toHaveBeenCalledWith(connectionString);
 
@@ -68,7 +74,7 @@ describe("MonitoringService", () => {
     });
 
     it("should use console as default logger", () => {
-      service = new MonitoringService(connectionString);
+      service = new MonitoringService(connectionString, "test-service");
 
       expect(appInsights.setup).toHaveBeenCalledWith(connectionString);
     });
@@ -76,7 +82,7 @@ describe("MonitoringService", () => {
 
   describe("trackRequest", () => {
     beforeEach(() => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
     });
 
     it("should track request with correct parameters", () => {
@@ -128,7 +134,7 @@ describe("MonitoringService", () => {
 
   describe("trackException", () => {
     beforeEach(() => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
     });
 
     it("should track exception and log error", () => {
@@ -166,7 +172,7 @@ describe("MonitoringService", () => {
 
   describe("trackEvent", () => {
     beforeEach(() => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
     });
 
     it("should track event and log info", () => {
@@ -199,7 +205,7 @@ describe("MonitoringService", () => {
 
   describe("trackMetric", () => {
     beforeEach(() => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
     });
 
     it("should track metric with properties", () => {
@@ -232,7 +238,7 @@ describe("MonitoringService", () => {
 
   describe("flush", () => {
     beforeEach(() => {
-      service = new MonitoringService(connectionString, mockLogger);
+      service = new MonitoringService(connectionString, "test-service", mockLogger);
     });
 
     it("should flush and return a promise", async () => {
@@ -263,7 +269,7 @@ describe("MonitoringService", () => {
         error: vi.fn(),
       };
 
-      service = new MonitoringService(connectionString, customLogger);
+      service = new MonitoringService(connectionString, "test-service", customLogger);
 
       const error = new Error("Custom logger test");
       service.trackException(error);

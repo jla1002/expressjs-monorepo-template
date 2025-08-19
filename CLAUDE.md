@@ -202,6 +202,8 @@ export function localeMiddleware() {
 8. **Don't skip accessibility testing** - WCAG 2.1 AA is mandatory
 9. **Don't commit secrets** - Use environment variables
 10. **Don't use relative imports across packages** - Use @hmcts/* aliases
+11. **Don't create types.ts files** - Colocate types with the appropriate code
+12. **Don't create generic files like utils.ts** - Be specific (e.g., object-properties.ts, date-formatting.ts)
 
 ## Development Workflow
 

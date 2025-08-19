@@ -1,8 +1,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { healthcheck } from "@hmcts/cloud-native-platform";
+import { configurePropertiesVolume, healthcheck, monitoringMiddleware } from "@hmcts/cloud-native-platform";
 import { configureGovuk, configureHelmet, configureNonce, createSimpleRouter, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
 import compression from "compression";
+import config from "config";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
@@ -12,20 +13,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function createApp(): Promise<Express> {
-  const app = express();
+  await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "../helm/values.yaml") });
 
-  app.use(configureNonce());
-  app.use(configureHelmet());
+  const app = express();
 
   app.use(compression());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-  app.use(healthcheck.configure());
+  app.use(healthcheck());
+  app.use(monitoringMiddleware(config.get("applicationInsights")));
+  app.use(configureNonce());
+  app.use(configureHelmet());
 
   // TODO move to session package with redis set up
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "development",
+      secret: config.get("session.secret"),
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -36,7 +39,6 @@ export async function createApp(): Promise<Express> {
     }),
   );
 
-  // Configure Nunjucks and asset helpers
   await configureGovuk(app, {
     viewPaths: [path.join(__dirname, "pages/")],
     assets: {
@@ -50,7 +52,6 @@ export async function createApp(): Promise<Express> {
   });
 
   app.use(createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
-
   app.use(notFoundHandler());
   app.use(errorHandler());
 

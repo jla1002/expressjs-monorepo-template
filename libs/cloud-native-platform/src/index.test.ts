@@ -1,26 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { healthcheck } from "./index.js";
+import { hc, healthcheck } from "./index.js";
 
 describe("healthcheck export", () => {
   it("should expose all healthcheck functions", () => {
     expect(healthcheck).toBeDefined();
-    expect(healthcheck.configure).toBeInstanceOf(Function);
-    expect(healthcheck.web).toBeInstanceOf(Function);
-    expect(healthcheck.raw).toBeInstanceOf(Function);
-    expect(healthcheck.up).toBeInstanceOf(Function);
-    expect(healthcheck.down).toBeInstanceOf(Function);
+    expect(healthcheck).toBeInstanceOf(Function); // healthcheck is the configure function
+    expect(hc.web).toBeInstanceOf(Function);
+    expect(hc.raw).toBeInstanceOf(Function);
+    expect(hc.up).toBeInstanceOf(Function);
+    expect(hc.down).toBeInstanceOf(Function);
   });
 
   it("should create working health checks", async () => {
-    const webCheck = healthcheck.web("https://example.com");
+    const webCheck = hc.web("https://example.com");
     expect(webCheck).toBeInstanceOf(Function);
 
-    const rawCheck = healthcheck.raw(() => healthcheck.up());
+    const rawCheck = hc.raw(() => hc.up());
     expect(await rawCheck()).toBe("UP");
 
-    const middleware = healthcheck.configure({
+    const middleware = healthcheck({
       checks: {
-        test: healthcheck.raw(() => healthcheck.down()),
+        test: hc.raw(() => hc.down()),
       },
     });
     expect(middleware).toBeInstanceOf(Function);

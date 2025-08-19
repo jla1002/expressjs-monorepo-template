@@ -5,6 +5,7 @@ export class MonitoringService {
 
   constructor(
     connectionString: string,
+    serviceName: string,
     private readonly logger: Logger = console,
   ) {
     appInsights
@@ -18,6 +19,8 @@ export class MonitoringService {
       .setUseDiskRetryCaching(true)
       .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
       .start();
+
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = serviceName;
 
     this.client = appInsights.defaultClient;
   }
