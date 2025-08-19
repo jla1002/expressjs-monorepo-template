@@ -31,7 +31,7 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   addGlobals(env);
 
   if (i18nContentPath) {
-    const translations = loadTranslations(i18nContentPath);
+    const translations = await loadTranslations(i18nContentPath);
     app.use(localeMiddleware());
     app.use(translationMiddleware(translations));
   }
@@ -42,7 +42,7 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.pageUrl = req.path;
-    res.locals.serviceUrl = req.protocol + "://" + req.get("host");
+    res.locals.serviceUrl = `${req.protocol}://${req.get("host")}`;
     next();
   });
 
@@ -67,4 +67,3 @@ export interface GovukSetupOptions {
   errorPages?: boolean;
   i18nContentPath?: string;
 }
-

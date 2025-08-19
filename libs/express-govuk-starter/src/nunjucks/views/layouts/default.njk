@@ -29,7 +29,11 @@
 {% endblock %}
 
 {% block pageTitle %}
-  {{ title }} - {{ serviceName }} - {{ govUk }}
+  {% if title %} 
+    {{ title }} - {{ serviceName }} - {{ govUk }}
+  {% else %}
+    {{ serviceName }} - {{ govUk }}
+  {% endif %}
 {% endblock %}
 
 {% set bannerHtml %}

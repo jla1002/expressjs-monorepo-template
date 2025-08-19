@@ -49,7 +49,7 @@ export async function createApp(): Promise<Express> {
         jsEntry: "js/index.ts",
         cssEntry: "css/index.scss",
       },
-    }
+    },
   });
 
   app.use(createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));

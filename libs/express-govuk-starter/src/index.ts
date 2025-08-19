@@ -1,13 +1,13 @@
 export type { AssetOptions } from "./assets/assets.js";
 export { createBaseViteConfig } from "./assets/vite-config.js";
-export type { GovukSetupOptions, I18nOptions } from "./govuk-frontend/configure-govuk.js";
+export type { GovukSetupOptions } from "./govuk-frontend/configure-govuk.js";
 export { configureGovuk } from "./govuk-frontend/configure-govuk.js";
 export { errorHandler, notFoundHandler } from "./govuk-frontend/error-handler.js";
 export type { SecurityOptions } from "./helmet/helmet-middleware.js";
 export { configureHelmet, configureNonce } from "./helmet/helmet-middleware.js";
 export type { LocaleMiddlewareOptions } from "./i18n/locale-middleware.js";
 export { localeMiddleware, translationMiddleware } from "./i18n/locale-middleware.js";
-export type { TranslationOptions, Translations } from "./i18n/translation-loader.js";
+export type { Translations } from "./i18n/translation-loader.js";
 export { getTranslation, loadTranslations } from "./i18n/translation-loader.js";
 export { createSimpleRouter } from "./router/simple-router.js";
 export type { Handler, HandlerExport, HttpMethod, MountSpec, RouteEntry } from "./router/types.js";

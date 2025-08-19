@@ -53,9 +53,9 @@ export const DELETE = (req, res) => res.send('DELETE');
   describe("extractHandlers", () => {
     it("should extract valid HTTP method handlers", () => {
       const module = {
-        GET: vi.fn((req, res) => {}),
-        POST: vi.fn((req, res) => {}),
-        PUT: vi.fn((req, res) => {}),
+        GET: vi.fn((_req, _res) => {}),
+        POST: vi.fn((_req, _res) => {}),
+        PUT: vi.fn((_req, _res) => {}),
         notAMethod: vi.fn(),
       };
 
@@ -70,9 +70,9 @@ export const DELETE = (req, res) => res.send('DELETE');
 
     it("should handle case-insensitive method names", () => {
       const module = {
-        get: vi.fn((req, res) => {}),
-        Post: vi.fn((req, res) => {}),
-        DELETE: vi.fn((req, res) => {}),
+        get: vi.fn((_req, _res) => {}),
+        Post: vi.fn((_req, _res) => {}),
+        DELETE: vi.fn((_req, _res) => {}),
       };
 
       const handlers = extractHandlers(module);
@@ -85,7 +85,7 @@ export const DELETE = (req, res) => res.send('DELETE');
 
     it("should normalize 'del' to 'delete'", () => {
       const module = {
-        del: vi.fn((req, res) => {}),
+        del: vi.fn((_req, _res) => {}),
       };
 
       const handlers = extractHandlers(module);
@@ -96,8 +96,8 @@ export const DELETE = (req, res) => res.send('DELETE');
     });
 
     it("should handle array of handlers", () => {
-      const handler1 = vi.fn((req, res, next) => next());
-      const handler2 = vi.fn((req, res) => res.send("ok"));
+      const handler1 = vi.fn((_req, _res, next) => next());
+      const handler2 = vi.fn((_req, res) => res.send("ok"));
 
       const module = {
         GET: [handler1, handler2],
@@ -113,8 +113,8 @@ export const DELETE = (req, res) => res.send('DELETE');
 
     it("should throw on duplicate method exports with different casing", () => {
       const module = {
-        get: vi.fn((req, res) => {}),
-        GET: vi.fn((req, res) => {}),
+        get: vi.fn((_req, _res) => {}),
+        GET: vi.fn((_req, _res) => {}),
       };
 
       expect(() => extractHandlers(module)).toThrow("Duplicate method export found: GET");
@@ -146,9 +146,9 @@ export const DELETE = (req, res) => res.send('DELETE');
 
     it("should accept handlers with 2, 3, or 4 parameters", () => {
       const module = {
-        GET: vi.fn((req, res) => {}),
-        POST: vi.fn((req, res, next) => {}),
-        PUT: vi.fn((err, req, res, next) => {}),
+        GET: vi.fn((_req, _res) => {}),
+        POST: vi.fn((_req, _res, _next) => {}),
+        PUT: vi.fn((_err, _req, _res, _next) => {}),
       };
 
       const handlers = extractHandlers(module);
@@ -158,7 +158,7 @@ export const DELETE = (req, res) => res.send('DELETE');
 
     it("should handle 'all' method", () => {
       const module = {
-        all: vi.fn((req, res) => {}),
+        all: vi.fn((_req, _res) => {}),
       };
 
       const handlers = extractHandlers(module);
@@ -170,7 +170,7 @@ export const DELETE = (req, res) => res.send('DELETE');
 
   describe("normalizeHandlers", () => {
     it("should wrap single handler in array", () => {
-      const handler: RequestHandler = vi.fn((req, res) => {});
+      const handler: RequestHandler = vi.fn((_req, _res) => {});
 
       const normalized = normalizeHandlers(handler);
 
@@ -180,8 +180,8 @@ export const DELETE = (req, res) => res.send('DELETE');
     });
 
     it("should return array of handlers as-is", () => {
-      const handler1: RequestHandler = vi.fn((req, res) => {});
-      const handler2: RequestHandler = vi.fn((req, res) => {});
+      const handler1: RequestHandler = vi.fn((_req, _res) => {});
+      const handler2: RequestHandler = vi.fn((_req, _res) => {});
       const handlers = [handler1, handler2];
 
       const normalized = normalizeHandlers(handlers);

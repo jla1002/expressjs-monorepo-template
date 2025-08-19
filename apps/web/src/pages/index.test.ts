@@ -14,11 +14,18 @@ describe("index page", () => {
   });
 
   describe("GET", () => {
-    it("should render index template with title", async () => {
+    it("should render index template with language-specific content", async () => {
       await GET(req as Request, res as Response);
 
       expect(res.render).toHaveBeenCalledWith("index", {
-        title: "HMCTS Monorepo Template",
+        en: {
+          title: "HMCTS Monorepo Template",
+          description: "This is the home page of the Express Monorepo Service",
+        },
+        cy: {
+          title: "Templed Monorepo HMCTS",
+          description: "Dyma dudalen gartref y Gwasanaeth Monorepo Express",
+        },
       });
     });
 

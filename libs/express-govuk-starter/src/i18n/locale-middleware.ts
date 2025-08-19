@@ -52,7 +52,7 @@ export function localeMiddleware(options: LocaleMiddlewareOptions = {}) {
 }
 
 export function translationMiddleware(translations: Translations) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     const locale = res.locals.locale || "en";
     const otherLocale = locale === "en" ? "cy" : "en";
 
