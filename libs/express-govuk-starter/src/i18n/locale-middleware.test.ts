@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { describe, expect, it, vi } from "vitest";
-import { localeMiddleware, translationMiddleware } from "./locale-middleware.js";
+import { localeMiddleware, renderInterceptorMiddleware, translationMiddleware } from "./locale-middleware.js";
 
 describe("localeMiddleware", () => {
   it("should set locale from query parameter", () => {
@@ -172,6 +172,295 @@ describe("translationMiddleware", () => {
 
     expect(res.locals.welcome).toBe("Welcome");
     expect(res.locals.languageToggle.link).toBe("?lng=cy");
+    expect(next).toHaveBeenCalled();
+  });
+});
+
+describe("renderInterceptorMiddleware", () => {
+  it("should intercept render and select English content when locale is en", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with language-specific content
+    res.render("test-view", {
+      en: { title: "English Title", description: "English Description" },
+      cy: { title: "Welsh Title", description: "Welsh Description" },
+    });
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+        title: "English Title",
+        description: "English Description",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should intercept render and select Welsh content when locale is cy", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "cy", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with language-specific content
+    res.render("test-view", {
+      en: { title: "English Title", description: "English Description" },
+      cy: { title: "Welsh Title", description: "Welsh Description" },
+    });
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "cy",
+        serviceName: "Test Service",
+        title: "Welsh Title",
+        description: "Welsh Description",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should pass through non-language content unchanged", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with regular content (no language keys)
+    res.render("test-view", {
+      title: "Regular Title",
+      description: "Regular Description",
+    });
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+        title: "Regular Title",
+        description: "Regular Description",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should handle render with callback function", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+    const callback = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with language content and callback
+    res.render(
+      "test-view",
+      {
+        en: { title: "English Title" },
+        cy: { title: "Welsh Title" },
+      },
+      callback,
+    );
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+        title: "English Title",
+      },
+      callback,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should handle render with callback as second parameter", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+    const callback = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with callback as second parameter
+    res.render("test-view", callback);
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+      },
+      callback,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should handle render with no options", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with just view name
+    res.render("test-view");
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should fallback to English when locale not found", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "fr", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with language content
+    res.render("test-view", {
+      en: { title: "English Title" },
+      cy: { title: "Welsh Title" },
+    });
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "fr",
+        serviceName: "Test Service",
+        title: "English Title",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should handle missing locale in res.locals", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with language content
+    res.render("test-view", {
+      en: { title: "English Title" },
+      cy: { title: "Welsh Title" },
+    });
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        serviceName: "Test Service",
+        title: "English Title",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should handle null options", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en", serviceName: "Test Service" },
+      render: originalRender,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render with null options
+    res.render("test-view", null);
+
+    expect(originalRender).toHaveBeenCalledWith(
+      "test-view",
+      {
+        locale: "en",
+        serviceName: "Test Service",
+      },
+      undefined,
+    );
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should preserve this context when calling original render", () => {
+    const middleware = renderInterceptorMiddleware();
+    const originalRender = vi.fn();
+    const req = {} as Request;
+    const res = {
+      locals: { locale: "en" },
+      render: originalRender,
+      statusCode: 200,
+    } as unknown as Response;
+    const next = vi.fn();
+
+    middleware(req, res, next);
+
+    // Call the intercepted render
+    res.render("test-view", { title: "Test" });
+
+    // Verify the original render was called with correct context
+    expect(originalRender).toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
 });
