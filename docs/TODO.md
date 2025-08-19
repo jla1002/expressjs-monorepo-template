@@ -4,6 +4,5 @@
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Cookie banner
-- Basic router
-- add config to apps/web and apps/api (and set up cnp on api)
-- Fix issues on homepage, add service name
+- Fix issues on homepage, add service name, add proper welcome with docs
+- Add the privacy policy and other boilerplate pages
