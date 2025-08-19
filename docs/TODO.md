@@ -7,4 +7,3 @@
 - Basic router
 - add config to apps/web and apps/api (and set up cnp on api)
 - Fix issues on homepage, add service name
-- ✓ Add properties volume or replace it (completed - integrated into @hmcts/cloud-native-platform)
