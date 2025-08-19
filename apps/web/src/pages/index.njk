@@ -1,11 +1,9 @@
 {% extends "layouts/default.njk" %}
 
 {% block page_content %}
-  {% set pageContent = en if locale == 'en' else cy %}
-  <h1 class="govuk-heading-xl">{{ pageContent.title }}</h1>
+  <h1 class="govuk-heading-xl">{{ title }}</h1>
   <p class="govuk-body-l">{{ welcome }}</p>
-  
-  {% if pageContent.description %}
-    <p class="govuk-body">{{ pageContent.description }}</p>
+  {% if description %}
+    <p class="govuk-body">{{ description }}</p>
   {% endif %}
 {% endblock %}
