@@ -40,6 +40,7 @@ export async function createApp(): Promise<Express> {
   );
 
   await configureGovuk(app, {
+    i18nContentPath: path.join(__dirname, "locales"),
     viewPaths: [path.join(__dirname, "pages/")],
     assets: {
       viteRoot: path.join(__dirname, "assets"),

@@ -175,21 +175,6 @@ describe('UserService', () => {
 - No sensitive data in logs
 - Encrypted session storage
 
-## Welsh Language Implementation
-
-```typescript
-// libs/i18n/src/locale-middleware.ts
-export function localeMiddleware() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const locale = req.query.lng || req.cookies.locale || 'en';
-    req.locale = locale;
-    res.locals.locale = locale;
-    res.locals.t = (key: string) => translate(key, locale);
-    next();
-  };
-}
-```
-
 ## Common Pitfalls to Avoid
 
 1. **Don't put business logic in apps/** - Use libs/ modules

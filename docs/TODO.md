@@ -1,4 +1,3 @@
-- Work out how i18n should work
 - Find a place for the team name
 - Infrastructure folder for terraform
 - Add Redis
@@ -6,3 +5,4 @@
 - Cookie banner
 - Fix issues on homepage, add service name, add proper welcome with docs
 - Add the privacy policy and other boilerplate pages
+- Merge nunjucks and govuk-frontend folders
