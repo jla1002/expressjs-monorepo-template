@@ -26,7 +26,7 @@ export async function configurePropertiesVolume(config: Config, options: AddToOp
   try {
     if (chartPath && !isProd && fs.existsSync(chartPath)) {
       return await addFromAzureVault(config, { pathToHelmChart: chartPath });
-  }
+    }
 
     if (!existsSync(mountPoint)) {
       const message = `Mount point ${mountPoint} does not exist`;
