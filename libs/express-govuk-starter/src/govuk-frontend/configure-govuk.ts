@@ -4,20 +4,15 @@ import type { Express, NextFunction, Request, Response } from "express";
 import nunjucks from "nunjucks";
 import type { AssetOptions } from "../assets/assets.js";
 import { configureAssets } from "../assets/configure-assets.js";
+import { localeMiddleware, translationMiddleware } from "../i18n/locale-middleware.js";
+import { loadTranslations } from "../i18n/translation-loader.js";
 import { currencyFilter, dateFilter, govukErrorSummaryFilter, kebabCaseFilter, timeFilter } from "../nunjucks/filters/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export interface GovukSetupOptions {
-  viewPaths?: string[];
-  phase?: string;
-  assets?: AssetOptions;
-  errorPages?: boolean;
-}
-
 export async function configureGovuk(app: Express, options: GovukSetupOptions = {}): Promise<nunjucks.Environment> {
-  const { viewPaths = [], phase = "beta", assets } = options;
+  const { viewPaths = [], assets, i18nContentPath } = options;
 
   const govukFrontendPath = "../../node_modules/govuk-frontend/dist";
   const govukSetupViews = path.join(__dirname, "../nunjucks/views");
@@ -33,16 +28,23 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   app.set("view engine", "njk");
 
   addFilters(env);
-  addGlobals(env, phase);
+  addGlobals(env);
 
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.locals.pageUrl = req.originalUrl;
-    next();
-  });
+  if (i18nContentPath) {
+    const translations = loadTranslations(i18nContentPath);
+    app.use(localeMiddleware());
+    app.use(translationMiddleware(translations));
+  }
 
   if (assets) {
     await configureAssets(app, env, assets);
   }
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.locals.pageUrl = req.path;
+    res.locals.serviceUrl = req.protocol + "://" + req.get("host");
+    next();
+  });
 
   return env;
 }
@@ -55,8 +57,14 @@ function addFilters(env: nunjucks.Environment): void {
   env.addFilter("govukErrorSummary", govukErrorSummaryFilter);
 }
 
-function addGlobals(env: nunjucks.Environment, phase: string): void {
-  env.addGlobal("serviceUrl", process.env.SERVICE_URL || "http://localhost:3000");
-  env.addGlobal("phase", process.env.PHASE || phase);
+function addGlobals(env: nunjucks.Environment): void {
   env.addGlobal("isProduction", process.env.NODE_ENV === "production");
 }
+
+export interface GovukSetupOptions {
+  viewPaths?: string[];
+  assets?: AssetOptions;
+  errorPages?: boolean;
+  i18nContentPath?: string;
+}
+

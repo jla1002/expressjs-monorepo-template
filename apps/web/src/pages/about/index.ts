@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
 
 export const GET = async (_req: Request, res: Response) => {
+  // Use translations from res.locals (already populated by middleware)
   res.render("about/index", {
-    title: "About - HMCTS Monorepo",
-    description: "This page was automatically discovered by the file-system router",
+    title: res.locals.pages?.about?.title || "About - HMCTS Monorepo",
+    description: res.locals.pages?.about?.description || "This page was automatically discovered by the file-system router",
   });
 };
 

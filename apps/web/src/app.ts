@@ -40,6 +40,7 @@ export async function createApp(): Promise<Express> {
   );
 
   await configureGovuk(app, {
+    i18nContentPath: path.join(__dirname, "locales"),
     viewPaths: [path.join(__dirname, "pages/")],
     assets: {
       viteRoot: path.join(__dirname, "assets"),
@@ -48,7 +49,7 @@ export async function createApp(): Promise<Express> {
         jsEntry: "js/index.ts",
         cssEntry: "css/index.scss",
       },
-    },
+    }
   });
 
   app.use(createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
