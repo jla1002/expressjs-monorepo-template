@@ -64,7 +64,7 @@ describe("configurePropertiesVolume", () => {
   it("should throw error when mount point does not exist and failOnError is true", async () => {
     mockExistsSync.mockReturnValue(false);
 
-    await expect(setupPropertiesVolume(config)).rejects.toThrow("Mount point /mnt/secrets does not exist");
+    await expect(setupPropertiesVolume(config, { failOnError: true })).rejects.toThrow("Mount point /mnt/secrets does not exist");
     expect(config).toEqual({ existing: "value" });
   });
 
@@ -100,7 +100,7 @@ describe("configurePropertiesVolume", () => {
       throw new Error("Permission denied");
     });
 
-    await expect(setupPropertiesVolume(config)).rejects.toThrow("Failed to read property file");
+    await expect(setupPropertiesVolume(config, { failOnError: true })).rejects.toThrow("Failed to read property file");
   });
 
   it("should merge properties with existing config", async () => {
