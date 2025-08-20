@@ -1,16 +1,36 @@
-# HMCTS Express.js Monorepo Template
+# HMCTS Express Monorepo Template
 
-A production-ready monorepo template for HMCTS applications built with Express.js, TypeScript, Nunjucks, and GOV.UK Frontend.
+Production-ready Node.js starter with cloud-native capabilities for building HMCTS digital services using Express.js, TypeScript, and GOV.UK Design System.
 
-## Features
+## 🚀 Overview
 
-- 🏗️ **Modular Architecture**: Clean separation between apps (thin deployment layer) and libs (business logic)
-- 🎨 **GOV.UK Design System**: Full integration with GOV.UK Frontend for consistent government service design
-- 🏴 **Welsh Language Support**: Built-in i18n with English and Welsh translations
-- 🔒 **Security First**: Authentication, authorization, CSRF protection, and secure headers
-- 📊 **Azure Integration**: Application Insights monitoring and Azure-ready deployment
-- 🧪 **Comprehensive Testing**: Unit tests (Vitest), E2E tests (Playwright), and accessibility testing
-- 🔄 **CI/CD Ready**: GitHub Actions, Renovate for dependencies, SonarQube for code quality
+A comprehensive monorepo template that demonstrates best practices for building government digital services. This template provides everything you need to create accessible, secure, and scalable applications that meet GDS and HMCTS standards.
+
+## ✨ Key Features
+
+### Cloud Native Platform
+- **Health Checks**: Configurable health endpoints with readiness and liveness probes for Kubernetes deployments
+- **Azure Integration**: Built-in support for Azure Key Vault secrets management and properties volume mounting
+- **Application Insights**: Comprehensive monitoring with Azure Application Insights including custom metrics and distributed tracing
+- **Properties Volume**: Secure configuration management through mounted volumes with automatic environment variable injection
+
+### Express GOV.UK Starter for frontends
+- **GOV.UK Design System**: Fully integrated GOV.UK Frontend with Nunjucks templates and automatic asset compilation
+- **Internationalization**: Welsh language support with locale middleware and translation management system
+- **Security Headers**: Pre-configured Helmet.js with CSP, HSTS, and nonce-based script protection
+- **Simple Router**: File-based routing with automatic route discovery and HTTP method handlers
+- **Asset Pipeline**: Vite-powered asset compilation with SCSS support and production optimization
+
+### Monorepo Architecture
+- Single repository for multiple applications (e.g. multiple frontends sharing common code, APIs or libraries)
+- Workspace-based structure with Yarn workspaces
+- Shared libraries for common functionality
+- TypeScript with strict mode and ES modules
+- Comprehensive testing with Vitest and Playwright
+- Docker multi-stage builds for production
+- Helm charts for Kubernetes deployment
+- GitHub Actions CI/CD pipeline
+- Biome for fast linting and formatting
 
 ## Project Structure
 
@@ -21,149 +41,128 @@ expressjs-monorepo-template/
 │   ├── web/                    # Web frontend (Express 5.x + Nunjucks)
 │   └── postgres/               # Database configuration (Prisma)
 ├── libs/                       # Modular packages
-│   ├── auth/                   # Authentication & authorization
-│   ├── nunjucks/               # Template engine configuration
-│   ├── govuk-frontend/         # GOV.UK Frontend integration
-│   ├── i18n/                   # Internationalization (Welsh support)
-│   └── monitoring/             # Azure Application Insights
+│   ├── cloud-native-platform/  # Cloud Native Platform features
+│   └── express-gov-uk-starter/ # GOV.UK Frontend integration
 ├── e2e-tests/                  # End-to-end tests (Playwright)
 ├── docs/                       # Documentation and ADRs
 └── package.json                # Root configuration
 ```
 
-## Quick Start
+## 🏁 Getting Started
 
 ### Prerequisites
 
 - Node.js 22+
 - Yarn 4+
-- Docker and Docker Compose
-- PostgreSQL (or use Docker)
+- Docker (optional, for PostgreSQL)
 
-### Installation
+### Quick Setup
 
-1. Clone the repository:
 ```bash
-git clone [repository-url]
-cd expressjs-monorepo-template
-```
-
-2. Install dependencies:
-```bash
+# Install dependencies
 yarn install
-```
 
-3. Start development servers:
-```bash
+# Run development server
 yarn dev
+
+# Access the application
+http://localhost:3000
 ```
 
-### Access Services
+### Services
 
-- **Web Application**: http://localhost:3000
-- **API Server**: http://localhost:3001
-- **API Health Check**: http://localhost:3001/health
-- **Prisma Studio**: `yarn workspace @hmcts/postgres run studio`
+| Service | URL | Description |
+|---------|-----|-------------|
+| Web Application | http://localhost:3000 | Main web interface with GOV.UK styling |
+| API Server | http://localhost:3001 | REST API backend |
+| Health Check | http://localhost:3001/health | API health status |
+| Prisma Studio | Run `yarn workspace @hmcts/postgres run studio` | Database management UI |
 
-## Development
+## 📦 Development
 
-### Commands
+### Available Commands
 
 ```bash
 # Development
-yarn dev                        # Start all services
-yarn start:web                  # Start web app only
-yarn start:api                  # Start API only
-yarn start:db                   # Start PostgreSQL
+yarn dev                        # Start all services concurrently
+yarn start:web                  # Start web application only
+yarn start:api                  # Start API server only
+yarn start:db                   # Start PostgreSQL in Docker
 
 # Testing
-yarn test                       # Run all tests
+yarn test                       # Run all tests across workspaces
 yarn test:unit                  # Unit tests only
-yarn test:e2e                   # E2E tests
-yarn test:coverage              # With coverage report
+yarn test:e2e                   # Playwright E2E tests
+yarn test:a11y                  # Accessibility tests with axe-core
+yarn test:coverage              # Generate coverage report
 
 # Code Quality
-yarn lint                       # Run linter
-yarn format                     # Format code
+yarn lint                       # Run Biome linter
+yarn format                     # Format code with Biome
+yarn type-check                 # TypeScript type checking
 
-# Database
+# Database Operations
 yarn workspace @hmcts/postgres run generate    # Generate Prisma client
-yarn workspace @hmcts/postgres run migrate     # Run migrations
-yarn workspace @hmcts/postgres run studio      # Open Prisma Studio
+yarn workspace @hmcts/postgres run migrate     # Run database migrations
+yarn workspace @hmcts/postgres run studio      # Open Prisma Studio GUI
 
-# Build
+# Build & Deployment
 yarn build                      # Build all packages
 yarn docker:build               # Build Docker images
+yarn helm:lint                  # Validate Helm charts
 ```
 
-### Creating a New Module
+### Creating a New Feature Module
 
-1. Create module structure:
+1. **Create module structure**:
 ```bash
-mkdir -p libs/my-module/src
+mkdir -p libs/my-feature/src
+cd libs/my-feature
 ```
 
-2. Add package.json:
+2. **Initialize package.json**:
 ```json
 {
-  "name": "@hmcts/my-module",
+  "name": "@hmcts/my-feature",
+  "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "dev": "tsc --watch"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0"
+  }
 }
 ```
 
-3. Import in app:
+3. **Import in your application**:
 ```typescript
-import { myFunction } from '@hmcts/my-module';
+import { myFeature } from '@hmcts/my-feature';
+
+// Use in Express app
+app.use(myFeature());
 ```
 
-## Architecture Decisions
+## 🧪 Testing Strategy
 
-### Modular Design
-Business logic is organized into reusable modules in `libs/`, keeping applications thin and focused on configuration and orchestration.
+| Type | Tool | Location | Purpose |
+|------|------|----------|---------|
+| **Unit Tests** | Vitest | Co-located `*.test.ts` | Business logic validation |
+| **Integration Tests** | Vitest + Supertest | `apps/*/src/**/*.test.ts` | API endpoint testing |
+| **E2E Tests** | Playwright | `e2e-tests/` | User journey validation |
+| **Accessibility Tests** | Axe-core + Playwright | `e2e-tests/` | WCAG 2.1 AA compliance |
 
-### Database Design
-- Tables use singular names with snake_case
-- Prisma provides TypeScript types and migrations
-- Multi-tenant support built-in
-
-### Security
-- JWT-based authentication
-- Role-based authorization
-- CSRF protection
-- Content Security Policy
-- Rate limiting
-
-### Testing Strategy
-- Unit tests co-located with source files
-- Integration tests for API endpoints
-- E2E tests for user journeys
-- Accessibility testing with axe-core
-
-### Welsh Language
-
-The application supports English and Welsh languages. Set the locale:
-- Query parameter: `?lng=cy`
-- Cookie: `locale=cy`
-- Default: `DEFAULT_LOCALE=en`
-
-### Coding Standards
-
-- **Database**: Singular snake_case (`user`, `case_number`)
-- **TypeScript**: camelCase variables, PascalCase classes
-- **Files**: kebab-case (`user-service.ts`)
-- **API**: Plural resources (`/api/users`)
-- **Packages**: @hmcts scope (`@hmcts/auth`)
-
-## Testing
-
-Run the test suite:
 ```bash
-yarn test               # All tests
-yarn test:unit          # Unit tests only
-yarn test:e2e           # E2E tests
-yarn test:coverage      # Coverage report
+# Run specific test suites
+yarn test                    # All tests
+yarn test:unit              # Unit tests only
+yarn test:e2e               # E2E tests
+yarn test:a11y              # Accessibility tests
+yarn test:coverage          # Coverage report
 ```
 
 ## License
