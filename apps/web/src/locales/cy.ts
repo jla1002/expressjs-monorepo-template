@@ -31,4 +31,21 @@ export const content: Translations = {
     ariaLabel: "Rhoi adborth am y dudalen hon",
     link: "/feedback?page=",
   },
+  common: {
+    email: "E-bost",
+    telephone: "Ffôn",
+    post: "Post",
+    warning: "Rhybudd",
+    findOutAboutCallCharges: "Darganfyddwch am gostau galwadau",
+    callChargesLink: "https://www.gov.uk/call-charges",
+  },
+  serviceConfig: {
+    contactEmail: "enquiries@hmcts.gsi.gov.uk",
+    contactPhone: "0300 303 0642",
+    openingHours: "Dydd Llun i ddydd Gwener, 10am i 6pm",
+    postalAddress: ["CTSC (Canolfan Wasanaeth Llysoedd a Thribiwnlysoedd)", "C/o Gwasanaethau Digidol GLlTEF", "PO Box 13226", "Harlow", "CM20 9UG"],
+    dataRetentionPeriod: "90 diwrnod",
+    temporaryDataPeriod: "1 mis",
+    contactFormUrl: "https://contact-us.form.service.justice.gov.uk/",
+  },
 };

@@ -230,6 +230,67 @@ When developing:
 - Write tests for new functionality
 - Consider Welsh language from the start
 
+## Adding Pages and Content
+
+### Page Structure
+When adding new pages to the application, follow this structure:
+
+1. **Controller** (`apps/web/src/pages/[page-name].ts`)
+   - Contains page-specific content and data
+   - Renders the corresponding template
+   - Example:
+   ```typescript
+   export const GET = async (_req: Request, res: Response) => {
+     res.render("page-name", {
+       en: {
+         title: "Page Title",
+         // Page-specific English content
+       },
+       cy: {
+         title: "Teitl Tudalen",
+         // Page-specific Welsh content
+       }
+     });
+   };
+   ```
+
+2. **Template** (`apps/web/src/pages/[page-name].njk`)
+   - Uses data from controller
+   - Extends default layout
+   - Accesses both controller data and locale strings
+
+3. **Locale Files** (`apps/web/src/locales/en.ts` and `cy.ts`)
+   - ONLY contain reusable, common strings
+   - Navigation labels, button text, common headers
+   - NOT page-specific content
+
+### Content Organization
+
+**Shared/Common Content** (goes in locale files):
+- Navigation labels
+- Footer links
+- Common button text (Back, Continue, Submit)
+- Phase banner text
+- Service name
+- Common error messages
+
+**Page-Specific Content** (goes in controllers):
+- Page titles
+- Section headings
+- Body text
+- Lists specific to that page
+- Contact details specific to that page
+- Any content unique to that page
+
+### Welsh Language Support
+
+Every page must support both English and Welsh:
+
+1. **In Controllers**: Provide both `en` and `cy` objects with page content
+2. **In Templates**: Use the current language data automatically selected by the i18n middleware
+3. **In Locale Files**: Maintain parallel structure between en.ts and cy.ts
+4. **Testing**: Always test pages with `?lng=cy` query parameter to verify Welsh content
+
 ## Core Principles
 
 * **YAGNI**: You Aren't Gonna Need It - Don't add speculative functionality or features. Always take the simplest approach. 
