@@ -18,14 +18,26 @@ describe("index page", () => {
       await GET(req as Request, res as Response);
 
       expect(res.render).toHaveBeenCalledWith("index", {
-        en: {
-          title: "HMCTS Monorepo Template",
-          description: "This is the home page of the Express Monorepo Service",
-        },
-        cy: {
-          title: "Templed Monorepo HMCTS",
-          description: "Dyma dudalen gartref y Gwasanaeth Monorepo Express",
-        },
+        en: expect.objectContaining({
+          title: "HMCTS Express Monorepo Template",
+          subtitle: "Production-ready Node.js starter with cloud-native capabilities",
+          intro:
+            "A comprehensive monorepo template that demonstrates best practices for building HMCTS digital services using Express.js, TypeScript, and GOV.UK Design System.",
+          cloudNativeTitle: "Cloud Native Platform",
+          govukStarterTitle: "GOV.UK Starter",
+          architectureTitle: "Monorepo Architecture",
+          gettingStartedTitle: "Getting Started",
+          learnMoreTitle: "Learn More",
+        }),
+        cy: expect.objectContaining({
+          title: "Templed Monorepo Express HMCTS",
+          subtitle: "Dechreuwr Node.js barod i gynhyrchu gyda galluoedd cwmwl-gynhenid",
+          cloudNativeTitle: "Platfform Cwmwl Cynhenid",
+          govukStarterTitle: "Dechreuwr GOV.UK",
+          architectureTitle: "Pensaernïaeth Monorepo",
+          gettingStartedTitle: "Dechrau Arni",
+          learnMoreTitle: "Dysgu Mwy",
+        }),
       });
     });
 

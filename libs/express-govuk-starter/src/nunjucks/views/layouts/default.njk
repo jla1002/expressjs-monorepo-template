@@ -1,5 +1,6 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/header/macro.njk" import govukHeader %}
 
 {% extends "govuk/template.njk" %}
 
@@ -34,6 +35,13 @@
   {% else %}
     {{ serviceName }} - {{ govUk }}
   {% endif %}
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader({
+    serviceName: serviceName,
+    serviceUrl: "/"
+  }) }}
 {% endblock %}
 
 {% set bannerHtml %}

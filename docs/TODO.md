@@ -3,6 +3,4 @@
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Cookie banner
-- Fix issues on homepage, add service name, add proper welcome with docs
-- Add the privacy policy and other boilerplate pages
 - Merge nunjucks and govuk-frontend folders
