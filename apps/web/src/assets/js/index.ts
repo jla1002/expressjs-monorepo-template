@@ -38,7 +38,7 @@ const config = {
       categoryName: "essential",
       optional: false,
       matchBy: "exact",
-      cookies: ["session", "csrf_token", "cookie_policy", "cookies_preferences_set"],
+      cookies: ["session", "_csrf", "cookie_policy", "cookies_preferences_set"],
     },
     {
       categoryName: "analytics",
@@ -56,13 +56,13 @@ const config = {
 cookieManager.on("CookieBannerAction", (eventData: any) => {
   const action = typeof eventData === "string" ? eventData : eventData.action;
 
-  if (action === "accept" || action === "reject") {
-    requestAnimationFrame(() => {
-      const banner = document.querySelector(".govuk-cookie-banner");
-      if (banner) {
-        (banner as HTMLElement).style.display = "none";
-      }
-    });
+  // The HMCTS cookie manager will handle showing the confirmation message
+  // and the hide button will remove the banner entirely
+  if (action === "hide") {
+    const banner = document.querySelector(".govuk-cookie-banner");
+    if (banner) {
+      banner.remove();
+    }
   }
 });
 

@@ -1,7 +1,7 @@
 import type { Express, NextFunction, Request, RequestHandler, Response } from "express";
 
 const COOKIE_POLICY_NAME = "cookie_policy";
-const COOKIE_BANNER_SEEN = "cookie_banner_seen";
+const COOKIE_BANNER_SEEN = "cookies_preferences_set";
 
 export async function configureCookieManager(app: Express, options: CookieManagerOptions): Promise<void> {
   app.use(createCookieManagerMiddleware(options));
@@ -135,7 +135,7 @@ function createSavePreferencesHandler(options: CookieManagerOptions): RequestHan
       sameSite: "strict",
     });
 
-    res.redirect(options.preferencesPath || "/cookies");
+    res.redirect(`${options.preferencesPath || "/cookies"}?saved=true`);
   };
 }
 
@@ -149,7 +149,8 @@ function configureCookieRoutes(app: Express, config: CookieManagerOptions): void
 
     const en = {
       title: "Cookie preferences",
-      intro: "We use cookies to make this service work and collect analytics information. To accept or reject cookies, choose an option below and save your preferences.",
+      intro:
+        "We use cookies to make this service work and collect analytics information. To accept or reject cookies, choose an option below and save your preferences.",
       essentialTitle: "Essential cookies",
       essentialDescription: "These cookies are necessary for the service to function. They cannot be turned off.",
       analyticsTitle: "Analytics cookies",
@@ -170,7 +171,8 @@ function configureCookieRoutes(app: Express, config: CookieManagerOptions): void
 
     const cy = {
       title: "Dewisiadau cwcis",
-      intro: "Rydym yn defnyddio cwcis i wneud i'r gwasanaeth hwn weithio a chasglu gwybodaeth dadansoddi. I dderbyn neu wrthod cwcis, dewiswch opsiwn isod a chadw eich dewisiadau.",
+      intro:
+        "Rydym yn defnyddio cwcis i wneud i'r gwasanaeth hwn weithio a chasglu gwybodaeth dadansoddi. I dderbyn neu wrthod cwcis, dewiswch opsiwn isod a chadw eich dewisiadau.",
       essentialTitle: "Cwcis hanfodol",
       essentialDescription: "Mae'r cwcis hyn yn angenrheidiol i'r gwasanaeth weithio. Ni allant gael eu diffodd.",
       analyticsTitle: "Cwcis dadansoddi",

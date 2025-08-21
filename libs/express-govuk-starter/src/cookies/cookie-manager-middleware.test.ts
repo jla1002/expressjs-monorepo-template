@@ -1,25 +1,22 @@
 import type { NextFunction, Request, Response } from "express";
+import express from "express";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  createAcceptCookiesHandler,
-  createCookieManagerMiddleware,
-  createRejectCookiesHandler,
-  createSavePreferencesHandler,
-  parseCookiePolicy,
-  setCookiePolicy,
-} from "./cookie-manager-middleware.js";
+import { type CookieManagerOptions, configureCookieManager } from "./cookie-manager-middleware.js";
 
-describe("Cookie Manager Middleware", () => {
+describe("configureCookieManager", () => {
+  let app: express.Express;
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
 
   beforeEach(() => {
+    app = express();
     req = {
       cookies: {},
       body: {},
       headers: {},
-      originalUrl: "/test",
+      path: "/test",
+      query: {},
     };
     res = {
       locals: {},
@@ -30,148 +27,330 @@ describe("Cookie Manager Middleware", () => {
     next = vi.fn();
   });
 
-  describe("parseCookiePolicy", () => {
-    it("should return empty object for undefined value", () => {
-      expect(parseCookiePolicy(undefined)).toEqual({});
-    });
+  describe("middleware behavior", () => {
+    it("should set up middleware and routes", async () => {
+      const useSpy = vi.spyOn(app, "use");
+      const postSpy = vi.spyOn(app, "post");
+      const getSpy = vi.spyOn(app, "get");
 
-    it("should parse valid JSON cookie policy", () => {
-      const encoded = encodeURIComponent(JSON.stringify({ analytics: true }));
-      expect(parseCookiePolicy(encoded)).toEqual({ analytics: true });
-    });
-
-    it("should return empty object for invalid JSON", () => {
-      expect(parseCookiePolicy("invalid")).toEqual({});
-    });
-  });
-
-  describe("setCookiePolicy", () => {
-    it("should set cookie with encoded preferences", () => {
-      setCookiePolicy(res as Response, { analytics: true });
-
-      expect(res.cookie).toHaveBeenCalledWith(
-        "cookie_policy",
-        encodeURIComponent(JSON.stringify({ analytics: true })),
-        expect.objectContaining({
-          httpOnly: false,
-          sameSite: "strict",
-          maxAge: 365 * 24 * 60 * 60 * 1000,
-        }),
-      );
-    });
-  });
-
-  describe("createCookieManagerMiddleware", () => {
-    it("should set showBanner to true when no cookies are set", () => {
-      const middleware = createCookieManagerMiddleware({});
-
-      middleware(req as Request, res as Response, next);
-
-      expect(res.locals?.cookieManager?.showBanner).toBe(true);
-      expect(res.locals?.cookieManager?.cookiesAccepted).toBe(false);
-      expect(next).toHaveBeenCalled();
-    });
-
-    it("should set showBanner to false when banner has been seen", () => {
-      req.cookies = { cookie_banner_seen: "true" };
-      const middleware = createCookieManagerMiddleware({});
-
-      middleware(req as Request, res as Response, next);
-
-      expect(res.locals?.cookieManager?.showBanner).toBe(false);
-      expect(next).toHaveBeenCalled();
-    });
-
-    it("should parse existing cookie preferences", () => {
-      const cookiePolicy = encodeURIComponent(JSON.stringify({ analytics: true }));
-      req.cookies = { cookie_policy: cookiePolicy };
-      const middleware = createCookieManagerMiddleware({});
-
-      middleware(req as Request, res as Response, next);
-
-      expect(res.locals?.cookieManager?.cookiePreferences).toEqual({ analytics: true });
-      expect(res.locals?.cookieManager?.cookiesAccepted).toBe(true);
-      expect(res.locals?.cookieManager?.showBanner).toBe(false);
-    });
-  });
-
-  describe("createAcceptCookiesHandler", () => {
-    it("should accept all categories and call onAccept callbacks", () => {
-      const onAccept = vi.fn();
-      const handler = createAcceptCookiesHandler({
-        categories: {
-          analytics: { cookies: ["_ga"] },
-          preferences: { cookies: ["lang"] },
-        },
-        onAccept,
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
       });
 
-      handler(req as Request, res as Response);
+      // Should register middleware
+      expect(useSpy).toHaveBeenCalledTimes(1);
 
-      expect(res.cookie).toHaveBeenCalledWith("cookie_policy", expect.stringContaining("analytics"), expect.any(Object));
-      expect(res.cookie).toHaveBeenCalledWith("cookie_banner_seen", "true", expect.any(Object));
-      expect(onAccept).toHaveBeenCalledWith("analytics");
-      expect(onAccept).toHaveBeenCalledWith("preferences");
-      expect(res.redirect).toHaveBeenCalledWith("/");
+      // Should register POST routes for accept, reject, and save-preferences
+      expect(postSpy).toHaveBeenCalledTimes(3);
+      expect(postSpy).toHaveBeenCalledWith("/cookies/accept", expect.any(Function));
+      expect(postSpy).toHaveBeenCalledWith("/cookies/reject", expect.any(Function));
+      expect(postSpy).toHaveBeenCalledWith("/cookies/save-preferences", expect.any(Function));
+
+      // Should register GET route for preferences page
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(getSpy).toHaveBeenCalledWith("/cookies", expect.any(Function));
     });
 
-    it("should redirect to referer when provided", () => {
-      req.headers = { referer: "/previous-page" };
-      const handler = createAcceptCookiesHandler({});
+    it("should use custom preferences path", async () => {
+      const getSpy = vi.spyOn(app, "get");
 
-      handler(req as Request, res as Response);
-
-      expect(res.redirect).toHaveBeenCalledWith("/previous-page");
-    });
-  });
-
-  describe("createRejectCookiesHandler", () => {
-    it("should reject all categories and call onReject callbacks", () => {
-      const onReject = vi.fn();
-      const handler = createRejectCookiesHandler({
-        categories: {
-          analytics: { cookies: ["_ga"] },
-        },
-        onReject,
-      });
-
-      handler(req as Request, res as Response);
-
-      expect(onReject).toHaveBeenCalledWith("analytics");
-      expect(res.redirect).toHaveBeenCalledWith("/");
-    });
-  });
-
-  describe("createSavePreferencesHandler", () => {
-    it("should save selected preferences", () => {
-      req.body = { analytics: "on", preferences: "off" };
-      const onAccept = vi.fn();
-      const onReject = vi.fn();
-
-      const handler = createSavePreferencesHandler({
-        categories: {
-          analytics: { cookies: ["_ga"] },
-          preferences: { cookies: ["lang"] },
-        },
-        onAccept,
-        onReject,
-      });
-
-      handler(req as Request, res as Response);
-
-      expect(onAccept).toHaveBeenCalledWith("analytics");
-      expect(onReject).toHaveBeenCalledWith("preferences");
-      expect(res.redirect).toHaveBeenCalledWith("/cookies");
-    });
-
-    it("should redirect to custom preferences path", () => {
-      const handler = createSavePreferencesHandler({
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
         preferencesPath: "/custom-cookies",
       });
 
-      handler(req as Request, res as Response);
+      expect(getSpy).toHaveBeenCalledWith("/custom-cookies", expect.any(Function));
+    });
+  });
 
-      expect(res.redirect).toHaveBeenCalledWith("/custom-cookies");
+  describe("middleware state management", () => {
+    it("should set cookieManager state in res.locals", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      // Get the middleware function that was registered
+      const middleware = useSpy.mock.calls[0][0] as any;
+
+      // Call the middleware
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager).toEqual({
+        cookiesAccepted: false,
+        cookiePreferences: {},
+        showBanner: true,
+      });
+      expect(res.locals?.cookieConfig).toEqual({
+        categories: { analytics: ["_ga"] },
+      });
+      expect(next).toHaveBeenCalled();
+    });
+
+    it("should not show banner on /cookies page", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const middleware = useSpy.mock.calls[0][0] as any;
+      req = { ...req, path: "/cookies" };
+
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager?.showBanner).toBe(false);
+    });
+
+    it("should not show banner when cookies have been accepted", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const middleware = useSpy.mock.calls[0][0] as any;
+      req.cookies = { cookie_policy: "%7B%22analytics%22%3Atrue%7D" };
+
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager?.showBanner).toBe(false);
+      expect(res.locals?.cookieManager?.cookiesAccepted).toBe(true);
+      expect(res.locals?.cookieManager?.cookiePreferences).toEqual({ analytics: true });
+    });
+
+    it("should not show banner when banner has been seen", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const middleware = useSpy.mock.calls[0][0] as any;
+      req.cookies = { cookies_preferences_set: "true" };
+
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager?.showBanner).toBe(false);
+    });
+
+    it("should handle malformed cookie values", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const middleware = useSpy.mock.calls[0][0] as any;
+      req.cookies = { cookie_policy: "invalid%7Bjson" };
+
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager?.cookiePreferences).toEqual({});
+    });
+  });
+
+  describe("accept cookies handler", () => {
+    it("should accept all categories and trigger callbacks", async () => {
+      const onAccept = vi.fn();
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: {
+          analytics: ["_ga"],
+          preferences: ["lang"],
+        },
+        onAccept,
+      });
+
+      // Get the accept handler that was registered
+      const acceptHandler = postSpy.mock.calls[0][1] as any;
+      req.body = { returnUrl: "/test-return" };
+
+      acceptHandler(req, res);
+
+      expect(res.cookie).toHaveBeenCalledWith(
+        "cookie_policy",
+        "%7B%22analytics%22%3Atrue%2C%22preferences%22%3Atrue%7D",
+        expect.objectContaining({
+          httpOnly: false,
+          sameSite: "strict",
+        }),
+      );
+      expect(res.cookie).toHaveBeenCalledWith(
+        "cookies_preferences_set",
+        "true",
+        expect.objectContaining({
+          httpOnly: true,
+          sameSite: "strict",
+        }),
+      );
+      expect(onAccept).toHaveBeenCalledWith("analytics");
+      expect(onAccept).toHaveBeenCalledWith("preferences");
+      expect(res.redirect).toHaveBeenCalledWith("/test-return");
+    });
+
+    it("should use referer as fallback", async () => {
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const acceptHandler = postSpy.mock.calls[0][1] as any;
+      req.headers = { referer: "/from-page" };
+
+      acceptHandler(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith("/from-page");
+    });
+
+    it("should default to root", async () => {
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+      });
+
+      const acceptHandler = postSpy.mock.calls[0][1] as any;
+
+      acceptHandler(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith("/");
+    });
+  });
+
+  describe("reject cookies handler", () => {
+    it("should reject all categories and trigger callbacks", async () => {
+      const onReject = vi.fn();
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: {
+          analytics: ["_ga"],
+          preferences: ["lang"],
+        },
+        onReject,
+      });
+
+      // Get the reject handler (second post call)
+      const rejectHandler = postSpy.mock.calls[1][1] as any;
+      req.body = { returnUrl: "/test-return" };
+
+      rejectHandler(req, res);
+
+      expect(res.cookie).toHaveBeenCalledWith(
+        "cookie_policy",
+        "%7B%22analytics%22%3Afalse%2C%22preferences%22%3Afalse%7D",
+        expect.objectContaining({
+          httpOnly: false,
+          sameSite: "strict",
+        }),
+      );
+      expect(onReject).toHaveBeenCalledWith("analytics");
+      expect(onReject).toHaveBeenCalledWith("preferences");
+      expect(res.redirect).toHaveBeenCalledWith("/test-return");
+    });
+  });
+
+  describe("save preferences handler", () => {
+    it("should save selected preferences", async () => {
+      const onAccept = vi.fn();
+      const onReject = vi.fn();
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: {
+          analytics: ["_ga"],
+          preferences: ["lang"],
+        },
+        onAccept,
+        onReject,
+      });
+
+      // Get the save preferences handler (third post call)
+      const saveHandler = postSpy.mock.calls[2][1] as any;
+      req.body = {
+        analytics: "on",
+        preferences: "off",
+      };
+
+      saveHandler(req, res);
+
+      expect(res.cookie).toHaveBeenCalledWith("cookie_policy", "%7B%22analytics%22%3Atrue%2C%22preferences%22%3Afalse%7D", expect.any(Object));
+      expect(onAccept).toHaveBeenCalledWith("analytics");
+      expect(onReject).toHaveBeenCalledWith("preferences");
+      expect(res.redirect).toHaveBeenCalledWith("/cookies?saved=true");
+    });
+
+    it("should redirect to custom preferences path", async () => {
+      const postSpy = vi.spyOn(app, "post");
+
+      await configureCookieManager(app, {
+        categories: { analytics: ["_ga"] },
+        preferencesPath: "/custom-cookies",
+      });
+
+      const saveHandler = postSpy.mock.calls[2][1] as any;
+      req.body = { analytics: "on" };
+
+      saveHandler(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith("/custom-cookies?saved=true");
+    });
+  });
+
+  describe("preferences page", () => {
+    it("should render the preferences page", async () => {
+      const getSpy = vi.spyOn(app, "get");
+
+      await configureCookieManager(app, {
+        categories: {
+          analytics: ["_ga"],
+          preferences: ["lang"],
+        },
+      });
+
+      // Get the preferences page handler
+      const preferencesHandler = getSpy.mock.calls[0][1] as any;
+      req.cookies = { cookie_policy: "%7B%22analytics%22%3Atrue%2C%22preferences%22%3Afalse%7D" };
+      req.query = { saved: "true" };
+
+      preferencesHandler(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("cookie-preferences", {
+        en: expect.objectContaining({
+          title: "Cookie preferences",
+          analyticsTitle: "Analytics cookies",
+          cookiePreferences: { analytics: true, preferences: false },
+          saved: true,
+        }),
+        cy: expect.objectContaining({
+          title: "Dewisiadau cwcis",
+          analyticsTitle: "Cwcis dadansoddi",
+          cookiePreferences: { analytics: true, preferences: false },
+          saved: true,
+        }),
+      });
+    });
+  });
+
+  describe("edge cases", () => {
+    it("should work with minimal configuration", async () => {
+      const useSpy = vi.spyOn(app, "use");
+
+      await configureCookieManager(app, {});
+
+      const middleware = useSpy.mock.calls[0][0] as any;
+
+      middleware(req, res, next);
+
+      expect(res.locals?.cookieManager).toEqual({
+        cookiesAccepted: false,
+        cookiePreferences: {},
+        showBanner: true,
+      });
     });
   });
 });

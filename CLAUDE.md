@@ -196,6 +196,7 @@ describe('UserService', () => {
 11. **Don't create types.ts files** - Colocate types with the appropriate code
 12. **Don't create generic files like utils.ts** - Be specific (e.g., object-properties.ts, date-formatting.ts)
 13. **Don't export functions in order to test them** - Only export functions that are intended to be used outside the module
+14. **Don't add comments unless they are meaningful** - If necessary, explain why something is done, not what is done
 
 ## Development Workflow
 

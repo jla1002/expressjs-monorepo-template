@@ -2,5 +2,4 @@
 - Infrastructure folder for terraform
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
-- Cookie banner
 - Add example form and confirmation page

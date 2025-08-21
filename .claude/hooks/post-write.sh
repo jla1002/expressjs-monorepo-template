@@ -2,6 +2,9 @@
 # Post-write hook - runs after file modifications to ensure code quality
 
 set -euo pipefail
+# Change directory to CLAUDE_PROJECT_DIR
+
+cd "$CLAUDE_PROJECT_DIR"
 
 # Logging function
 log_hook() {
