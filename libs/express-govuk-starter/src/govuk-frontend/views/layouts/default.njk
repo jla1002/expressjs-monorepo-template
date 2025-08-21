@@ -28,9 +28,9 @@
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> -->
   <!-- End Google Tag Manager (noscript) -->
   
-  {% if includeCookieBanner %}
-    {% include "cookie-banner.njk" %}
-  {% endif %}
+  <!-- Before include -->
+  {% include "cookie-banner.njk" ignore missing %}
+  <!-- After include -->
 {% endblock %}
 
 {% block pageTitle %}

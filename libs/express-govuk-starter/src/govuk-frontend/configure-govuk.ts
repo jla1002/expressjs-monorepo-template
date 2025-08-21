@@ -19,6 +19,8 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   const cookieViews = path.join(__dirname, "../cookies/views");
   const allViewPaths = [govukFrontendPath, govukSetupViews, cookieViews, ...viewPaths];
 
+  console.log("Nunjucks search paths:", allViewPaths);
+
   const env = nunjucks.configure(allViewPaths, {
     autoescape: true,
     express: app,

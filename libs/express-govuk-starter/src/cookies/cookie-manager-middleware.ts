@@ -43,10 +43,12 @@ export function createCookieManagerMiddleware(options: CookieManagerOptions): Re
     const cookiePolicy = parseCookiePolicy(req.cookies?.[COOKIE_POLICY_NAME]);
     const bannerSeen = req.cookies?.[COOKIE_BANNER_SEEN] === "true";
 
+    const isOnCookiesPage = req.path === "/cookies" || req.path?.startsWith("/cookies/") || false;
+
     const state: CookieManagerState = {
       cookiesAccepted: Object.keys(cookiePolicy).length > 0,
       cookiePreferences: cookiePolicy,
-      showBanner: !bannerSeen && Object.keys(cookiePolicy).length === 0,
+      showBanner: !isOnCookiesPage && !bannerSeen && Object.keys(cookiePolicy).length === 0,
     };
 
     res.locals.cookieManager = state;

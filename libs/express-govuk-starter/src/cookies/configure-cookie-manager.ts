@@ -109,23 +109,4 @@ export async function configureCookieManager(app: Express, options: CookieManage
 
   // Configure cookie routes
   configureCookieRoutes(app, options);
-
-  // Inject cookie banner into all pages
-  app.use((_req, res, next) => {
-    const originalRender = res.render.bind(res);
-
-    res.render = (view: string, options?: any, callback?: any) => {
-      // Add cookie banner to layout
-      if (options && !options.skipCookieBanner) {
-        options = {
-          ...options,
-          includeCookieBanner: true,
-        };
-      }
-
-      return originalRender(view, options, callback);
-    };
-
-    next();
-  });
 }

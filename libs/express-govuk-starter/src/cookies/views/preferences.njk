@@ -22,7 +22,7 @@
     
     <p class="govuk-body">{{ t.cookiePreferences.intro[locale] | default("We use cookies to make this service work and collect analytics information. To accept or reject cookies, choose an option below and save your preferences.") }}</p>
 
-    <form action="/cookies/save-preferences" method="POST">
+    <form action="/cookies/save-preferences" method="POST" class="cookie-preferences-form">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       
       <h2 class="govuk-heading-m">{{ t.cookiePreferences.essentialTitle[locale] | default("Essential cookies") }}</h2>
