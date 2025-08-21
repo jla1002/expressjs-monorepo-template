@@ -6,7 +6,7 @@ test.describe('Welsh Language Support', () => {
     await page.goto('/');
     
     // Verify English content is displayed
-    await expect(page.locator('h1')).toContainText('HMCTS Monorepo Template');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/HMCTS Express Monorepo Template/);
     
     // Look for the language toggle link
     const languageToggle = page.locator('.language');
@@ -20,7 +20,7 @@ test.describe('Welsh Language Support', () => {
     await expect(page).toHaveURL(/.*\?lng=cy/);
     
     // Verify Welsh content is displayed
-    await expect(page.locator('h1')).toContainText('Templed Monorepo HMCTS');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Templed Monorepo Express HMCTS/);
     
     // Verify language toggle now shows English option
     await expect(languageToggle).toContainText('English');
@@ -36,7 +36,7 @@ test.describe('Welsh Language Support', () => {
     await expect(page).toHaveURL(/.*\?lng=en/);
     
     // Verify English content is restored
-    await expect(page.locator('h1')).toContainText('HMCTS Monorepo Template');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/HMCTS Express Monorepo Template/);
     await expect(languageToggle).toContainText('Cymraeg');
     
     // Check footer links are back in English

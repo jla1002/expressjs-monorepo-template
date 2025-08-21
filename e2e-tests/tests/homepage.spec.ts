@@ -5,16 +5,18 @@ test.describe('Homepage', () => {
   test('should load the homepage', async ({ page }) => {
     await page.goto('/');
     
-    // Check the page has loaded by looking for GOV.UK elements
+    // Check the page has loaded
     await expect(page).toHaveTitle(/.*/);
     
-    // Check for GOV.UK header
-    const header = page.locator('.govuk-header');
-    await expect(header).toBeVisible();
+    // Check for main heading content
+    await expect(page.getByRole('heading', { name: /HMCTS Express Monorepo Template/i })).toBeVisible();
     
-    // Check main content area exists
-    const mainContent = page.locator('.govuk-grid-row');
-    await expect(mainContent).toBeVisible();
+    // Check for key subtitle content
+    await expect(page.getByText('Production-ready Node.js starter with cloud-native capabilities')).toBeVisible();
+    
+    // Check for main section headings
+    await expect(page.getByRole('heading', { name: 'Cloud Native Platform' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Getting Started' })).toBeVisible();
   });
 
   test('should run accessibility checks', async ({ page }) => {
