@@ -3,4 +3,3 @@
 - Add Redis
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Cookie banner
-- Merge nunjucks and govuk-frontend folders
