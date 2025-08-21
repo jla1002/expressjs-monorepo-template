@@ -6,7 +6,7 @@
   "main": "./dist/server.js",
   "types": "./dist/server.d.ts",
   "scripts": {
-    "dev": "nodemon --watch src --watch '../../**/*' --ext ts,njk --exec tsx src/server.ts",
+    "dev": "nodemon --watch src --watch '../../**/*' --ext ts --exec tsx src/server.ts",
     "build": "tsc && vite build",
     "clean": "rm -rf dist",
     "start": "node dist/server.js",

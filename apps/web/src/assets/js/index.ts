@@ -1,10 +1,12 @@
-import cookieManager from "@hmcts/cookie-manager";
+import * as cookieManagerModule from "@hmcts/cookie-manager";
+
+const cookieManager = (cookieManagerModule as any).default || cookieManagerModule;
+
 import { initAll } from "govuk-frontend";
 import "../css/index.scss"; // used for dev mode HMR
 
 initAll();
 
-// Initialize HMCTS cookie manager
 const config = {
   userPreferences: {
     cookieName: "cookie_policy",
@@ -66,5 +68,4 @@ cookieManager.on("CookieBannerAction", (eventData: any) => {
   }
 });
 
-// Initialize the cookie manager
 cookieManager.init(config);
