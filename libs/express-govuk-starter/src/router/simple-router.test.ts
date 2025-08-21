@@ -19,12 +19,12 @@ describe("simple-router", () => {
   });
 
   describe("createSimpleRouter", () => {
-    it("should throw if no mount specs provided", () => {
-      expect(() => createSimpleRouter()).toThrow("At least one mount specification is required");
+    it("should throw if no mount specs provided", async () => {
+      await expect(() => createSimpleRouter()).rejects.toThrow("At least one mount specification is required");
     });
 
-    it("should return an Express router", () => {
-      const router = createSimpleRouter({ pagesDir: testDir });
+    it("should return an Express router", async () => {
+      const router = await createSimpleRouter({ pagesDir: testDir });
 
       expect(router).toBeDefined();
       expect(typeof router).toBe("function");
@@ -38,9 +38,7 @@ export const GET = (req, res) => res.send('Hello World');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const response = await request(app).get("/");
 
@@ -57,9 +55,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const getResponse = await request(app).get("/");
       const postResponse = await request(app).post("/");
@@ -79,9 +75,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "posts", "index.ts"), `export const GET = (req, res) => res.send('Posts');`);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const homeResponse = await request(app).get("/");
       const aboutResponse = await request(app).get("/about");
@@ -98,9 +92,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "posts", "[id]", "index.ts"), `export const GET = (req, res) => res.send('Post: ' + req.params.id);`);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const response = await request(app).get("/posts/123");
 
@@ -111,9 +103,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "index.ts"), `export const GET = (req, res) => res.send('Admin Home');`);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir, prefix: "/admin" }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir, prefix: "/admin" }));
 
       const response = await request(app).get("/admin");
 
@@ -131,9 +121,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(adminDir, "index.ts"), `export const GET = (req, res) => res.send('Admin');`);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir }, { pagesDir: adminDir, prefix: "/admin" }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir }, { pagesDir: adminDir, prefix: "/admin" }));
 
       const mainResponse = await request(app).get("/");
       const adminResponse = await request(app).get("/admin");
@@ -161,9 +149,7 @@ export const GET = [middleware1, middleware2, handler];
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const response = await request(app).get("/");
 
@@ -178,9 +164,7 @@ export const Post = (req, res) => res.send('mixed case post');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(createSimpleRouter({ pagesDir: testDir }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      app.use(await createSimpleRouter({ pagesDir: testDir }));
 
       const getResponse = await request(app).get("/");
       const postResponse = await request(app).post("/");
@@ -202,9 +186,7 @@ export const Post = (req, res) => res.send('mixed case post');
 
       for (const { prefix, expected } of variations) {
         const testApp = express();
-        testApp.use(createSimpleRouter({ pagesDir: testDir, prefix }));
-
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        testApp.use(await createSimpleRouter({ pagesDir: testDir, prefix }));
 
         const path = expected === "/" ? "/" : expected;
         const response = await request(testApp).get(path);

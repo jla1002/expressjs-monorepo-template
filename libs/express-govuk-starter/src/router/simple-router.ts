@@ -6,25 +6,21 @@ import { discoverRoutes, sortRoutes } from "./route-discovery.js";
 import { extractHandlers, loadRouteModule, normalizeHandlers } from "./route-loader.js";
 import type { Handler, MountSpec, RouteEntry } from "./types.js";
 
-export function createSimpleRouter(...mounts: MountSpec[]): Router {
+export async function createSimpleRouter(...mounts: MountSpec[]): Promise<Router> {
   const router = expressRouter();
 
   if (mounts.length === 0) {
     throw new Error("At least one mount specification is required");
   }
 
-  // Use setImmediate to defer route loading to the next iteration of the event loop
-  // This allows the router to be returned synchronously while still loading routes
-  // before any HTTP requests can be processed
-  setImmediate(async () => {
-    try {
-      const allRoutes = await discoverAndLoadRoutes(mounts);
-      validateRoutes(allRoutes);
-      mountRoutes(router, allRoutes);
-    } catch (error) {
-      console.error("Failed to initialize file-system router:", error);
-    }
-  });
+  try {
+    const allRoutes = await discoverAndLoadRoutes(mounts);
+    validateRoutes(allRoutes);
+    mountRoutes(router, allRoutes);
+  } catch (error) {
+    console.error("Failed to initialize file-system router:", error);
+    throw error;
+  }
 
   return router;
 }

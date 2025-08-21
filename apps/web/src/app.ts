@@ -52,7 +52,7 @@ export async function createApp(): Promise<Express> {
     },
   });
 
-  app.use(createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
+  app.use(await createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
   app.use(notFoundHandler());
   app.use(errorHandler());
 
