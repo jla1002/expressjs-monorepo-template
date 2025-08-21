@@ -6,7 +6,7 @@ import type { AssetOptions } from "../assets/assets.js";
 import { configureAssets } from "../assets/configure-assets.js";
 import { localeMiddleware, renderInterceptorMiddleware, translationMiddleware } from "../i18n/locale-middleware.js";
 import { loadTranslations } from "../i18n/translation-loader.js";
-import { currencyFilter, dateFilter, govukErrorSummaryFilter, kebabCaseFilter, timeFilter } from "../nunjucks/filters/index.js";
+import { currencyFilter, dateFilter, govukErrorSummaryFilter, kebabCaseFilter, timeFilter } from "./filters/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   const { viewPaths = [], assets, i18nContentPath } = options;
 
   const govukFrontendPath = "../../node_modules/govuk-frontend/dist";
-  const govukSetupViews = path.join(__dirname, "../nunjucks/views");
+  const govukSetupViews = path.join(__dirname, "./views");
   const allViewPaths = [govukFrontendPath, govukSetupViews, ...viewPaths];
 
   const env = nunjucks.configure(allViewPaths, {
