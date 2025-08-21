@@ -1,0 +1,31 @@
+{% if cookieManager.showBanner %}
+<div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="{{ cookieBannerContent[locale].title }}">
+  <div class="govuk-cookie-banner__message govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-cookie-banner__heading govuk-heading-m">{{ cookieBannerContent[locale].title }}</h2>
+        <div class="govuk-cookie-banner__content">
+          <p class="govuk-body">{{ cookieBannerContent[locale].message }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="govuk-button-group">
+      <form action="/cookies/accept" method="POST">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="returnUrl" value="{{ currentUrl }}">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          {{ cookieBannerContent[locale].acceptButton }}
+        </button>
+      </form>
+      <form action="/cookies/reject" method="POST">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="returnUrl" value="{{ currentUrl }}">
+        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          {{ cookieBannerContent[locale].rejectButton }}
+        </button>
+      </form>
+      <a class="govuk-link" href="{{ cookieConfig.preferencesPath }}">{{ cookieBannerContent[locale].viewCookiesLink }}</a>
+    </div>
+  </div>
+</div>
+{% endif %}
