@@ -74,6 +74,12 @@ model Case {
 ### 7. Package Names
 - Use @hmcts scope: `@hmcts/auth`, `@hmcts/case-management`
 
+### 8. Module Ordering
+- consts outside the scope of a function should be at the top (e.g. `const COOKIE_NAME = "cookie_name";`)
+- Exported functions should next
+- Other functions should be ordered in the order they are used
+- Interfaces and types should be at the bottom
+
 ## Module Development Guidelines
 
 ### Creating a New Feature Module
@@ -189,6 +195,7 @@ describe('UserService', () => {
 10. **Don't use relative imports across packages** - Use @hmcts/* aliases
 11. **Don't create types.ts files** - Colocate types with the appropriate code
 12. **Don't create generic files like utils.ts** - Be specific (e.g., object-properties.ts, date-formatting.ts)
+13. **Don't export functions in order to test them** - Only export functions that are intended to be used outside the module
 
 ## Development Workflow
 

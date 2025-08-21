@@ -63,23 +63,8 @@ export async function createApp(): Promise<Express> {
   await configureCookieManager(app, {
     essential: ["session", "csrf_token"],
     categories: {
-      analytics: {
-        cookies: ["_ga", "_gid", "dtCookie", "dtSa", "rxVisitor", "rxvt"],
-        description: "Help us understand how you use the service so we can make improvements",
-        defaultEnabled: false,
-      },
-      preferences: {
-        cookies: ["language", "font_size"],
-        description: "Remember your settings and preferences",
-        defaultEnabled: false,
-      },
-    },
-    preferencesPath: "/cookies",
-    onAccept: (category) => {
-      console.log(`User accepted ${category} cookies`);
-    },
-    onReject: (category) => {
-      console.log(`User rejected ${category} cookies`);
+      analytics: ["_ga", "_gid", "dtCookie", "dtSa", "rxVisitor", "rxvt"],
+      preferences: ["language"],
     },
   });
 

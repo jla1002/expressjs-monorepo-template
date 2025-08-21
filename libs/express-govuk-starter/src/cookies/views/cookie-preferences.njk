@@ -7,49 +7,49 @@
     <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
       <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-          {{ t.cookiePreferences.successBanner[locale] | default("Success") }}
+          {{ successBanner }}
         </h2>
       </div>
       <div class="govuk-notification-banner__content">
         <p class="govuk-notification-banner__heading">
-          {{ t.cookiePreferences.successMessage[locale] | default("Your cookie settings have been saved") }}
+          {{ successMessage }}
         </p>
       </div>
     </div>
     {% endif %}
 
-    <h1 class="govuk-heading-l">{{ t.cookiePreferences.title[locale] | default("Cookie preferences") }}</h1>
+    <h1 class="govuk-heading-l">{{ title }}</h1>
     
-    <p class="govuk-body">{{ t.cookiePreferences.intro[locale] | default("We use cookies to make this service work and collect analytics information. To accept or reject cookies, choose an option below and save your preferences.") }}</p>
+    <p class="govuk-body">{{ intro }}</p>
 
     <form action="/cookies/save-preferences" method="POST" class="cookie-preferences-form">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       
-      <h2 class="govuk-heading-m">{{ t.cookiePreferences.essentialTitle[locale] | default("Essential cookies") }}</h2>
-      <p class="govuk-body">{{ t.cookiePreferences.essentialDescription[locale] | default("These cookies are necessary for the service to function. They cannot be turned off.") }}</p>
+      <h2 class="govuk-heading-m">{{ essentialTitle }}</h2>
+      <p class="govuk-body">{{ essentialDescription }}</p>
       
       {% if categories.analytics %}
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h2 class="govuk-fieldset__heading">
-              {{ t.cookiePreferences.analyticsTitle[locale] | default("Analytics cookies") }}
+              {{ analyticsTitle }}
             </h2>
           </legend>
           <div class="govuk-hint">
-            {{ categories.analytics.description | default(t.cookiePreferences.analyticsDescription[locale]) | default("These cookies help us understand how you use the service so we can make improvements.") }}
+            {{ categories.analytics.description | default(analyticsDescription) }}
           </div>
           <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="analytics-yes" name="analytics" type="radio" value="on" {% if cookiePreferences.analytics %}checked{% endif %}>
               <label class="govuk-label govuk-radios__label" for="analytics-yes">
-                {{ t.cookiePreferences.useAnalytics[locale] | default("Use analytics cookies") }}
+                {{ useAnalytics }}
               </label>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="analytics-no" name="analytics" type="radio" value="off" {% if not cookiePreferences.analytics %}checked{% endif %}>
               <label class="govuk-label govuk-radios__label" for="analytics-no">
-                {{ t.cookiePreferences.doNotUseAnalytics[locale] | default("Do not use analytics cookies") }}
+                {{ doNotUseAnalytics }}
               </label>
             </div>
           </div>
@@ -62,23 +62,23 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h2 class="govuk-fieldset__heading">
-              {{ t.cookiePreferences.preferencesTitle[locale] | default("Settings cookies") }}
+              {{ preferencesTitle }}
             </h2>
           </legend>
           <div class="govuk-hint">
-            {{ categories.preferences.description | default(t.cookiePreferences.preferencesDescription[locale]) | default("These cookies remember your settings and preferences.") }}
+            {{ categories.preferences.description | default(preferencesDescription) }}
           </div>
           <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="preferences-yes" name="preferences" type="radio" value="on" {% if cookiePreferences.preferences %}checked{% endif %}>
               <label class="govuk-label govuk-radios__label" for="preferences-yes">
-                {{ t.cookiePreferences.usePreferences[locale] | default("Use settings cookies") }}
+                {{ usePreferences }}
               </label>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="preferences-no" name="preferences" type="radio" value="off" {% if not cookiePreferences.preferences %}checked{% endif %}>
               <label class="govuk-label govuk-radios__label" for="preferences-no">
-                {{ t.cookiePreferences.doNotUsePreferences[locale] | default("Do not use settings cookies") }}
+                {{ doNotUsePreferences }}
               </label>
             </div>
           </div>
@@ -87,7 +87,7 @@
       {% endif %}
       
       <button type="submit" class="govuk-button" data-module="govuk-button">
-        {{ t.cookiePreferences.saveButton[locale] | default("Save cookie preferences") }}
+        {{ saveButton }}
       </button>
     </form>
   </div>
