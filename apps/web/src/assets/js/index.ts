@@ -1,7 +1,4 @@
-import * as cookieManagerModule from "@hmcts/cookie-manager";
-
-const cookieManager = (cookieManagerModule as any).default || cookieManagerModule;
-
+import cookieManager from "@hmcts/cookie-manager";
 import { initAll } from "govuk-frontend";
 import "../css/index.scss"; // used for dev mode HMR
 
