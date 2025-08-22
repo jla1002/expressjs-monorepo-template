@@ -658,6 +658,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@hmcts/cookie-manager@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@hmcts/cookie-manager@npm:1.1.0"
+  checksum: 10c0/40ba50701c0723d69a7f050f78b4db5c26bb9ff8d5ef77888428c944fe893c37744cd3e02e1dd9f0e5c2a20cda95846d31c17aab65741e999ee005df72c913f6
+  languageName: node
+  linkType: hard
+
 "@hmcts/express-govuk-starter@workspace:*, @hmcts/express-govuk-starter@workspace:libs/express-govuk-starter":
   version: 0.0.0-use.local
   resolution: "@hmcts/express-govuk-starter@workspace:libs/express-govuk-starter"
@@ -665,6 +672,7 @@ __metadata:
     "@types/express": "npm:5.0.3"
     "@types/nunjucks": "npm:3.2.6"
   peerDependencies:
+    "@hmcts/cookie-manager": ^1.0.0
     express: ^5.1.0
     govuk-frontend: ^5.2.0
     helmet: ^8.0.0
@@ -691,6 +699,7 @@ __metadata:
   resolution: "@hmcts/web@workspace:apps/web"
   dependencies:
     "@hmcts/cloud-native-platform": "workspace:*"
+    "@hmcts/cookie-manager": "npm:1.1.0"
     "@hmcts/express-govuk-starter": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@types/compression": "npm:1.8.1"

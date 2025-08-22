@@ -1,7 +1,15 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { configurePropertiesVolume, healthcheck, monitoringMiddleware } from "@hmcts/cloud-native-platform";
-import { configureGovuk, configureHelmet, configureNonce, createSimpleRouter, errorHandler, notFoundHandler } from "@hmcts/express-govuk-starter";
+import {
+  configureCookieManager,
+  configureGovuk,
+  configureHelmet,
+  configureNonce,
+  createSimpleRouter,
+  errorHandler,
+  notFoundHandler,
+} from "@hmcts/express-govuk-starter";
 import compression from "compression";
 import config from "config";
 import cookieParser from "cookie-parser";
@@ -49,6 +57,14 @@ export async function createApp(): Promise<Express> {
         jsEntry: "js/index.ts",
         cssEntry: "css/index.scss",
       },
+    },
+  });
+
+  await configureCookieManager(app, {
+    essential: ["session", "csrf_token"],
+    categories: {
+      analytics: ["_ga", "_gid", "dtCookie", "dtSa", "rxVisitor", "rxvt"],
+      preferences: ["language"],
     },
   });
 

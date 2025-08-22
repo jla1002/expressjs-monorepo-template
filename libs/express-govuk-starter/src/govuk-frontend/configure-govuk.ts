@@ -16,7 +16,8 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
 
   const govukFrontendPath = "../../node_modules/govuk-frontend/dist";
   const govukSetupViews = path.join(__dirname, "./views");
-  const allViewPaths = [govukFrontendPath, govukSetupViews, ...viewPaths];
+  const cookieViews = path.join(__dirname, "../cookies/views");
+  const allViewPaths = [govukFrontendPath, govukSetupViews, cookieViews, ...viewPaths];
 
   const env = nunjucks.configure(allViewPaths, {
     autoescape: true,
@@ -26,6 +27,7 @@ export async function configureGovuk(app: Express, options: GovukSetupOptions = 
   });
 
   app.set("view engine", "njk");
+  app.set("nunjucksEnv", env);
 
   addFilters(env);
   addGlobals(env);

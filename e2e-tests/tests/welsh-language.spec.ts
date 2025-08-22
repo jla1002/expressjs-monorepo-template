@@ -26,7 +26,7 @@ test.describe('Welsh Language Support', () => {
     await expect(languageToggle).toContainText('English');
     
     // Check footer links are in Welsh
-    const cookiesLink = page.locator('a[href="/cookies"]');
+    const cookiesLink = page.locator('.govuk-footer a[href="/cookies"]');
     await expect(cookiesLink).toContainText('Cwcis');
     
     // Click language toggle to switch back to English
