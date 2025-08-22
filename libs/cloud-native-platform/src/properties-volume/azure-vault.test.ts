@@ -194,4 +194,49 @@ describe("addFromAzureVault", () => {
       secret_with_dots: "value2",
     });
   });
+
+  it("should preserve vault name in error message when already present", async () => {
+    const helmChart = {
+      keyVaults: {
+        "test-vault": {
+          secrets: ["failing-secret"],
+        },
+      },
+    };
+
+    mockReadFileSync.mockReturnValue("helm-chart-content");
+    mockYamlLoad.mockReturnValue(helmChart);
+    const errorWithVaultName = new Error("test-vault: Something went wrong");
+    mockClient.getSecret.mockRejectedValue(errorWithVaultName);
+
+    await expect(addFromAzureVault(config, { pathToHelmChart: "/path/to/chart.yaml" })).rejects.toThrow(
+      "Azure Key Vault: Failed to retrieve secret failing-secret: test-vault: Something went wrong",
+    );
+  });
+
+  it("should handle deeply nested keyVaults configuration", async () => {
+    const helmChart = {
+      app: {
+        config: {
+          keyVaults: {
+            "nested-vault": {
+              secrets: ["nested-secret"],
+            },
+          },
+        },
+      },
+    };
+
+    mockReadFileSync.mockReturnValue("helm-chart-content");
+    mockYamlLoad.mockReturnValue(helmChart);
+    mockClient.getSecret.mockResolvedValue({ value: "nested-value" });
+
+    await addFromAzureVault(config, { pathToHelmChart: "/path/to/chart.yaml" });
+
+    expect(mockSecretClient).toHaveBeenCalledWith("https://nested-vault-aat.vault.azure.net/", expect.any(Object));
+    expect(config).toEqual({
+      existing: "value",
+      nested_secret: "nested-value",
+    });
+  });
 });

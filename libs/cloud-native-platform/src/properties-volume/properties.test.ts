@@ -1,5 +1,6 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import fs, { existsSync, readdirSync, readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { addFromAzureVault } from "./azure-vault.js";
 import { configurePropertiesVolume as setupPropertiesVolume } from "./properties.js";
 
 // Mock file system modules
@@ -12,9 +13,16 @@ vi.mock("node:fs", () => ({
   readFileSync: vi.fn(),
 }));
 
+// Mock azure-vault module
+vi.mock("./azure-vault.js", () => ({
+  addFromAzureVault: vi.fn(),
+}));
+
 const mockExistsSync = vi.mocked(existsSync);
 const mockReaddirSync = vi.mocked(readdirSync);
 const mockReadFileSync = vi.mocked(readFileSync);
+const mockFsExistsSync = vi.mocked(fs.existsSync);
+const mockAddFromAzureVault = vi.mocked(addFromAzureVault);
 
 describe("configurePropertiesVolume", () => {
   let config: Record<string, any>;
@@ -126,5 +134,58 @@ describe("configurePropertiesVolume", () => {
       existing: "value",
       secret: "value with spaces",
     });
+  });
+
+  it("should use Azure Vault when chartPath provided in non-production", async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = "development";
+    mockFsExistsSync.mockReturnValue(true);
+
+    await setupPropertiesVolume(config, { chartPath: "/path/to/chart.yaml" });
+
+    expect(mockAddFromAzureVault).toHaveBeenCalledWith(config, { pathToHelmChart: "/path/to/chart.yaml" });
+    expect(mockExistsSync).not.toHaveBeenCalled();
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it("should not use Azure Vault when chartPath provided in production", async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = "production";
+    mockExistsSync.mockReturnValue(true);
+    mockReaddirSync.mockReturnValue([]);
+
+    await setupPropertiesVolume(config, { chartPath: "/path/to/chart.yaml" });
+
+    expect(mockAddFromAzureVault).not.toHaveBeenCalled();
+    expect(mockExistsSync).toHaveBeenCalledWith("/mnt/secrets");
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it("should handle Azure Key Vault errors with failOnError false", async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = "development";
+    mockFsExistsSync.mockReturnValue(true);
+    mockAddFromAzureVault.mockRejectedValue(new Error("Azure Key Vault: Could not load secret"));
+
+    await setupPropertiesVolume(config, { chartPath: "/path/to/chart.yaml", failOnError: false });
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith("Warning: Azure Key Vault: Could not load secret");
+    expect(config).toEqual({ existing: "value" });
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it("should handle general errors with failOnError false", async () => {
+    mockExistsSync.mockReturnValue(true);
+    mockReaddirSync.mockImplementation(() => {
+      throw new Error("Permission denied");
+    });
+
+    await setupPropertiesVolume(config, { failOnError: false });
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith("Warning: Failed to load properties from /mnt/secrets: Permission denied");
+    expect(config).toEqual({ existing: "value" });
   });
 });
