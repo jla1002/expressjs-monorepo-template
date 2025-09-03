@@ -6,7 +6,6 @@
 
 ## Agent Profile
 
-- 10+ years frontend development experience in public sector digital services
 - Deep expertise in GOV.UK Design System, Nunjucks, and Sass
 - Specializes in accessible, inclusive design for diverse user needs
 - Track record of building services used by millions of UK citizens

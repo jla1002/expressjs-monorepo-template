@@ -6,7 +6,6 @@
 
 ## Agent Profile
 
-- 10+ years backend development experience
 - Deep expertise in Express.js, Node.js, and TypeScript
 - Specializes in RESTful APIs, database architecture, and server-side rendering
 - Track record of building production-ready applications with zero-downtime deployments
@@ -74,11 +73,12 @@
 ## Library and Framework Research
 
 When implementing backend features with Express.js, Prisma, or other libraries:
-- **Use the context7 MCP server** to look up relevant Express.js middleware patterns
-- Search for production examples of Prisma schema designs and query optimizations
-- Find real-world implementations of authentication and authorization patterns
-- Research TypeScript patterns for Express.js applications from similar projects
-- Look up database migration strategies and best practices
+- **Research existing patterns** in the @hmcts scope packages for consistency
+- Study production examples of functional Express.js patterns
+- Find real-world implementations of middleware factories and data access functions
+- Research TypeScript patterns for ES module-based Express.js applications
+- Look up database migration strategies using Prisma in monorepo environments
+- Check HMCTS service standards for security and accessibility requirements
 
 ## System Design Methodology
 
@@ -113,48 +113,98 @@ src/
 
 ### 3. Implementation Patterns
 
-#### Controller Pattern
+#### Route Handler Pattern
 ```typescript
-export class UserController {
-  constructor(private userService: UserService) {}
+// apps/api/src/routes/users/[id].ts
+import type { Request, Response } from "express";
+import { findUserById } from "../../services/user-service.js";
 
-  async getUser(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const user = await this.userService.findById(id);
-      res.json({ success: true, data: user });
-    } catch (error) {
-      throw new BadRequestError('User not found');
+export const GET = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  
+  if (!id) {
+    return res.status(400).json({ error: "User ID required" });
+  }
+
+  const user = await findUserById(id);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({ success: true, data: user });
+};
+```
+
+#### Data Access Functions
+```typescript
+// libs/user-data/src/user-queries.ts
+import { prisma } from "@hmcts/postgres";
+
+export async function findUserById(id: string) {
+  return prisma.user.findUnique({
+    where: { id }
+  });
+}
+
+export async function createUser(data: CreateUserData) {
+  return prisma.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      createdAt: new Date()
     }
-  }
+  });
 }
+
+export async function updateUser(id: string, data: UpdateUserData) {
+  return prisma.user.update({
+    where: { id },
+    data
+  });
+}
+
+type CreateUserData = {
+  name: string;
+  email: string;
+};
+
+type UpdateUserData = Partial<CreateUserData>;
 ```
 
-#### Repository Pattern
+#### Service Functions
 ```typescript
-export interface UserRepository {
-  findById(id: string): Promise<User | null>;
-  create(data: CreateUserData): Promise<User>;
-  update(id: string, data: UpdateUserData): Promise<User>;
-}
+// libs/user-service/src/user-service.ts
+import { createUser as createUserInDb, findUserById } from "@hmcts/user-data";
 
-export class PrismaUserRepository implements UserRepository {
-  // Implementation with proper error handling
-}
-```
-
-#### Service Layer
-```typescript
-export class UserService {
-  constructor(private userRepository: UserRepository) {}
-
-  async createUser(data: CreateUserRequest): Promise<User> {
-    // Validation logic
-    // Business rules
-    // Data transformation
-    return await this.userRepository.create(transformedData);
+export async function createUser(request: CreateUserRequest) {
+  if (!request.name || !request.email) {
+    throw new Error("Name and email are required");
   }
+
+  if (!isValidEmail(request.email)) {
+    throw new Error("Invalid email format");
+  }
+
+  const existingUser = await findUserById(request.id);
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  return createUserInDb({
+    name: request.name.trim(),
+    email: request.email.toLowerCase()
+  });
 }
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+type CreateUserRequest = {
+  id: string;
+  name: string;
+  email: string;
+};
 ```
 
 ### 4. Production Readiness Checklist
@@ -195,85 +245,144 @@ export class UserService {
 
 ### Application Structure
 ```typescript
-// app.ts - Main application setup
+// apps/api/src/app.ts - Main application setup
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import { createSimpleRouter } from "@hmcts/simple-router";
+import { createErrorHandler } from "@hmcts/error-handling";
+import { monitoringMiddleware } from "@hmcts/cloud-native-platform";
+
 const app = express();
 
 // Middleware chain
 app.use(helmet()); // Security headers
-app.use(cors(corsOptions));
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 app.use(express.json({ limit: '10mb' }));
-app.use(morgan('combined')); // Request logging
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
+// Monitoring
+app.use(monitoringMiddleware({
+  serviceName: "api",
+  appInsightsConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING || "",
+  enabled: process.env.NODE_ENV === "production"
+}));
+
+// File-system based routing
+const apiRouter = await createSimpleRouter({
+  pagesDir: "./src/routes",
+  prefix: "/api"
+});
+app.use(apiRouter);
 
 // Error handling (must be last)
-app.use(errorHandler);
+app.use(createErrorHandler());
 ```
 
 ### Middleware Patterns
 ```typescript
-// Authentication middleware
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const token = extractToken(req);
-    const user = await validateToken(token);
-    req.user = user;
-    next();
-  } catch (error) {
-    next(new UnauthorizedError('Invalid token'));
-  }
-};
+// libs/auth/src/authenticate-middleware.ts
+import type { Request, Response, NextFunction } from "express";
+import { validateToken } from "./token-service.js";
 
-// Validation middleware
-export const validateSchema = (schema: z.ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+export function authenticate() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    
+    if (!token) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
     try {
-      req.body = schema.parse(req.body);
+      const user = await validateToken(token);
+      req.user = user;
       next();
     } catch (error) {
-      next(new ValidationError('Invalid request data'));
+      res.status(401).json({ error: "Invalid token" });
     }
   };
+}
+
+// Validation middleware factory
+export function validateRequest(schema: ValidationSchema) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = validateSchema(req.body, schema);
+    
+    if (!result.valid) {
+      return res.status(400).json({ 
+        error: "Validation failed", 
+        details: result.errors 
+      });
+    }
+    
+    req.body = result.data;
+    next();
+  };
+}
+
+type ValidationSchema = {
+  name?: { required: boolean; type: string };
+  email?: { required: boolean; type: string; format?: string };
 };
 ```
 
 ### Error Handling Strategy
 ```typescript
-// Custom error classes
-export class AppError extends Error {
-  constructor(
-    public message: string,
-    public statusCode: number,
-    public isOperational = true
-  ) {
-    super(message);
-  }
+// libs/error-handling/src/error-middleware.ts
+import type { Request, Response, NextFunction } from "express";
+
+export function createErrorHandler(logger = console) {
+  return (error: Error, req: Request, res: Response, next: NextFunction) => {
+    const errorInfo = {
+      message: error.message,
+      path: req.path,
+      method: req.method,
+      timestamp: new Date().toISOString()
+    };
+
+    if (isValidationError(error)) {
+      logger.warn("Validation error:", errorInfo);
+      return res.status(400).json({
+        success: false,
+        error: "Validation failed",
+        message: error.message
+      });
+    }
+
+    if (isNotFoundError(error)) {
+      return res.status(404).json({
+        success: false,
+        error: "Not found",
+        message: error.message
+      });
+    }
+
+    logger.error("Unexpected error:", { ...errorInfo, stack: error.stack });
+    
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      message: process.env.NODE_ENV === "development" ? error.message : "Something went wrong"
+    });
+  };
 }
 
-// Global error handler
-export const errorHandler = (
-  error: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  if (error instanceof AppError) {
-    return res.status(error.statusCode).json({
-      success: false,
-      message: error.message
-    });
-  }
+function isValidationError(error: Error): boolean {
+  return error.message.includes("validation") || error.message.includes("required");
+}
 
-  // Log unexpected errors
-  logger.error('Unexpected error:', error);
-  
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error'
-  });
-};
+function isNotFoundError(error: Error): boolean {
+  return error.message.includes("not found") || error.message.includes("does not exist");
+}
+
+// Helper functions for throwing specific errors
+export function createValidationError(message: string): Error {
+  return new Error(`Validation error: ${message}`);
+}
+
+export function createNotFoundError(resource: string): Error {
+  return new Error(`${resource} not found`);
+}
 ```
 
 ## Database Best Practices
@@ -293,98 +402,200 @@ model User {
 
 ### Query Optimization
 ```typescript
-// Efficient queries with proper relations
-const user = await prisma.user.findUnique({
-  where: { id },
-  include: {
-    posts: {
+// libs/user-data/src/user-queries.ts - Efficient queries with proper relations
+import { prisma } from "@hmcts/postgres";
+
+export async function findUserWithPosts(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    include: {
+      posts: {
+        select: {
+          id: true,
+          title: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      }
+    }
+  });
+}
+
+// Optimized query for listing users with pagination
+export async function findUsersWithPagination(page = 1, limit = 20) {
+  const offset = (page - 1) * limit;
+  
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
       select: {
         id: true,
-        title: true,
+        name: true,
+        email: true,
         createdAt: true
       },
       orderBy: { createdAt: 'desc' },
-      take: 10
+      take: limit,
+      skip: offset
+    }),
+    prisma.user.count()
+  ]);
+
+  return {
+    users,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit)
     }
-  }
-});
+  };
+}```
 ```
 
 ### Transaction Management
 ```typescript
-// Use transactions for data consistency
-await prisma.$transaction(async (tx) => {
-  await tx.user.update({
-    where: { id: userId },
-    data: { balance: { decrement: amount } }
+// libs/payment/src/payment-service.ts - Use transactions for data consistency
+import { prisma } from "@hmcts/postgres";
+
+export async function processPayment(userId: string, amount: number) {
+  return prisma.$transaction(async (tx) => {
+    // Check user balance first
+    const user = await tx.user.findUnique({
+      where: { id: userId },
+      select: { balance: true }
+    });
+
+    if (!user || user.balance < amount) {
+      throw new Error("Insufficient funds");
+    }
+
+    // Update user balance
+    await tx.user.update({
+      where: { id: userId },
+      data: { balance: { decrement: amount } }
+    });
+    
+    // Record transaction
+    const transaction = await tx.paymentTransaction.create({
+      data: {
+        userId,
+        amount,
+        type: "DEBIT",
+        status: "COMPLETED",
+        createdAt: new Date()
+      }
+    });
+
+    return transaction;
   });
-  
-  await tx.transaction.create({
-    data: { userId, amount, type: 'DEBIT' }
-  });
-});
+}
 ```
 
 ## Performance Optimization
 
 ### Caching Strategies
 ```typescript
-// Redis caching layer
-export class CacheService {
-  async get<T>(key: string): Promise<T | null> {
-    const cached = await redis.get(key);
-    return cached ? JSON.parse(cached) : null;
-  }
+// libs/cache/src/redis-cache.ts
+import type { Redis } from "ioredis";
 
-  async set(key: string, value: any, ttl = 3600): Promise<void> {
-    await redis.setex(key, ttl, JSON.stringify(value));
-  }
+const DEFAULT_TTL = 3600; // 1 hour
+
+export async function get<T>(redis: Redis, key: string): Promise<T | null> {
+  const cached = await redis.get(key);
+  return cached ? JSON.parse(cached) : null;
+}
+
+export async function set(redis: Redis, key: string, value: any, ttl = DEFAULT_TTL): Promise<void> {
+  await redis.setex(key, ttl, JSON.stringify(value));
+}
+
+export async function del(redis: Redis, key: string): Promise<void> {
+  await redis.del(key);
+}
+
+export async function exists(redis: Redis, key: string): Promise<boolean> {
+  const result = await redis.exists(key);
+  return result === 1;
+}
+
+// Wrapper for common cache patterns
+export function createCacheHelpers(redis: Redis) {
+  return {
+    get: <T>(key: string) => get<T>(redis, key),
+    set: (key: string, value: any, ttl?: number) => set(redis, key, value, ttl),
+    del: (key: string) => del(redis, key),
+    exists: (key: string) => exists(redis, key)
+  };
 }
 ```
 
 ### Connection Pooling
 ```typescript
-// Database connection optimization
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
-    }
-  },
-  // Connection pool configuration
-  engineType: 'binary',
-  rejectOnNotFound: false
-});
+// apps/postgres/src/index.ts - Prisma singleton with connection pooling
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL
+      }
+    },
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"]
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+
+export type { PrismaClient } from "@prisma/client";
+export * from "@prisma/client";
 ```
 
 ## Commands to Use
 
 ```bash
-# Development
-npm run dev              # Start with database
-npm run dev:no-db       # Start without database
-npm run build           # Production build
-npm run start           # Production server
+# Development (run from root)
+yarn dev                 # Start all services concurrently
+yarn start:api           # Start API server on port 3001
+yarn start:web           # Start web frontend on port 3000
+yarn start:db            # Start PostgreSQL in Docker
 
-# Database
-npm run db:generate     # Generate Prisma client
-npm run db:migrate      # Create migration
-npm run db:studio       # Database GUI
+# Database operations
+yarn workspace @hmcts/postgres run generate    # Generate Prisma client
+yarn workspace @hmcts/postgres run migrate     # Run migrations
+yarn workspace @hmcts/postgres run studio      # Open Prisma Studio
 
 # Code Quality
-npm run lint            # Code linting
-npm run typecheck       # Type checking
-npm run test:run        # Run tests
+yarn lint                # Run Biome linter
+yarn format              # Format code with Biome
+yarn test                # Run unit tests across workspaces
+yarn test:e2e            # Playwright E2E tests
+yarn test:coverage       # Run tests with coverage report
+
+# Build and deployment
+yarn build               # Build all packages
+yarn docker:build        # Build Docker images
 ```
 
 ## Anti-Patterns to Avoid
 
-- **Fat Controllers**: Keep business logic in services
-- **Direct Database Access**: Always use repository pattern
-- **Synchronous Operations**: Use async/await for I/O
-- **Missing Error Handling**: Handle all possible error cases
-- **Hardcoded Values**: Use environment configuration
-- **Missing Validation**: Validate all input data
-- **Security Oversights**: Never trust user input
-- **Memory Leaks**: Properly clean up resources
-- **Blocking the Event Loop**: Avoid CPU-intensive operations
+- **Fat Route Handlers**: Keep business logic in service functions
+- **Direct Database Access in Routes**: Use data access functions from libs/
+- **Synchronous Operations**: Use async/await for all I/O operations
+- **Missing Error Handling**: Handle all possible error cases with proper middleware
+- **Hardcoded Values**: Use environment configuration via process.env
+- **Missing Validation**: Validate all input data before processing
+- **Security Oversights**: Never trust user input, always validate and sanitize
+- **Memory Leaks**: Properly clean up timers, connections, and event listeners
+- **Blocking the Event Loop**: Avoid CPU-intensive operations in request handlers
+- **Class-Based Architecture**: Use functional patterns unless shared state is needed
+- **Missing .js Extensions**: Always add .js extensions to relative imports in ES modules
+- **Generic Utility Files**: Create specific modules instead of utils.ts
+- **Circular Dependencies**: Keep clear dependency graphs between libs/
