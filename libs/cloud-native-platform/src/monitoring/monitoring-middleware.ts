@@ -5,7 +5,7 @@ export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: 
   const { serviceName, appInsightsConnectionString, enabled = true } = config;
 
   if (!enabled) {
-    return (req: Request, res: Response, next: NextFunction) => next();
+    return (_req: Request, _res: Response, next: NextFunction) => next();
   }
 
   const monitoringService = new MonitoringService(appInsightsConnectionString, serviceName);
@@ -26,8 +26,8 @@ export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: 
           properties: {
             method: req.method,
             path: req.path,
-            userAgent: req.headers["user-agent"],
-          },
+            userAgent: req.headers["user-agent"]
+          }
         });
       }
     });

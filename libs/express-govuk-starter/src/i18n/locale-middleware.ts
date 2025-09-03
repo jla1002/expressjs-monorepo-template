@@ -40,7 +40,7 @@ export function localeMiddleware(options: LocaleMiddlewareOptions = {}) {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+        maxAge: 30 * 24 * 60 * 60 * 1000
       });
     }
 
@@ -62,7 +62,7 @@ export function translationMiddleware(translations: Translations) {
 
     res.locals.languageToggle = {
       link: `?lng=${otherLocale}`,
-      text: currentTranslations.language?.switch || otherLocale.toUpperCase(),
+      text: currentTranslations.language?.switch || otherLocale.toUpperCase()
     };
 
     next();
@@ -85,7 +85,7 @@ export function renderInterceptorMiddleware() {
 
       // If options contains both 'en' and 'cy' keys, select based on locale
       if (opts && typeof opts === "object" && "en" in opts && "cy" in opts) {
-        const { en, cy, ...otherContent } = opts;
+        const { en, cy: _cy, ...otherContent } = opts;
         const locale = res.locals.locale || "en";
         const selectedContent = opts[locale] || en || {};
 
@@ -93,13 +93,13 @@ export function renderInterceptorMiddleware() {
         opts = {
           ...res.locals,
           ...selectedContent,
-          ...otherContent,
+          ...otherContent
         };
       } else if (opts && typeof opts === "object") {
         // Merge provided options with locals
         opts = {
           ...res.locals,
-          ...opts,
+          ...opts
         };
       } else {
         // Use locals if no options provided

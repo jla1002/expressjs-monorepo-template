@@ -6,16 +6,17 @@ import {
   configureGovuk,
   configureHelmet,
   configureNonce,
-  createSimpleRouter,
   errorHandler,
-  notFoundHandler,
+  expressSessionRedis,
+  notFoundHandler
 } from "@hmcts/express-govuk-starter";
+import { createSimpleRouter } from "@hmcts/simple-router";
 import compression from "compression";
 import config from "config";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
-import session from "express-session";
+import { createClient } from "redis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,20 +33,7 @@ export async function createApp(): Promise<Express> {
   app.use(monitoringMiddleware(config.get("applicationInsights")));
   app.use(configureNonce());
   app.use(configureHelmet());
-
-  // TODO move to session package with redis set up
-  app.use(
-    session({
-      secret: config.get("session.secret"),
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 4,
-      },
-    }),
-  );
+  app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
   await configureGovuk(app, {
     i18nContentPath: path.join(__dirname, "locales"),
@@ -55,21 +43,21 @@ export async function createApp(): Promise<Express> {
       distPath: path.join(__dirname, "../dist"),
       entries: {
         jsEntry: "js/index.ts",
-        cssEntry: "css/index.scss",
-      },
+        cssEntry: "css/index.scss"
+      }
     },
     nunjucksGlobals: {
       gtm: config.get("gtm"),
-      dynatrace: config.get("dynatrace"),
-    },
+      dynatrace: config.get("dynatrace")
+    }
   });
 
   await configureCookieManager(app, {
-    essential: ["session", "csrf_token"],
     categories: {
+      essential: ["connect.sid"],
       analytics: ["_ga", "_gid", "dtCookie", "dtSa", "rxVisitor", "rxvt"],
-      preferences: ["language"],
-    },
+      preferences: ["language"]
+    }
   });
 
   app.use(await createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
@@ -78,3 +66,11 @@ export async function createApp(): Promise<Express> {
 
   return app;
 }
+
+const getRedisClient = async () => {
+  const redisClient = createClient({ url: config.get("redis.url") });
+  redisClient.on("error", (err) => console.error("Redis Client Error", err));
+
+  await redisClient.connect();
+  return redisClient;
+};
