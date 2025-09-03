@@ -1,32 +1,42 @@
 # HMCTS Express Monorepo Template
 
-Production-ready Node.js starter with cloud-native capabilities for building HMCTS digital services using Express.js, TypeScript, and GOV.UK Design System.
+Production-ready Node.js starter with cloud-native capabilities for building HMCTS digital services using Express.js, TypeScript and GOV.UK Design System.
 
 ## 🚀 Overview
 
-A comprehensive monorepo template that demonstrates best practices for building government digital services. This template provides everything you need to create accessible, secure, and scalable applications that meet GDS and HMCTS standards.
+This template provides everything you need to create accessible, secure, and scalable applications that meet GDS and HMCTS standards.
 
 ## ✨ Key Features
 
 ### Cloud Native Platform
 - **Health Checks**: Configurable health endpoints with readiness and liveness probes for Kubernetes deployments
+- **Properties Volume**: Secure configuration management through mounted volumes with automatic environment variable injection
 - **Azure Integration**: Built-in support for Azure Key Vault secrets management and properties volume mounting
 - **Application Insights**: Comprehensive monitoring with Azure Application Insights including custom metrics and distributed tracing
-- **Properties Volume**: Secure configuration management through mounted volumes with automatic environment variable injection
 
 ### Express GOV.UK Starter for frontends
 - **GOV.UK Design System**: Fully integrated GOV.UK Frontend with Nunjucks templates and automatic asset compilation
 - **Internationalization**: Welsh language support with locale middleware and translation management system
 - **Security Headers**: Pre-configured Helmet.js with CSP, HSTS, and nonce-based script protection
-- **Simple Router**: File-based routing with automatic route discovery and HTTP method handlers
 - **Asset Pipeline**: Vite-powered asset compilation with SCSS support and production optimization
+- **Cookie Management**: Built-in support for cookie consent
+- **Session Handling**: Session management using Redis or Postgres
+
+### Simple Router  
+A lightweight file-system router for Express applications, inspired by Next.js routing.
+
+- **File-based Routing**: Maps files in directories to Express routes automatically
+- **Dynamic Parameters**: Support for dynamic route segments using `[param]` syntax (e.g., `/users/[id]`)
+- **HTTP Method Exports**: Export handlers for any HTTP method (GET, POST, PUT, DELETE, etc.)
+- **Middleware Support**: Single handlers or arrays of middleware for complex request pipelines
+- **Multiple Mount Points**: Mount different directories with different URL prefixes
+- **Zero Dependencies**: Lightweight implementation with no external dependencies
 
 ### Monorepo Architecture
 - Single repository for multiple applications (e.g. multiple frontends sharing common code, APIs or libraries)
 - Workspace-based structure with Yarn workspaces
 - Shared libraries for common functionality
-- TypeScript with strict mode and ES modules
-- Comprehensive testing with Vitest and Playwright
+- Testing with Vitest and Playwright
 - Docker multi-stage builds for production
 - Helm charts for Kubernetes deployment
 - GitHub Actions CI/CD pipeline
@@ -42,7 +52,8 @@ expressjs-monorepo-template/
 │   └── postgres/               # Database configuration (Prisma)
 ├── libs/                       # Modular packages
 │   ├── cloud-native-platform/  # Cloud Native Platform features
-│   └── express-gov-uk-starter/ # GOV.UK Frontend integration
+│   ├── express-gov-uk-starter/ # GOV.UK Frontend integration
+│   └── simple-router/          # Simple Router features
 ├── e2e-tests/                  # End-to-end tests (Playwright)
 ├── docs/                       # Documentation and ADRs
 └── package.json                # Root configuration
@@ -64,9 +75,6 @@ yarn install
 
 # Run development server
 yarn dev
-
-# Access the application
-http://localhost:3000
 ```
 
 ### Services
@@ -75,7 +83,6 @@ http://localhost:3000
 |---------|-----|-------------|
 | Web Application | http://localhost:3000 | Main web interface with GOV.UK styling |
 | API Server | http://localhost:3001 | REST API backend |
-| Health Check | http://localhost:3001/health | API health status |
 | Prisma Studio | Run `yarn workspace @hmcts/postgres run studio` | Database management UI |
 
 ## 📦 Development
@@ -87,7 +94,6 @@ http://localhost:3000
 yarn dev                        # Start all services concurrently
 yarn start:web                  # Start web application only
 yarn start:api                  # Start API server only
-yarn start:db                   # Start PostgreSQL in Docker
 
 # Testing
 yarn test                       # Run all tests across workspaces
@@ -99,7 +105,6 @@ yarn test:coverage              # Generate coverage report
 # Code Quality
 yarn lint                       # Run Biome linter
 yarn format                     # Format code with Biome
-yarn type-check                 # TypeScript type checking
 
 # Database Operations
 yarn workspace @hmcts/postgres run generate    # Generate Prisma client
@@ -164,6 +169,14 @@ yarn test:e2e               # E2E tests
 yarn test:a11y              # Accessibility tests
 yarn test:coverage          # Coverage report
 ```
+
+## Security
+
+The GitHub Action pipelines contain a number of security checks, including:
+
+- **Dependency Scanning**: Automatically scans for vulnerabilities in dependencies
+- **SonarQube**: SAST analysis for code quality and security
+- **Claude Security Scans**: Claude AI-powered security scans for code vulnerabilities
 
 ## License
 

@@ -39,16 +39,49 @@ const en = {
       description: "Welsh language support with locale middleware and translation management system"
     },
     {
+      name: "Session Management",
+      description: "Flexible session storage with Redis and PostgreSQL support for distributed applications"
+    },
+    {
+      name: "Cookie Manager",
+      description: "Built-in cookie management with consent tracking and preference handling"
+    },
+    {
       name: "Security Headers",
       description: "Pre-configured Helmet.js with CSP, HSTS, and nonce-based script protection"
     },
     {
-      name: "Simple Router",
-      description: "File-based routing with automatic route discovery and HTTP method handlers"
-    },
-    {
       name: "Asset Pipeline",
       description: "Vite-powered asset compilation with SCSS support and production optimization"
+    }
+  ],
+
+  simpleRouterTitle: "Simple Router",
+  simpleRouterDescription: "Lightweight file-system router inspired by Next.js:",
+  simpleRouterFeatures: [
+    {
+      name: "File-based Routing",
+      description: "Maps files in directories to Express routes automatically with zero configuration"
+    },
+    {
+      name: "Dynamic Parameters",
+      description: "Support for dynamic route segments using [param] syntax (e.g., /users/[id])"
+    },
+    {
+      name: "HTTP Method Exports",
+      description: "Export handlers for any HTTP method (GET, POST, PUT, DELETE, etc.) directly from route files"
+    },
+    {
+      name: "Middleware Support",
+      description: "Single handlers or arrays of middleware for complex request pipelines"
+    },
+    {
+      name: "Multiple Mount Points",
+      description: "Mount different directories with different URL prefixes for modular applications"
+    },
+    {
+      name: "Zero Dependencies",
+      description: "Lightweight implementation with no external dependencies, built for performance"
     }
   ],
 
@@ -57,6 +90,7 @@ const en = {
   architectureFeatures: [
     "Workspace-based structure with Yarn workspaces",
     "Shared libraries for common functionality",
+    "Simple Router package for file-based routing",
     "TypeScript with strict mode and ES modules",
     "Comprehensive testing with Vitest and Playwright",
     "Docker multi-stage builds for production",
@@ -115,16 +149,49 @@ const cy = {
       description: "Cefnogaeth iaith Gymraeg gyda cyfryngwr locale a system rheoli cyfieithu"
     },
     {
+      name: "Rheoli Sesiynau",
+      description: "Storio sesiynau hyblyg gyda chefnogaeth Redis a PostgreSQL ar gyfer cymwysiadau dosbarthedig"
+    },
+    {
+      name: "Rheolwr Cwcis",
+      description: "Rheoli cwcis adeiledig gyda thracio cydsyniad a thrin dewisiadau"
+    },
+    {
       name: "Penawdau Diogelwch",
       description: "Helmet.js wedi'i ffurfweddu ymlaen llaw gyda CSP, HSTS, ac amddiffyniad sgript seiliedig ar nonce"
     },
     {
-      name: "Llwybrydd Syml",
-      description: "Llwybro seiliedig ar ffeiliau gyda darganfod llwybrau awtomatig a trinwyr dull HTTP"
-    },
-    {
       name: "Piblinell Asedau",
       description: "Crynhoad ased wedi'i bweru gan Vite gyda chefnogaeth SCSS ac optimeiddio cynhyrchu"
+    }
+  ],
+
+  simpleRouterTitle: "Llwybrydd Syml",
+  simpleRouterDescription: "Llwybrydd system ffeiliau ysgafn wedi'i ysbrydoli gan Next.js:",
+  simpleRouterFeatures: [
+    {
+      name: "Llwybro Seiliedig ar Ffeiliau",
+      description: "Mapio ffeiliau mewn cyfeiriaduron i lwybrau Express yn awtomatig heb ffurfweddiad"
+    },
+    {
+      name: "Parametrau Deinamig",
+      description: "Cefnogaeth ar gyfer segmentau llwybr deinamig gan ddefnyddio cystrawen [param] (e.e., /users/[id])"
+    },
+    {
+      name: "Allforio Dulliau HTTP",
+      description: "Allforio trinwyr ar gyfer unrhyw ddull HTTP (GET, POST, PUT, DELETE, etc.) yn uniongyrchol o ffeiliau llwybr"
+    },
+    {
+      name: "Cefnogaeth Cyfryngwyr",
+      description: "Trinwyr sengl neu araeau o gyfryngwyr ar gyfer piblinellau cais cymhleth"
+    },
+    {
+      name: "Pwyntiau Gosod Lluosog",
+      description: "Gosod cyfeiriaduron gwahanol gyda rhagddodiaid URL gwahanol ar gyfer cymwysiadau modiwlaidd"
+    },
+    {
+      name: "Dim Dibyniaethau",
+      description: "Gweithrediad ysgafn heb ddibyniaethau allanol, wedi'i adeiladu ar gyfer perfformiad"
     }
   ],
 
@@ -133,6 +200,7 @@ const cy = {
   architectureFeatures: [
     "Strwythur seiliedig ar weithle gyda gweithle Yarn",
     "Llyfrgelloedd a rennir ar gyfer ymarferoldeb cyffredin",
+    "Pecyn Llwybrydd Syml ar gyfer llwybro seiliedig ar ffeiliau",
     "TypeScript gyda modd llym a modiwlau ES",
     "Profi cynhwysfawr gyda Vitest a Playwright",
     "Adeiladau aml-gam Docker ar gyfer cynhyrchu",
