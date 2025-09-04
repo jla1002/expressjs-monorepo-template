@@ -16,7 +16,7 @@
 - Configure Azure Application Insights for monitoring
 - Set up Azure Container Registry (ACR) for image storage
 - Configure Azure Service Bus for messaging
-- Manage Azure SQL Database and Cosmos DB
+- Manage Azure SQL Database (PostgreSQL) instances
 
 ### 2. Terraform Infrastructure as Code
 - Write modular, reusable Terraform configurations
@@ -40,7 +40,6 @@
 
 ### 5. Security & Compliance
 - Ensure HMCTS security standards compliance
-- Manage SSL/TLS certificates with Azure Key Vault
 
 ## HMCTS Terraform Module Standards
 
@@ -108,7 +107,6 @@ nodejs:
   
   environment:
     NODE_ENV: production
-    APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPINSIGHTS_CONNECTION_STRING}
     
   keyVaults:
     my-app:
@@ -131,11 +129,6 @@ nodejs:
     maxReplicas: 10
     targetCPUUtilizationPercentage: 80
   
-  livenessPath: /health/liveness
-  readinessPath: /health/readiness
-  
-  # Flux will automatically deploy based on these values
-  releaseNameOverride: my-app-{{ .Values.global.environment }}
 ```
 
 ## Flux GitOps Deployment Model

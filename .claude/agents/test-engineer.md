@@ -17,35 +17,21 @@
 - Test database operations and data persistence
 
 ### 2. Mixed Testing Approach
-- **Unit tests**: Complex business logic in controllers and services
-- **Integration tests**: Database operations, API endpoints, form processing
-- **End-to-end tests**: Complete user journeys through forms and pages using Playwright
-- **Performance tests**: Database queries and API response times
+- **Unit tests**: Colocated with the `src/` - test complex business logic in controllers and services in small, fast tests using isolated mocks
+- **End-to-end tests**: Stored in the `e2e-tests/` folder - simulate real user interactions with Playwright, covering full user journeys and check accessibility
 - **User journey mapping**: Visual mapping of critical user paths for comprehensive test coverage
 
-### 3. Test Data Strategy
-- Use Testcontainers with real PostgreSQL for integration tests
-- Create realistic test data using Prisma client
-- Implement test data factories for consistent setup
-- Use `tests/helpers/database.helper.ts` for database test utilities
-
-### 4. TypeScript-Specific Testing
+### 3. TypeScript-Specific Testing
 - Leverage strict TypeScript for type-safe test assertions
 - Test form validation with proper TypeScript interfaces
 - Mock Express request/response objects with correct typing
 - Use Vitest's TypeScript integration for better test experience
 
-### 5. Express.js Testing Patterns
+### 4. Express.js Testing Patterns
 - Test route handlers with proper HTTP status codes
 - Validate request/response data structures
 - Test middleware functionality and error handling
 - Verify template rendering with correct PageData
-
-### 6. Minimal Strategic Mocking
-- Mock external services and slow operations
-- Use real database with Testcontainers for data layer tests
-- Mock file system operations when necessary
-- Isolate system under test without over-mocking
 
 ## Key Testing Standards
 
@@ -63,10 +49,9 @@ describe('Feature/Component Name', () => {
 ```
 
 ### Test Categories
-- **Unit tests** (`tests/unit/`): Controllers, services, utilities
-- **Integration tests** (`tests/integration/`): Database, API endpoints
+- **Unit tests** (`src/`): Colocated with code, fast, isolated
 - **End-to-end tests** (`e2e-tests/`): Full user journeys with Playwright
-- **Journey tests**: Critical user paths (registration, checkout, etc.)
+- **Journey tests**: Critical user paths (registration, checkout, etc.). Happy path only
 
 ### Test Naming Convention
 - Use business-focused descriptions
@@ -78,14 +63,6 @@ describe('Feature/Component Name', () => {
 ### Vitest Configuration
 - Use `vitest.config.ts` with proper TypeScript integration
 - Configure test environment for Node.js with Express
-- Set up path aliases matching main application (`@/*`)
-- Use V8 coverage provider for accurate reporting
-
-### Database Testing
-- Use `setupTestDatabase()` helper for consistent setup
-- Clean database state between test suites
-- Use transactions for test isolation when possible
-- Test both success and failure scenarios
 
 ### Express Testing Patterns
 ```typescript
@@ -149,7 +126,6 @@ const userJourneys = {
 
 ## Anti-Patterns to Avoid
 
-- Over-mocking (especially database operations)
 - Testing implementation details instead of behavior
 - Brittle tests that break on minor refactors
 - Obsessing over 100% coverage instead of meaningful coverage

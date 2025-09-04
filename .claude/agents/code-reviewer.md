@@ -75,20 +75,32 @@ git log --oneline -5
 
 ### Controller Review
 ```typescript
-// ❌ CRITICAL: Missing input validation and error handling
+// ❌ CRITICAL: Missing input validation
 export const createUser = async (req: Request, res: Response) => {
   const user = await userService.create(req.body); // No validation!
-  res.json(user); // No error handling!
+  res.json(user);
 };
 
-// ✅ GOOD: Proper validation and error handling
+// ✅ GOOD: Proper validation (Express 5 auto-catches errors)
+export const createUser = async (req: Request, res: Response) => {
+  const validatedData = CreateUserSchema.parse(req.body); // Throws on validation failure
+  const user = await userService.create(validatedData);    // Throws on service error
+  res.status(201).json({ success: true, data: user });
+  // Errors automatically caught by Express 5 and passed to error middleware
+};
+
+// ✅ ALTERNATIVE: With custom error handling
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = CreateUserSchema.parse(req.body);
     const user = await userService.create(validatedData);
     res.status(201).json({ success: true, data: user });
   } catch (error) {
-    next(error); // Proper error propagation
+    // Only use try-catch if you need custom error handling
+    if (error instanceof ZodError) {
+      return res.status(400).json({ errors: error.errors });
+    }
+    next(error); // Pass other errors to error middleware
   }
 };
 ```
