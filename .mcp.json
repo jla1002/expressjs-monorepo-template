@@ -10,13 +10,14 @@
       "type": "sse",
       "url": "https://mcp.context7.com/sse"
     },
-    "mcp-atlassian": {
+    "jira": {
+      "type": "stdio",
       "command": "docker",
       "args": [
         "run",
         "-i",
         "--rm",
-        "--env-file", "~/.jira-mcp.env",
+        "--env-file", ".mcp.env",
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ]
     }

@@ -36,3 +36,6 @@ lcov.info
 # intellij
 .idea/
 
+# mcp env vars
+.mcp.env
+
