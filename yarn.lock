@@ -643,13 +643,13 @@ __metadata:
     "@types/nunjucks": "npm:3.2.6"
     "@types/pg": "npm:8.15.5"
     "@types/pg-format": "npm:1.0.5"
-    connect-redis: "npm:7.1.1"
+    connect-redis: "npm:9.0.0"
     express-session: "npm:1.18.2"
     pg: "npm:8.16.3"
     pg-format: "npm:1.0.4"
   peerDependencies:
     "@hmcts/cookie-manager": ^1.1.0
-    connect-redis: ^7.1.1
+    connect-redis: ^7.1.1 || ^9.0.0
     express: ^5.1.0
     express-session: ^1.18.2
     govuk-frontend: ^5.2.0
@@ -710,7 +710,7 @@ __metadata:
     "@types/supertest": "npm:6.0.3"
     compression: "npm:1.8.1"
     config: "npm:4.1.1"
-    connect-redis: "npm:7.1.1"
+    connect-redis: "npm:9.0.0"
     cookie-parser: "npm:1.4.7"
     express: "npm:5.1.0"
     express-session: "npm:1.18.2"
@@ -2340,12 +2340,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect-redis@npm:7.1.1":
-  version: 7.1.1
-  resolution: "connect-redis@npm:7.1.1"
+"connect-redis@npm:9.0.0":
+  version: 9.0.0
+  resolution: "connect-redis@npm:9.0.0"
   peerDependencies:
     express-session: ">=1"
-  checksum: 10c0/eeb9e275176d1ef973c808df7c860c80300dfdecdee1a8ca20524fc4e37ccb2206923b07f17501fb7235cde73e9db9e06dff79ef17a54e5a57f35db247ec99fb
+    redis: ">=5"
+  checksum: 10c0/85616db0760f7974ed14f0676488dab168c111ae2068fae645a8b1acd0acf72d3c57d2252deb50eff662c22db72a6028e1635d9ff8450f3cac853278aa64051a
   languageName: node
   linkType: hard
 
