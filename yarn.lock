@@ -649,7 +649,7 @@ __metadata:
     pg-format: "npm:1.0.4"
   peerDependencies:
     "@hmcts/cookie-manager": ^1.1.0
-    connect-redis: ^7.1.1 || ^9.0.0
+    connect-redis: ^9.0.0
     express: ^5.1.0
     express-session: ^1.18.2
     govuk-frontend: ^5.2.0
@@ -701,11 +701,11 @@ __metadata:
     "@hmcts/postgres": "workspace:*"
     "@hmcts/simple-router": "workspace:*"
     "@types/compression": "npm:1.8.1"
-    "@types/config": "npm:^3.3.5"
+    "@types/config": "npm:3.3.5"
     "@types/cookie-parser": "npm:1.4.9"
     "@types/express": "npm:5.0.3"
     "@types/express-session": "npm:1.18.2"
-    "@types/govuk-frontend": "npm:^5.9.0"
+    "@types/govuk-frontend": "npm:5.9.0"
     "@types/nunjucks": "npm:3.2.6"
     "@types/supertest": "npm:6.0.3"
     compression: "npm:1.8.1"
@@ -722,7 +722,7 @@ __metadata:
     sass: "npm:1.92.0"
     supertest: "npm:7.1.4"
     vite: "npm:7.1.4"
-    vite-plugin-static-copy: "npm:^3.1.1"
+    vite-plugin-static-copy: "npm:3.1.1"
   languageName: unknown
   linkType: soft
 
@@ -1427,7 +1427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^3.3.5":
+"@types/config@npm:3.3.5":
   version: 3.3.5
   resolution: "@types/config@npm:3.3.5"
   checksum: 10c0/32f57d8bd8a6bd79d29a7f26f945b537f745dbadc33cd8eaad98f6e466e0175fb90ae37952352fa6509a0f5de212b9bd0af320bc3bb5f8579af6affe5e3410f6
@@ -1514,7 +1514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/govuk-frontend@npm:^5.9.0":
+"@types/govuk-frontend@npm:5.9.0":
   version: 5.9.0
   resolution: "@types/govuk-frontend@npm:5.9.0"
   checksum: 10c0/b6f8f62092b5a58d87ca130c3abdaefa849371f31c649ec0695a41ed724273bee08bcbd50b53b0086ad4d155353ae952dbdcb68bbf050fbbd57bb745592c75bd
@@ -5419,9 +5419,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-static-copy@npm:^3.1.1":
-  version: 3.1.2
-  resolution: "vite-plugin-static-copy@npm:3.1.2"
+"vite-plugin-static-copy@npm:3.1.1":
+  version: 3.1.1
+  resolution: "vite-plugin-static-copy@npm:3.1.1"
   dependencies:
     chokidar: "npm:^3.6.0"
     fs-extra: "npm:^11.3.0"
@@ -5430,7 +5430,7 @@ __metadata:
     tinyglobby: "npm:^0.2.14"
   peerDependencies:
     vite: ^5.0.0 || ^6.0.0 || ^7.0.0
-  checksum: 10c0/1a65f4c9d291cc27483a5b225b1ac5610edc3aa2f13fa3a76a77327874c83bbee52e1011ee0bf5b0168b9b7b974213d49fe800e44af398cfbcb6607814b45c5b
+  checksum: 10c0/a4dd5d31212b037d4902d55c2ee83866e496857bf948f258599dc24ec61b4628cf0dd23e4a7d7dc189d33ad1489427e976fa95e4db61b394d0be4f63077ef92c
   languageName: node
   linkType: hard
 
