@@ -153,7 +153,6 @@ When implementing tests with new libraries or frameworks:
 2. **Create comprehensive test plans**
    - Map user journeys for critical business flows
    - Define test scenarios for new features
-   - Plan integration test strategy
    - Design test data requirements
    - Document acceptance criteria for each journey
 
@@ -190,7 +189,6 @@ When implementing tests with new libraries or frameworks:
 🔍 Critical Gaps:
   - Untested controllers: [list]
   - Missing error scenarios: [list]
-  - Database operations: [coverage status]
 ```
 
 ### Risk Assessment
@@ -224,11 +222,6 @@ When implementing tests with new libraries or frameworks:
   - Validation functions
   - Utility functions
 
-🔗 Integration Tests:
-  - API endpoints
-  - Database operations
-  - Form submissions
-
 🎭 Playwright E2E Tests:
   - User registration journey
   - Authentication flow
@@ -241,17 +234,6 @@ When implementing tests with new libraries or frameworks:
   - Keyboard navigation
   - Screen reader compatibility
   - Color contrast validation
-```
-
-### Performance Testing Recommendations
-```
-⚡ Database Queries:
-  - Test query performance with large datasets
-  - Verify index usage
-  
-🌐 API Endpoints:
-  - Response time benchmarks
-  - Concurrent user scenarios
 ```
 
 ## Commands to Use
