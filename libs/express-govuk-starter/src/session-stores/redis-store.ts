@@ -1,4 +1,4 @@
-import RedisStore from "connect-redis";
+import { RedisStore } from "connect-redis";
 import type { RequestHandler } from "express";
 import session, { type SessionOptions } from "express-session";
 

@@ -643,13 +643,13 @@ __metadata:
     "@types/nunjucks": "npm:3.2.6"
     "@types/pg": "npm:8.15.5"
     "@types/pg-format": "npm:1.0.5"
-    connect-redis: "npm:7.1.1"
+    connect-redis: "npm:9.0.0"
     express-session: "npm:1.18.2"
     pg: "npm:8.16.3"
     pg-format: "npm:1.0.4"
   peerDependencies:
     "@hmcts/cookie-manager": ^1.1.0
-    connect-redis: ^7.1.1
+    connect-redis: ^9.0.0
     express: ^5.1.0
     express-session: ^1.18.2
     govuk-frontend: ^5.2.0
@@ -701,16 +701,16 @@ __metadata:
     "@hmcts/postgres": "workspace:*"
     "@hmcts/simple-router": "workspace:*"
     "@types/compression": "npm:1.8.1"
-    "@types/config": "npm:^3.3.5"
+    "@types/config": "npm:3.3.5"
     "@types/cookie-parser": "npm:1.4.9"
     "@types/express": "npm:5.0.3"
     "@types/express-session": "npm:1.18.2"
-    "@types/govuk-frontend": "npm:^5.9.0"
+    "@types/govuk-frontend": "npm:5.9.0"
     "@types/nunjucks": "npm:3.2.6"
     "@types/supertest": "npm:6.0.3"
     compression: "npm:1.8.1"
     config: "npm:4.1.1"
-    connect-redis: "npm:7.1.1"
+    connect-redis: "npm:9.0.0"
     cookie-parser: "npm:1.4.7"
     express: "npm:5.1.0"
     express-session: "npm:1.18.2"
@@ -722,7 +722,7 @@ __metadata:
     sass: "npm:1.92.0"
     supertest: "npm:7.1.4"
     vite: "npm:7.1.4"
-    vite-plugin-static-copy: "npm:^3.1.1"
+    vite-plugin-static-copy: "npm:3.1.2"
   languageName: unknown
   linkType: soft
 
@@ -1427,7 +1427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^3.3.5":
+"@types/config@npm:3.3.5":
   version: 3.3.5
   resolution: "@types/config@npm:3.3.5"
   checksum: 10c0/32f57d8bd8a6bd79d29a7f26f945b537f745dbadc33cd8eaad98f6e466e0175fb90ae37952352fa6509a0f5de212b9bd0af320bc3bb5f8579af6affe5e3410f6
@@ -1514,7 +1514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/govuk-frontend@npm:^5.9.0":
+"@types/govuk-frontend@npm:5.9.0":
   version: 5.9.0
   resolution: "@types/govuk-frontend@npm:5.9.0"
   checksum: 10c0/b6f8f62092b5a58d87ca130c3abdaefa849371f31c649ec0695a41ed724273bee08bcbd50b53b0086ad4d155353ae952dbdcb68bbf050fbbd57bb745592c75bd
@@ -2340,12 +2340,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect-redis@npm:7.1.1":
-  version: 7.1.1
-  resolution: "connect-redis@npm:7.1.1"
+"connect-redis@npm:9.0.0":
+  version: 9.0.0
+  resolution: "connect-redis@npm:9.0.0"
   peerDependencies:
     express-session: ">=1"
-  checksum: 10c0/eeb9e275176d1ef973c808df7c860c80300dfdecdee1a8ca20524fc4e37ccb2206923b07f17501fb7235cde73e9db9e06dff79ef17a54e5a57f35db247ec99fb
+    redis: ">=5"
+  checksum: 10c0/85616db0760f7974ed14f0676488dab168c111ae2068fae645a8b1acd0acf72d3c57d2252deb50eff662c22db72a6028e1635d9ff8450f3cac853278aa64051a
   languageName: node
   linkType: hard
 
@@ -5418,7 +5419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-static-copy@npm:^3.1.1":
+"vite-plugin-static-copy@npm:3.1.2":
   version: 3.1.2
   resolution: "vite-plugin-static-copy@npm:3.1.2"
   dependencies:
