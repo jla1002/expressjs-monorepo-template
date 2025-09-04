@@ -15,17 +15,14 @@ model User {
   passwordHash    String   @map("password_hash")
   isActive        Boolean  @default(true) @map("is_active")
   role            UserRole @default(USER)
-  tenantId        String   @map("tenant_id")
   preferredLocale String   @default("en") @map("preferred_locale")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  tenant   Tenant       @relation(fields: [tenantId], references: [id])
   sessions UserSession[]
   cases    Case[]
 
   @@index([email])
-  @@index([tenantId])
   @@map("user")
 }
 
@@ -43,23 +40,6 @@ model UserSession {
   @@map("user_session")
 }
 
-model Tenant {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  courtType   String   @map("court_type")
-  isActive    Boolean  @default(true) @map("is_active")
-  settings    Json     @default("{}")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  users User[]
-  cases Case[]
-
-  @@index([slug])
-  @@map("tenant")
-}
-
 model Case {
   id            String     @id @default(cuid())
   caseNumber    String     @unique @map("case_number")
@@ -67,20 +47,17 @@ model Case {
   description   String?
   status        CaseStatus @default(OPEN)
   priority      Priority   @default(MEDIUM)
-  tenantId      String     @map("tenant_id")
   assignedToId  String?    @map("assigned_to_id")
   metadata      Json       @default("{}")
   createdAt     DateTime   @default(now()) @map("created_at")
   updatedAt     DateTime   @updatedAt @map("updated_at")
   closedAt      DateTime?  @map("closed_at")
 
-  tenant     Tenant     @relation(fields: [tenantId], references: [id])
   assignedTo User?      @relation(fields: [assignedToId], references: [id])
   documents  Document[]
   notes      CaseNote[]
 
   @@index([caseNumber])
-  @@index([tenantId])
   @@index([status])
   @@index([assignedToId])
   @@map("case")
