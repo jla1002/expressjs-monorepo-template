@@ -4,11 +4,12 @@
 - Run `git stash; git checkout master; git pull`
 - Create a new branch with the ticket number and a short description of the task `git checkout -b feature/[$ARGUMENT]-[feature-name]`, e.g. `git checkout -b feature/DEV-123-add-address-details`
 - Create a folder in `docs/tickets/$ARGUMENT`
-- Created a detailed specification in `docs/tickets/$ARGUMENT/specification.md` using the ui-ux-engineer agent to look at the requirements and acceptance criteria of the user story and plan out the user journey, including any pages, the structure of the forms on the pages and the language and content. Include wireframes where necessary. Ask clarifying questions where the detail in the ticket is ambiguous.
-- Use the test-engineer agent to create a comprehensive test plan in `docs/tickets/$ARGUMENT/test-plan.md`
+- Created a detailed specification in `docs/tickets/$ARGUMENT/specification.md` using the ui-ux-engineer agent to look at the requirements and acceptance criteria of the user story and plan out the user journey, including any pages, the structure of the forms on the pages and the language and content. It should not include implementation details. Include wireframes where necessary. Ask clarifying questions where the detail in the ticket is ambiguous.
+- Use the full-stack-engineer agent to review the specification and add implementation details
 - Use the infrastructure-engineer agent to update the specification with any infrastructure changes if they are needed for the user story
+- Use the test-engineer agent to create a comprehensive test plan in `docs/tickets/$ARGUMENT/test-plan.md`
 - Turn the specification into actionable tasks assigned to specific sub-agents in `docs/tickets/$ARGUMENT/tasks.md`:
   - The full-stack-engineer agent should be responsible for the implementation tasks
   - The test-engineer agent should ensure there are unit tests for all new code and add any e2e tests for the happy path of the user journey
-  - The code-reviewer agent should review all code from the other agents and suggest improvements
-
+  - The code-reviewer agent should review all code from the other agents and suggest improvements to the user
+- Add a task for the ui-ux-engineer agent to update the user journey map once the implementation is complete
