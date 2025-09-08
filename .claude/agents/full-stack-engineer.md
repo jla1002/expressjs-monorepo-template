@@ -118,7 +118,7 @@ libs/
 └── [feature]/
     └── src/
         ├── api/               # API route handlers
-        ├── pages/             # Page route handlers
+        ├── pages/             # Page route handlers & page templates
         ├── locales/           # Shared i18n translations
         ├── views/             # Shared templates
         └── [domain]/          # Domain-driven structure
@@ -277,27 +277,17 @@ type CreateUserData = {
 - [ ] Color contrast ratios meet standards
 - [ ] Mobile responsiveness verified
 - [ ] Progressive enhancement working
-- [ ] Print stylesheets included
-- [ ] Core Web Vitals optimized
 
 #### Backend ✅
 - [ ] Input validation on all endpoints
 - [ ] SQL injection prevention (parameterized queries)
 - [ ] Authentication & authorization middleware
-- [ ] Rate limiting configured
-- [ ] CORS properly configured
 - [ ] Security headers middleware
 - [ ] Database queries optimized with indexes
-- [ ] Connection pooling configured
 
 #### Infrastructure ✅
-- [ ] Global error handling middleware
-- [ ] Graceful shutdown implemented
-- [ ] Health check endpoints
 - [ ] Database migration strategy
-- [ ] Proper logging configured
 - [ ] Environment-based configuration
-- [ ] Application metrics collection
 
 ## GOV.UK Frontend Specific Guidelines
 
@@ -536,35 +526,6 @@ export function createCacheHelpers(redis: Redis) {
   height="240"
 />
 ```
-
-## Commands to Use
-
-```bash
-# Development
-npm run dev              # Start with full-stack development
-npm run start:api        # Start API server on port 3001
-npm run start:web        # Start web frontend on port 3000
-npm run start:db         # Start PostgreSQL in Docker
-npm run build            # Production build with Sass compilation
-
-# Database operations
-yarn workspace @hmcts/postgres run generate    # Generate Prisma client
-yarn workspace @hmcts/postgres run migrate     # Run migrations
-yarn workspace @hmcts/postgres run studio      # Open Prisma Studio
-
-# Code Quality  
-npm run lint             # Run Biome linter
-npm run format           # Format code with Biome
-npm run check            # Accessibility and validation checks
-npm run typecheck        # TypeScript type checking
-
-# Testing
-npm run test             # Run unit tests across workspaces
-npm run test:e2e         # Playwright E2E tests
-npm run test:a11y        # Accessibility testing
-npm run test:coverage    # Run tests with coverage report
-```
-
 ## Anti-Patterns to Avoid
 
 ### Design Anti-Patterns
@@ -584,18 +545,11 @@ npm run test:coverage    # Run tests with coverage report
 - **Missing validation**: Never trust user input
 - **Class-based when functional works**: Favor functions over classes
 - **Missing .js extensions**: Required for ES modules
-- **Generic utility files**: Be specific (date-formatting.ts not utils.ts)
+- **Generic utility files**: Be specific (dates/formatting.ts not utils.ts or date-formatting.ts)
 - **Circular dependencies**: Keep clear dependency graphs
 - **Inadequate error messages**: Provide helpful guidance
-
-### Content Anti-Patterns
-- **Government jargon**: Use plain English
-- **Long pages without structure**: Break up content
-- **Missing context**: Users need clear guidance
-- **Unclear CTAs**: Buttons must be descriptive
-- **Technical error messages**: Translate for users
-- **Missing Welsh translations**: Legal requirement
-- **Session timeouts without warning**: Notify users
+- **Colocate unit tests**: Tests should be next to implementation
+- **Colocate types**: Types should be next to implementation, DO NOT CREATE types.ts
 
 ## Security Requirements
 

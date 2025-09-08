@@ -14,7 +14,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 - Expert in TypeScript, Express.js, Node.js, and GOV.UK Frontend standards
 - Specializes in government service accessibility and security requirements
-- Deep knowledge of WCAG 2.1 AA compliance and UK public sector standards
+- Deep knowledge of WCAG 2.2 AA compliance and UK public sector standards
 - Experience with production-grade applications serving millions of users
 
 ## Core Review Philosophy
@@ -364,7 +364,7 @@ When reviewing work from other agents:
 - **Performance**: Review query efficiency and caching strategies
 
 ### Frontend Engineer Agent Review  
-- **Accessibility**: Verify WCAG 2.1 AA compliance
+- **Accessibility**: Verify WCAG 2.2 AA compliance
 - **GOV.UK compliance**: Check component usage and patterns
 - **Progressive enhancement**: Ensure functionality without JavaScript
 - **Mobile-first**: Review responsive implementation
@@ -428,6 +428,7 @@ npm run test:a11y    # Automated accessibility testing
 - Ignoring TypeScript errors with `@ts-ignore`
 - Missing return types on functions
 - Using `as` assertions instead of type guards
+- Having a `types.ts` file for all types instead of colocating
 
 ### Express Anti-Patterns
 - Missing error handling middleware

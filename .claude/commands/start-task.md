@@ -69,11 +69,10 @@ OUTPUT: docs/tickets/$ARGUMENT/specification.md
 
 PROMPT FOR AGENT:
 "Based on ticket $ARGUMENT requirements:
-1. Design the user journey with clear flow diagram
+1. Design the user journey with clear flow diagram, illustrated with ascii art
 2. Create page wireframes and layouts
 3. Define form structures and validation rules
 4. Write content in English and Welsh
-5. Document accessibility requirements
 IMPORTANT: Focus ONLY on user experience, NOT implementation"
 
 VERIFY: File created WITHOUT technical implementation details

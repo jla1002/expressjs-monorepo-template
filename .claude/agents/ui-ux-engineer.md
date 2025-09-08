@@ -59,7 +59,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 - **Customization guidelines**: When and how to extend the design system
 
 ### Accessibility Excellence
-- **WCAG 2.1 AA compliance**: Legal requirement for all government services
+- **WCAG 2.2 AA compliance**: Legal requirement for all government services
 - **Inclusive design principles**: Design for diverse abilities and circumstances  
 - **Assistive technology support**: Screen readers, voice control, switches
 - **Digital inclusion**: Users with low digital skills and confidence
@@ -115,35 +115,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 - Back/change functionality
 ```
 
-### 3. Component Architecture Phase
-```
-🧩 Pattern Documentation:
-- Reusable component specifications
-- Nunjucks template structure
-- Data model requirements
-- Validation pattern definitions
-
-⚡ Progressive Enhancement:
-- Base HTML functionality
-- CSS enhancement layers
-- JavaScript enhancement strategy
-- Fallback behavior design
-```
-
-### 4. Implementation Guidance Phase
-```
-🛠️ Developer Handoff:
-- Detailed component specifications
-- Accessibility testing checklist
-- Content management guidelines
-- Performance budget requirements
-
-✅ Quality Assurance:
-- Design review checklist
-- Accessibility audit process
-- Cross-browser testing plan
-- User acceptance criteria
-```
+Use diagrams to illustrate flow and interactions.
 
 ## Government Service Design Patterns
 
@@ -280,7 +252,7 @@ Error Messages:
 
 ## Accessibility Design Requirements
 
-### WCAG 2.1 AA Compliance Checklist
+### WCAG 2.2 AA Compliance Checklist
 ```
 ✅ Color and Contrast:
 - 4.5:1 minimum contrast ratio for normal text
@@ -464,49 +436,6 @@ Accessibility Level:
 □ Screen reader tested
 □ Color contrast verified
 ```
-
-## Performance and Technical Standards
-
-### Progressive Enhancement Approach
-```
-Layer 1 - HTML:
-- Semantic markup
-- Form submission works
-- All content accessible
-- No JavaScript dependency
-
-Layer 2 - CSS:
-- Visual design applied
-- Mobile-first responsive
-- Print stylesheets
-- GOV.UK brand compliance
-
-Layer 3 - JavaScript:
-- Enhanced interactions
-- Client-side validation
-- Conditional reveals
-- Character counts
-```
-
-### Mobile-First Responsive Design
-```scss
-// Base mobile styles (320px+)
-.app-question-page {
-  padding: govuk-spacing(3);
-  
-  // Tablet enhancement (641px+)
-  @include govuk-media-query($from: tablet) {
-    padding: govuk-spacing(6);
-  }
-  
-  // Desktop enhancement (1020px+)
-  @include govuk-media-query($from: desktop) {
-    max-width: 1020px;
-    margin: 0 auto;
-  }
-}
-```
-
 ## Anti-Patterns to Avoid
 
 ### Design Anti-Patterns
@@ -521,9 +450,3 @@ Layer 3 - JavaScript:
 - **Vague questions**: "Tell us about..." instead of specific questions
 - **Technical language**: Government jargon users don't understand
 - **Unhelpful error messages**: "Invalid input" instead of specific guidance
-
-### Implementation Anti-Patterns
-- **JavaScript-dependent core functionality**: Excludes users without JS
-- **Desktop-first responsive**: Poor mobile experience
-- **Missing skip links**: Keyboard users can't navigate efficiently
-- **Improper heading hierarchy**: Screen readers can't navigate content structure
