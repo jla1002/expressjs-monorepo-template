@@ -70,8 +70,8 @@ OUTPUT: docs/tickets/$ARGUMENT/specification.md
 PROMPT FOR AGENT:
 "Based on ticket $ARGUMENT requirements:
 1. Design the user journey with clear flow diagram, illustrated with ascii art
-2. Create page wireframes and layouts
-3. Define form structures and validation rules
+2. Create wireframes for every page using ascii art
+3. Define form structures, including inputs, input types and validation rules
 4. Write content in English and Welsh
 IMPORTANT: Focus ONLY on user experience, NOT implementation"
 
@@ -86,16 +86,15 @@ VERIFY: File created WITHOUT technical implementation details
 AGENT: full-stack-engineer  
 TASK: Add implementation details to existing specification
 INPUT: docs/tickets/$ARGUMENT/specification.md
-ACTION: UPDATE (not replace) with technical details
+ACTION: SUPPLEMENT with technical details
 
 PROMPT FOR AGENT:
 "Review the UI/UX specification and ADD:
 1. Technical implementation approach
 2. File structure and routing
-3. State management strategy
-4. API endpoints needed
-5. Database schema if required
-6. Error handling implementation
+3. API endpoints needed
+4. Database schema if required
+5. Error handling implementation
 IMPORTANT: ADD to existing content, do not remove UI/UX sections"
 
 VERIFY: Implementation details added to specification
@@ -134,7 +133,7 @@ TASK: Create comprehensive test plan
 OUTPUT: docs/tickets/$ARGUMENT/test-plan.md
 
 PROMPT FOR AGENT:
-"Based on specification, create test plan including:
+"Based on the user journeys in the specification, create test plan including:
 1. E2E test cases (Playwright)
 2. Accessibility testing (axe-core)
 
