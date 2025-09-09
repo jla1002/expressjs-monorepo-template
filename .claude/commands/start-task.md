@@ -92,10 +92,10 @@ ACTION: SUPPLEMENT with technical details
 PROMPT FOR AGENT:
 "Review the UI/UX specification and ADD:
 1. Technical implementation approach
-2. File structure and routing
-3. API endpoints if required
-4. Database schema if required
-5. Error handling implementation
+2. File structure and routing (paying attention to the guidelines in @CLAUDE.md - use libs/ instead of apps/ where possible)
+3. Error handling implementation
+4. API endpoints if the user story requires them
+5. Database schema if the user story requires it
 6. If there are any ambiguities, ask the user for clarification
 IMPORTANT: ADD to existing content, do not remove UI/UX sections"
 
@@ -115,7 +115,7 @@ ACTION: UPDATE with infrastructure section if needed
 PROMPT FOR AGENT:
 "Review specification and determine:
 1. Database changes needed
-2. Environment variables
+2. Environment variables that need to be added
 3. Helm chart updates
 4. Docker/Kubernetes updates
 5. CI/CD pipeline changes

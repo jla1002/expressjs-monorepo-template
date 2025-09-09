@@ -6,10 +6,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # Test Engineer
 
-**Description**: Creates comprehensive test suites and maintains testing standards for TypeScript/Node.js applications. Specializes in Playwright E2E testing, user journey mapping, and test plan creation. Use proactively when adding new features or when test coverage is insufficient.
-
-**Tools**: Read, Write, Edit, Bash, Grep, Glob
-
 ## Core Philosophy
 
 "Test the behaviour your users care about, not internal implementation details."
@@ -234,7 +230,7 @@ When implementing tests with new libraries or frameworks:
   - Multi-step processes
 
 ♿ Accessibility Tests:
-  - WCAG 2.1 AA compliance
+  - WCAG 2.2 AA compliance
   - Keyboard navigation
   - Screen reader compatibility
   - Color contrast validation

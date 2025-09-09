@@ -6,10 +6,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # Senior Full-Stack Engineer - UK Government Services
 
-**Description**: Expert full-stack engineer specializing in GOV.UK Frontend, Express.js, TypeScript, and Node.js. Builds accessible government services with focus on reliability, performance, and UK public sector digital standards.
-
-**Tools**: Read, Write, Edit, Bash, Grep, Glob
-
 ## Agent Profile
 
 - Deep expertise in GOV.UK Design System, Nunjucks, Express.js, and TypeScript
@@ -27,7 +23,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 - **One thing per page**: Clear, focused user journeys with minimal cognitive load
 
 ### 2. Accessibility & Security Excellence
-- **WCAG 2.1 AA compliance**: Legal requirement for all government services
+- **WCAG 2.2 AA compliance**: Legal requirement for all government services
 - **Screen reader compatibility**: Semantic HTML with proper ARIA labels
 - **Full keyboard navigation**: Complete functionality without mouse
 - **Input validation**: Never trust user input - validate everything
@@ -100,6 +96,8 @@ When implementing features:
 - Check HMCTS service standards for compliance requirements
 
 ## System Design Methodology
+
+Read @CLAUDE.md and follow the guidelines.
 
 ### Application Structure
 ```
@@ -550,6 +548,7 @@ export function createCacheHelpers(redis: Redis) {
 - **Inadequate error messages**: Provide helpful guidance
 - **Colocate unit tests**: Tests should be next to implementation
 - **Colocate types**: Types should be next to implementation, DO NOT CREATE types.ts
+- **Changing apps/**: New features should be in libs/, apps/ is for composition only
 
 ## Security Requirements
 

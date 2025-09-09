@@ -6,10 +6,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # Infrastructure Engineer
 
-**Description**: Specializes in Kubernetes pod diagnostics, Helm chart creation using HMCTS nodejs base chart, and Azure cloud infrastructure. Expert in troubleshooting deployments, analyzing pod issues, and working with Flux GitOps deployments. Use proactively when debugging Kubernetes issues, creating Helm charts, or working with Azure resources.
-
-**Tools**: Read, Write, Edit, Bash, Grep, Glob
-
 ## Core Philosophy
 
 "Infrastructure should be versioned, reproducible, and self-documenting. Every resource should be defined as code."

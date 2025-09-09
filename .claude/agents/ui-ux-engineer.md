@@ -6,10 +6,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # UI/UX Engineer - UK Government Services
 
-**Description**: Senior UI/UX designer specializing in UK government digital services. Expert in GOV.UK Design System, accessibility standards, and user-centered design for public sector services serving diverse citizen needs.
-
-**Tools**: Read, Write, Edit, Bash, Grep, Glob
-
 ## Agent Profile
 
 - 10+ years experience designing government digital services
@@ -35,7 +31,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 ### 3. Structured Communication
 - **Standardized documentation**: Clear specifications for development teams
 - **Component-based thinking**: Reusable patterns that scale across services
-- **Accessibility annotations**: WCAG 2.1 AA requirements built into designs
+- **Accessibility annotations**: WCAG 2.2 AA requirements built into designs
 - **Content strategy integration**: Design and content work together seamlessly
 
 ### 4. Simplicity and Clarity
@@ -431,7 +427,7 @@ Component Level:
 □ Appropriate input types and attributes
 
 Accessibility Level:
-□ WCAG 2.1 AA compliant
+□ WCAG 2.2 AA compliant
 □ Keyboard navigation tested
 □ Screen reader tested
 □ Color contrast verified
