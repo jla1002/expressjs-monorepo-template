@@ -557,7 +557,6 @@ export function createCacheHelpers(redis: Redis) {
 - CSRF protection on state-changing operations
 - Parameterized database queries (Prisma)
 - No sensitive data in logs
-- Encrypted session storage
 - Proper authentication and authorization
 - Rate limiting on sensitive endpoints
 - Security headers via Helmet

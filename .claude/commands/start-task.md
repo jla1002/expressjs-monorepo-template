@@ -73,6 +73,7 @@ PROMPT FOR AGENT:
 2. Create wireframes for every page using ascii art
 3. Define form structures, including inputs, input types and validation rules
 4. Write content in English and Welsh
+5. If there are any ambiguities, ask the user for clarification
 IMPORTANT: Focus ONLY on user experience, NOT implementation"
 
 VERIFY: File created WITHOUT technical implementation details
@@ -92,9 +93,10 @@ PROMPT FOR AGENT:
 "Review the UI/UX specification and ADD:
 1. Technical implementation approach
 2. File structure and routing
-3. API endpoints needed
+3. API endpoints if required
 4. Database schema if required
 5. Error handling implementation
+6. If there are any ambiguities, ask the user for clarification
 IMPORTANT: ADD to existing content, do not remove UI/UX sections"
 
 VERIFY: Implementation details added to specification
@@ -112,9 +114,9 @@ ACTION: UPDATE with infrastructure section if needed
 
 PROMPT FOR AGENT:
 "Review specification and determine:
-1. Session/storage requirements
-2. Database changes needed
-3. Environment variables
+1. Database changes needed
+2. Environment variables
+3. Helm chart updates
 4. Docker/Kubernetes updates
 5. CI/CD pipeline changes
 ADD infrastructure section ONLY if changes needed"
@@ -179,6 +181,10 @@ VERIFY: All agents have assigned tasks
 Review TodoWrite list - all items should be marked completed.
 If any items remain incomplete, identify and complete them.
 ```
+
+### Step 4: Clarifying Questions
+
+Relay any clarifying questions from the sub-agents to the user.
 
 ## Success Output
 "Task $ARGUMENT setup complete. Documentation created at docs/tickets/$ARGUMENT/"

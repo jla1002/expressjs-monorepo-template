@@ -173,7 +173,6 @@ When implementing tests with new libraries or frameworks:
    - Write E2E tests for critical user journeys
    - Implement accessibility testing with axe-core
    - Add visual regression tests where appropriate
-   - Test cross-browser compatibility
 
 5. **Implement missing tests**
    - Write unit tests for business logic
@@ -233,7 +232,6 @@ When implementing tests with new libraries or frameworks:
   - Authentication flow
   - Form submission workflows
   - Multi-step processes
-  - Cross-browser testing
 
 ♿ Accessibility Tests:
   - WCAG 2.1 AA compliance
