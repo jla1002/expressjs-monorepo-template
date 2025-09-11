@@ -13,7 +13,7 @@ import { currencyFilter, dateFilter, govukErrorSummaryFilter, kebabCaseFilter, t
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function configureGovuk(app: Express, options: GovukSetupOptions, paths: string[]): Promise<nunjucks.Environment> {
+export async function configureGovuk(app: Express, paths: string[], options: GovukSetupOptions): Promise<nunjucks.Environment> {
   const { mergedViewPaths, mergedI18nPaths } = mergeConfigs(paths);
   const govukFrontendPath = "../../node_modules/govuk-frontend/dist";
   const govukSetupViews = path.join(__dirname, "./views");

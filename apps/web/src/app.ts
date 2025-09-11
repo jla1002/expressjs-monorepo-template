@@ -21,15 +21,10 @@ import { createClient } from "redis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-export function getModulePaths(): string[] {
-  const libDir = process.env.NODE_ENV === "production" ? "dist/" : "src/";
-  const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/${libDir}`));
-  return [__dirname, ...libRoots];
-}
+const chartPath = path.join(__dirname, "../helm/values.yaml");
 
 export async function createApp(): Promise<Express> {
-  await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "../helm/values.yaml") });
+  await configurePropertiesVolume(config, { chartPath });
 
   const app = express();
 
@@ -43,10 +38,17 @@ export async function createApp(): Promise<Express> {
   app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
   const modulePaths = getModulePaths();
-  const nunjucksGlobals = { gtm: config.get("gtm"), dynatrace: config.get("dynatrace") };
-  const assetOptions = { viteRoot: path.join(__dirname, "../.."), distPath: path.join(__dirname, "../dist") };
-  
-  await configureGovuk(app, { nunjucksGlobals, assetOptions }, modulePaths);
+
+  await configureGovuk(app, modulePaths, { 
+    nunjucksGlobals: { 
+      gtm: config.get("gtm"), 
+      dynatrace: config.get("dynatrace") 
+    }, 
+    assetOptions: { 
+      viteRoot: path.join(__dirname, "../.."), 
+      distPath: path.join(__dirname, "../dist") 
+    }
+  });
 
   await configureCookieManager(app, {
     categories: {
@@ -56,13 +58,25 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  const routeMounts: MountSpec[] = modulePaths.filter((path) => glob.sync(path + "/pages/*.ts").length > 0).map((path) => ({ pagesDir: path + "/pages" }));
+  const routeMounts = modulePaths.map((path) => ({ pagesDir: path + "/pages" }));
 
   app.use(await createSimpleRouter(...routeMounts));
   app.use(notFoundHandler());
   app.use(errorHandler());
 
   return app;
+}
+
+/**
+ * Return all the libs with pages/ and also this app
+ */
+export function getModulePaths(): string[] {
+  const libDir = process.env.NODE_ENV === "production" ? "dist/" : "src/";
+  const libRoots = glob
+    .sync(path.join(__dirname, `../../../libs/*/${libDir}`))
+    .filter((path) => glob.sync(path + "/pages/*.ts").length > 0);
+
+    return [__dirname, ...libRoots];
 }
 
 const getRedisClient = async () => {
