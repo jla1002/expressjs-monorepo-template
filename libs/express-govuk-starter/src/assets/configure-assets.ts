@@ -1,13 +1,13 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 import express from "express";
+import { glob } from "glob";
 import type nunjucks from "nunjucks";
 import type { ViteDevServer } from "vite";
 import type { AssetOptions } from "./assets.js";
 import { createAssetHelpers } from "./assets.js";
-import { existsSync } from "node:fs";
-import { glob } from "glob";
 
 let viteServer: ViteDevServer | null = null;
 
@@ -64,6 +64,7 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, a
     env.addGlobal(name, value);
   }
 
+  // TODO fix production mode graceful exit
   process.on("SIGTERM", async () => {
     if (viteServer) {
       await viteServer.close();

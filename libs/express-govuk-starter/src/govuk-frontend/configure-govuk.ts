@@ -2,7 +2,6 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Express, NextFunction, Request, Response } from "express";
-import { glob } from "glob";
 import nunjucks from "nunjucks";
 import type { AssetOptions } from "../assets/assets.js";
 import { configureAssets } from "../assets/configure-assets.js";
@@ -92,4 +91,3 @@ export interface GovukSetupOptions {
   nunjucksGlobals?: Record<string, unknown>;
   assetOptions: AssetOptions;
 }
-

@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { configurePropertiesVolume, healthcheck, monitoringMiddleware } from "@hmcts/cloud-native-platform";
@@ -18,7 +19,6 @@ import type { Express } from "express";
 import express from "express";
 import { glob } from "glob";
 import { createClient } from "redis";
-import { existsSync } from "node:fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,14 +40,14 @@ export async function createApp(): Promise<Express> {
 
   const modulePaths = getModulePaths();
 
-  await configureGovuk(app, modulePaths, { 
-    nunjucksGlobals: { 
-      gtm: config.get("gtm"), 
-      dynatrace: config.get("dynatrace") 
-    }, 
-    assetOptions: { 
-      viteRoot: path.join(__dirname, "assets"), // TODO this doesn't seem to do anything, should be used for dev paths 
-      distPath: path.join(__dirname, "../dist"),
+  await configureGovuk(app, modulePaths, {
+    nunjucksGlobals: {
+      gtm: config.get("gtm"),
+      dynatrace: config.get("dynatrace")
+    },
+    assetOptions: {
+      viteRoot: path.join(__dirname, "assets"), // TODO this doesn't seem to do anything, should be used for dev paths
+      distPath: path.join(__dirname, "../dist")
     }
   });
 
@@ -73,11 +73,9 @@ export async function createApp(): Promise<Express> {
  * Return all the libs with pages/ and also this app
  */
 export function getModulePaths(): string[] {
-  const libRoots = glob
-    .sync(path.join(__dirname, `../../../libs/*/src`))
-    .filter((dir) => existsSync(path.join(dir, "pages")));
+  const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/src`)).filter((dir) => existsSync(path.join(dir, "pages")));
 
-    return [__dirname, ...libRoots];
+  return [__dirname, ...libRoots];
 }
 
 const getRedisClient = async () => {
