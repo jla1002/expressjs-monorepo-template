@@ -6,20 +6,20 @@ import type nunjucks from "nunjucks";
 import type { ViteDevServer } from "vite";
 import type { AssetOptions } from "./assets.js";
 import { createAssetHelpers } from "./assets.js";
+import { existsSync } from "node:fs";
+import { glob } from "glob";
 
 let viteServer: ViteDevServer | null = null;
 
 /**
  * Configure asset handling for development and production
  */
-export async function configureAssets(app: Express, env: nunjucks.Environment, assetConfigs: AssetOptions[]): Promise<void> {
-  if (assetConfigs.length === 0) return;
+export async function configureAssets(app: Express, env: nunjucks.Environment, assetConfig: AssetOptions, paths: string[]): Promise<void> {
+  if (!assetConfig) return;
 
   const isProduction = process.env.NODE_ENV === "production";
-
-  // Merge all asset configurations with conflict detection
-  const mergedConfig = mergeAssetConfigs(assetConfigs);
-  const { viteRoot, distPath, entries } = mergedConfig;
+  const { viteRoot, distPath } = assetConfig;
+  const entries = getEntries(paths);
 
   if (!isProduction) {
     // Serve GOV.UK Frontend assets in development (before Vite middleware)
@@ -54,12 +54,7 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, a
     app.use(viteServer.middlewares);
     app.locals.vite = viteServer;
   } else {
-    // Serve static assets from all dist paths in production (they stack)
-    for (const config of assetConfigs) {
-      if (config.distPath) {
-        app.use("/assets", express.static(path.join(config.distPath, "assets")));
-      }
-    }
+    app.use("/assets", express.static(path.join(distPath, "assets")));
   }
 
   // Register asset helpers as Nunjucks globals
@@ -68,9 +63,6 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, a
     env.addGlobal(name, value);
   }
 
-  /**
-   * Clean up Vite server on process exit
-   */
   process.on("SIGTERM", async () => {
     if (viteServer) {
       await viteServer.close();
@@ -78,50 +70,28 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, a
   });
 }
 
-function mergeAssetConfigs(configs: AssetOptions[]): {
-  viteRoot: string;
-  distPath: string;
-  entries: Record<string, string>;
-} {
-  if (configs.length === 0) {
-    throw new Error("No asset configurations provided");
-  }
+/**
+ * Scan the given paths for asset entry points (TS and SCSS files)
+ */
+function getEntries(paths: string[]): Record<string, string> {
+  const entries: Record<string, string> = {};
 
-  // Use first config as base (typically main app)
-  const baseConfig = configs[0];
-  const mergedEntries: Record<string, string> = {};
-  const keyToModule: Record<string, string> = {}; // Track which module owns each key
-
-  for (let i = 0; i < configs.length; i++) {
-    const config = configs[i];
-    const moduleName = i === 0 ? "main app" : `module ${i} (${config.viteRoot})`;
-
-    for (const [key, value] of Object.entries(config.entries)) {
-      // Check for key conflicts
-      if (key in mergedEntries) {
-        throw new Error(
-          `Asset entry key conflict: "${key}" is defined in both ${keyToModule[key]} and ${moduleName}. ` + `Please use unique entry keys across all modules.`
-        );
+  for (const modulePath of paths) {
+    const assetsPath = path.join(modulePath, "assets/");
+    if (existsSync(assetsPath)) {
+      const jsFiles = glob.sync(path.join(assetsPath, "js/*.ts"));
+      for (const jsFile of jsFiles) {
+        const baseName = path.basename(jsFile, ".ts");
+        entries[`${baseName}_js`] = `js/${baseName}.ts`;
       }
 
-      // Check for value conflicts (same output file)
-      for (const [existingKey, existingValue] of Object.entries(mergedEntries)) {
-        if (existingValue === value) {
-          throw new Error(
-            `Asset entry value conflict: "${value}" is used by both "${existingKey}" (${keyToModule[existingKey]}) ` +
-              `and "${key}" (${moduleName}). Please use unique file paths for each entry.`
-          );
-        }
+      const cssFiles = glob.sync(path.join(assetsPath, "css/*.scss"));
+      for (const cssFile of cssFiles) {
+        const baseName = path.basename(cssFile, ".scss");
+        entries[`${baseName}_css`] = `css/${baseName}.scss`;
       }
-
-      mergedEntries[key] = value;
-      keyToModule[key] = moduleName;
     }
   }
 
-  return {
-    viteRoot: baseConfig.viteRoot,
-    distPath: baseConfig.distPath,
-    entries: mergedEntries
-  };
+  return entries;
 }

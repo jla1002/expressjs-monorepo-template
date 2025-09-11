@@ -4,7 +4,6 @@ import path from "node:path";
 export interface AssetOptions {
   viteRoot: string;
   distPath: string;
-  entries: Record<string, string>;
 }
 
 interface ManifestEntry {
@@ -47,6 +46,7 @@ function loadManifest(distPath: string): ViteManifest {
 /**
  * Get the actual filename for a Vite entry point
  */
+//TODO: clean up
 function getAssetPath(entryKey: string, distPath: string, entryPath: string): string {
   const isProduction = process.env.NODE_ENV === "production";
 

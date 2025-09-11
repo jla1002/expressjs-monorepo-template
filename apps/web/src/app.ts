@@ -43,13 +43,10 @@ export async function createApp(): Promise<Express> {
   app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
   const modulePaths = getModulePaths();
-
-  // TODO re-add globals for this app
-  //     nunjucksGlobals: {
-  //   gtm: config.get("gtm"),
-  //   dynatrace: config.get("dynatrace")
-  // }
-  await configureGovuk(app, modulePaths);
+  const nunjucksGlobals = { gtm: config.get("gtm"), dynatrace: config.get("dynatrace") };
+  const assetOptions = { viteRoot: path.join(__dirname, "../.."), distPath: path.join(__dirname, "../dist") };
+  
+  await configureGovuk(app, { nunjucksGlobals, assetOptions }, modulePaths);
 
   await configureCookieManager(app, {
     categories: {
