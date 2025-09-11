@@ -10,6 +10,8 @@ export interface AssetOptions {
 interface ManifestEntry {
   file: string;
   src?: string;
+  name?: string;
+  names?: string[];
   isEntry?: boolean;
   css?: string[];
 }
@@ -45,20 +47,40 @@ function loadManifest(distPath: string): ViteManifest {
 /**
  * Get the actual filename for a Vite entry point
  */
-function getAssetPath(entryKey: string, distPath: string): string {
+function getAssetPath(entryKey: string, distPath: string, entryPath: string): string {
   const isProduction = process.env.NODE_ENV === "production";
 
   if (isProduction) {
     // In production, resolve hashed filename from manifest
     const manifest = loadManifest(distPath);
-    const entry = manifest[`src/assets/${entryKey}`];
 
-    entryKey = entry?.file || entryKey;
-    return `/assets/${entryKey}`;
+    // Find the entry by looking for entries with matching name or in names array
+    let entry: any;
+    for (const [_key, value] of Object.entries(manifest)) {
+      // Check if the name matches
+      if (value.name === entryKey) {
+        entry = value;
+        break;
+      }
+      // Check if it's in the names array (for CSS files)
+      if (value.names?.some((n: string) => n.startsWith(entryKey))) {
+        entry = value;
+        break;
+      }
+    }
+
+    if (!entry) {
+      console.warn(`Asset not found in manifest: ${entryKey}`);
+      return "";
+    }
+
+    const fileName = entry.file;
+    return `/assets/${fileName}`;
   }
 
-  // In development, Vite serves assets at root
-  return `/${entryKey}`;
+  // In development, Vite serves assets at their actual paths
+  // Use the entryPath that was provided in the configuration
+  return `/${entryPath}`;
 }
 
 /**
@@ -68,7 +90,9 @@ export function createAssetHelpers(entries: Record<string, string>, distPath: st
   const helpers: Record<string, string> = {};
 
   for (const [name, entryPath] of Object.entries(entries)) {
-    helpers[name] = getAssetPath(entryPath, distPath);
+    // Pass both the name and entry path to getAssetPath
+    const assetPath = getAssetPath(name, distPath, entryPath);
+    helpers[name] = assetPath;
   }
 
   return helpers;

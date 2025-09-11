@@ -1,8 +1,9 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
+  <!-- isProduction: {{ isProduction }}, index_css: "{{ index_css }}" -->
   {% if isProduction %}
-    <link href="{{ cssEntry }}" rel="stylesheet">
+    <link href="{{ index_css }}" rel="stylesheet">
   {% endif %}
 
   {% include "components/head-analytics.njk" %}

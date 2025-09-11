@@ -6,6 +6,32 @@ export interface Translations {
   [locale: string]: any;
 }
 
+export async function loadTranslationsFromMultiplePaths(paths: string[]): Promise<Translations> {
+  const allTranslations: Translations = {};
+  const supportedLocales = ["en", "cy"];
+
+  // Initialize empty objects for each locale
+  for (const locale of supportedLocales) {
+    allTranslations[locale] = {};
+  }
+
+  // Load and merge translations from each path
+  for (const localePath of paths) {
+    const translations = await loadTranslations(localePath);
+
+    for (const locale of supportedLocales) {
+      if (translations[locale]) {
+        allTranslations[locale] = {
+          ...allTranslations[locale],
+          ...translations[locale]
+        };
+      }
+    }
+  }
+
+  return allTranslations;
+}
+
 export async function loadTranslations(localesPath: string): Promise<Translations> {
   const translations: Translations = {};
   const supportedLocales = ["en", "cy"];

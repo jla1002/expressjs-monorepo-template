@@ -10,16 +10,23 @@ import {
   expressSessionRedis,
   notFoundHandler
 } from "@hmcts/express-govuk-starter";
-import { createSimpleRouter } from "@hmcts/simple-router";
+import { createSimpleRouter, type MountSpec } from "@hmcts/simple-router";
 import compression from "compression";
 import config from "config";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
+import { glob } from "glob";
 import { createClient } from "redis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+export function getModulePaths(): string[] {
+  const libDir = process.env.NODE_ENV === "production" ? "dist/" : "src/";
+  const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/${libDir}`));
+  return [__dirname, ...libRoots];
+}
 
 export async function createApp(): Promise<Express> {
   await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "../helm/values.yaml") });
@@ -35,22 +42,14 @@ export async function createApp(): Promise<Express> {
   app.use(configureHelmet());
   app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
-  await configureGovuk(app, {
-    i18nContentPath: path.join(__dirname, "locales"),
-    viewPaths: [path.join(__dirname, "pages/")],
-    assets: {
-      viteRoot: path.join(__dirname, "assets"),
-      distPath: path.join(__dirname, "../dist"),
-      entries: {
-        jsEntry: "js/index.ts",
-        cssEntry: "css/index.scss"
-      }
-    },
-    nunjucksGlobals: {
-      gtm: config.get("gtm"),
-      dynatrace: config.get("dynatrace")
-    }
-  });
+  const modulePaths = getModulePaths();
+
+  // TODO re-add globals for this app
+  //     nunjucksGlobals: {
+  //   gtm: config.get("gtm"),
+  //   dynatrace: config.get("dynatrace")
+  // }
+  await configureGovuk(app, modulePaths);
 
   await configureCookieManager(app, {
     categories: {
@@ -60,7 +59,9 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  app.use(await createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
+  const routeMounts: MountSpec[] = modulePaths.filter((path) => glob.sync(path + "/pages/*.ts").length > 0).map((path) => ({ pagesDir: path + "/pages" }));
+
+  app.use(await createSimpleRouter(...routeMounts));
   app.use(notFoundHandler());
   app.use(errorHandler());
 

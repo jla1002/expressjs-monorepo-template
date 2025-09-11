@@ -12,9 +12,14 @@ let viteServer: ViteDevServer | null = null;
 /**
  * Configure asset handling for development and production
  */
-export async function configureAssets(app: Express, env: nunjucks.Environment, options: AssetOptions): Promise<void> {
-  const { viteRoot, distPath, entries } = options;
+export async function configureAssets(app: Express, env: nunjucks.Environment, assetConfigs: AssetOptions[]): Promise<void> {
+  if (assetConfigs.length === 0) return;
+
   const isProduction = process.env.NODE_ENV === "production";
+
+  // Merge all asset configurations with conflict detection
+  const mergedConfig = mergeAssetConfigs(assetConfigs);
+  const { viteRoot, distPath, entries } = mergedConfig;
 
   if (!isProduction) {
     // Serve GOV.UK Frontend assets in development (before Vite middleware)
@@ -49,15 +54,19 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, o
     app.use(viteServer.middlewares);
     app.locals.vite = viteServer;
   } else {
-    // Serve static assets from dist/assets in production
-    app.use("/assets", express.static(path.join(distPath, "assets")));
+    // Serve static assets from all dist paths in production (they stack)
+    for (const config of assetConfigs) {
+      if (config.distPath) {
+        app.use("/assets", express.static(path.join(config.distPath, "assets")));
+      }
+    }
   }
 
   // Register asset helpers as Nunjucks globals
   const assetHelpers = createAssetHelpers(entries, distPath);
-  Object.entries(assetHelpers).forEach(([name, value]) => {
+  for (const [name, value] of Object.entries(assetHelpers)) {
     env.addGlobal(name, value);
-  });
+  }
 
   /**
    * Clean up Vite server on process exit
@@ -67,4 +76,52 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, o
       await viteServer.close();
     }
   });
+}
+
+function mergeAssetConfigs(configs: AssetOptions[]): {
+  viteRoot: string;
+  distPath: string;
+  entries: Record<string, string>;
+} {
+  if (configs.length === 0) {
+    throw new Error("No asset configurations provided");
+  }
+
+  // Use first config as base (typically main app)
+  const baseConfig = configs[0];
+  const mergedEntries: Record<string, string> = {};
+  const keyToModule: Record<string, string> = {}; // Track which module owns each key
+
+  for (let i = 0; i < configs.length; i++) {
+    const config = configs[i];
+    const moduleName = i === 0 ? "main app" : `module ${i} (${config.viteRoot})`;
+
+    for (const [key, value] of Object.entries(config.entries)) {
+      // Check for key conflicts
+      if (key in mergedEntries) {
+        throw new Error(
+          `Asset entry key conflict: "${key}" is defined in both ${keyToModule[key]} and ${moduleName}. ` + `Please use unique entry keys across all modules.`
+        );
+      }
+
+      // Check for value conflicts (same output file)
+      for (const [existingKey, existingValue] of Object.entries(mergedEntries)) {
+        if (existingValue === value) {
+          throw new Error(
+            `Asset entry value conflict: "${value}" is used by both "${existingKey}" (${keyToModule[existingKey]}) ` +
+              `and "${key}" (${moduleName}). Please use unique file paths for each entry.`
+          );
+        }
+      }
+
+      mergedEntries[key] = value;
+      keyToModule[key] = moduleName;
+    }
+  }
+
+  return {
+    viteRoot: baseConfig.viteRoot,
+    distPath: baseConfig.distPath,
+    entries: mergedEntries
+  };
 }
