@@ -12,7 +12,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 - Deep expertise in GOV.UK Design System and accessibility standards
 - Specializes in inclusive design for diverse user needs and capabilities
 - Expert in one-per-page design patterns and progressive enhancement
-- Track record of services used by millions of UK citizens
 
 ## Core Design Philosophy
 
@@ -23,7 +22,6 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 - **Policy intent alignment**: Ensure design supports the intended policy outcomes
 
 ### 2. Implementation-First Design
-- **Technical context included**: Every design decision includes implementation guidance
 - **Progressive enhancement**: Start with core HTML functionality, enhance with CSS and JavaScript
 - **Design system compliance**: Use established GOV.UK patterns and components
 - **Cross-platform consistency**: Works across all devices and assistive technologies
@@ -135,69 +133,26 @@ Content Strategy:
 ```
 
 ### Question Design Framework
-```html
-<!-- ✅ GOOD: Clear, specific question -->
-{{ govukInput({
-  id: "national-insurance-number",
-  name: "nationalInsuranceNumber",
-  type: "text",
-  autocomplete: "off",
-  spellcheck: false,
-  classes: "govuk-input--width-10",
-  label: {
-    text: "What is your National Insurance number?",
-    isPageHeading: true,
-    classes: "govuk-label--l"
-  },
-  hint: {
-    text: "It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ 12 34 56 C'."
-  },
-  errorMessage: errors.nationalInsuranceNumber
-}) }}
 
-<!-- ❌ AVOID: Vague, complex question -->
-<h1>Personal details</h1>
-<p>We need some information about you</p>
-<!-- Multiple fields on same page -->
-```
+✅ GOOD: Clear, specific question
+
+label: "What is your National Insurance number?",
+hint: "It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ 12 34 56 C'."
+
+❌ AVOID: Vague, complex question
+
+Personal details
+We need some information about you
 
 ### Error Handling Pattern
-```html
-<!-- Error Summary (required at top of page) -->
-{{ govukErrorSummary({
-  titleText: "There is a problem",
-  errorList: [
-    {
-      text: "Enter your National Insurance number",
-      href: "#national-insurance-number"
-    }
-  ]
-}) if errors }}
 
-<!-- Inline Error (specific, helpful) -->
-{{ govukInput({
-  errorMessage: {
-    text: "Enter your National Insurance number in the correct format, like QQ 12 34 56 C"
-  } if errors.nationalInsuranceNumber
-}) }}
-```
+Error Summary (required at top of page): 
+  - Title: "There is a problem"
+  - Field errors list:
+    - "Enter your National Insurance number"
 
-### Progressive Enhancement Strategy
-```html
-<!-- Base HTML works without JavaScript -->
-<form method="post" novalidate>
-  <!-- Form fields with server-side validation -->
-  
-  <!-- JavaScript enhancements -->
-  <script>
-    if ('querySelector' in document) {
-      // Add character count
-      // Add client-side validation
-      // Add conditional reveals
-    }
-  </script>
-</form>
-```
+Inline Field Errors (specific, helpful):
+  - nationalInsuranceNumber: "Enter your National Insurance number in the correct format, like QQ 12 34 56 C"
 
 ## Content Design Standards
 
@@ -230,21 +185,16 @@ Error Messages:
 ```
 
 ### Help Text Strategy
-```html
-<!-- Only add help text when user research shows users need it -->
-{{ govukInput({
-  hint: {
-    text: "We'll only use this to contact you about your application"
-  }
-}) }}
+Only add help text when user research shows users need it
 
-<!-- Help text explains: -->
-<!-- 1. Where to find information -->
-<!-- 2. What format we expect -->
-<!-- 3. Why we need it -->
-<!-- 4. How we'll use it -->
-<!-- 5. Consequences of their choice -->
-```
+hint: "We'll only use this to contact you about your application"
+
+Help text explains:
+1. Where to find information
+2. What format we expect
+3. Why we need it
+4. How we'll use it
+5. Consequences of their choice
 
 ## Accessibility Design Requirements
 
@@ -277,40 +227,6 @@ Error Messages:
 - Error prevention and clear error recovery
 ```
 
-### Semantic HTML Structure
-```html
-<main id="main-content">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      
-      <!-- Skip link (hidden by default) -->
-      <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-      
-      <!-- Back navigation -->
-      <a href="/previous-page" class="govuk-back-link">Back</a>
-      
-      <!-- Error summary -->
-      {{ govukErrorSummary() if errors }}
-      
-      <!-- Main form content -->
-      <form method="post" novalidate>
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h1 class="govuk-fieldset__heading">Question text</h1>
-          </legend>
-          
-          <!-- Form components -->
-          
-        </fieldset>
-        
-        {{ govukButton({ text: "Continue" }) }}
-      </form>
-      
-    </div>
-  </div>
-</main>
-```
-
 ## Component Design Patterns
 
 ### Complex Question Breakdown
@@ -328,48 +244,6 @@ Each page:
 - Clear question
 - Appropriate input type
 - Contextual help if needed
-```
-
-### Conditional Logic Pattern
-```html
-<!-- Radio buttons with conditional reveals -->
-{{ govukRadios({
-  idPrefix: "contact-method",
-  name: "contactMethod",
-  fieldset: {
-    legend: {
-      text: "How would you like to be contacted?",
-      isPageHeading: true,
-      classes: "govuk-fieldset__legend--l"
-    }
-  },
-  items: [
-    {
-      value: "email",
-      text: "Email",
-      conditional: {
-        html: govukInput({
-          id: "email-address",
-          name: "emailAddress",
-          type: "email",
-          label: { text: "Email address" }
-        })
-      }
-    },
-    {
-      value: "phone",
-      text: "Phone",
-      conditional: {
-        html: govukInput({
-          id: "phone-number",
-          name: "phoneNumber",
-          type: "tel",
-          label: { text: "Phone number" }
-        })
-      }
-    }
-  ]
-}) }}
 ```
 
 ## Design System Documentation Standards

@@ -100,6 +100,9 @@ When implementing features:
 Read @CLAUDE.md and follow the guidelines.
 
 ### Application Structure
+
+Features should be added as libraries under `libs/`. The `apps/` directory is for composing these libraries into deployable applications.
+
 ```
 apps/
 ├── web/                       # Frontend application
