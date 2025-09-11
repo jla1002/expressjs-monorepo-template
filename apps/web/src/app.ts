@@ -18,6 +18,7 @@ import type { Express } from "express";
 import express from "express";
 import { glob } from "glob";
 import { createClient } from "redis";
+import { existsSync } from "node:fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,8 +46,8 @@ export async function createApp(): Promise<Express> {
       dynatrace: config.get("dynatrace") 
     }, 
     assetOptions: { 
-      viteRoot: path.join(__dirname, "../.."), 
-      distPath: path.join(__dirname, "../dist") 
+      viteRoot: path.join(__dirname, "assets"), // TODO this doesn't seem to do anything, should be used for dev paths 
+      distPath: path.join(__dirname, "../dist"),
     }
   });
 
@@ -58,7 +59,8 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  const routeMounts = modulePaths.map((path) => ({ pagesDir: path + "/pages" }));
+  // TODO switch /src/ for /dist/ in prod
+  const routeMounts = modulePaths.map((dir) => ({ pagesDir: dir + "/pages" }));
 
   app.use(await createSimpleRouter(...routeMounts));
   app.use(notFoundHandler());
@@ -71,10 +73,9 @@ export async function createApp(): Promise<Express> {
  * Return all the libs with pages/ and also this app
  */
 export function getModulePaths(): string[] {
-  const libDir = process.env.NODE_ENV === "production" ? "dist/" : "src/";
   const libRoots = glob
-    .sync(path.join(__dirname, `../../../libs/*/${libDir}`))
-    .filter((path) => glob.sync(path + "/pages/*.ts").length > 0);
+    .sync(path.join(__dirname, `../../../libs/*/src`))
+    .filter((dir) => existsSync(path.join(dir, "pages")));
 
     return [__dirname, ...libRoots];
 }

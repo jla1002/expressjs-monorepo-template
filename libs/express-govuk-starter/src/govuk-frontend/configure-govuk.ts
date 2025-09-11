@@ -75,11 +75,13 @@ function mergeConfigs(paths: string[]): {
   const mergedI18nPaths: string[] = [];
 
   for (const modulePath of paths) {
-    if (existsSync(path.join(modulePath, "pages"))) {
-      mergedViewPaths.push(modulePath + "/pages");
+    const actualModulePath = process.env.NODE_ENV !== "production" ? modulePath : modulePath.replace("/src/", "/dist/");
+
+    if (existsSync(path.join(actualModulePath, "pages"))) {
+      mergedViewPaths.push(actualModulePath + "/pages");
     }
-    if (existsSync(path.join(modulePath, "locales"))) {
-      mergedI18nPaths.push(modulePath + "/locales");
+    if (existsSync(path.join(actualModulePath, "locales"))) {
+      mergedI18nPaths.push(actualModulePath + "/locales");
     }
   }
 

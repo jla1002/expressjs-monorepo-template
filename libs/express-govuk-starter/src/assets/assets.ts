@@ -95,5 +95,8 @@ export function createAssetHelpers(entries: Record<string, string>, distPath: st
     helpers[name] = assetPath;
   }
 
+  console.log(entries, distPath);
+  console.log("Asset helpers:", helpers);
+
   return helpers;
 }

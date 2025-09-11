@@ -17,24 +17,16 @@ for (const modulePath of modulePaths) {
   const assetsPath = resolve(modulePath, modulePath.endsWith("/src") ? "assets" : "src/assets");
 
   if (existsSync(assetsPath)) {
-    const jsFiles = glob.sync(resolve(assetsPath, "js/*.ts"));
+    const jsFiles = glob.sync(resolve(assetsPath, "js/*.ts")).filter((f) => !f.endsWith(".d.ts"));
     const cssFiles = glob.sync(resolve(assetsPath, "css/*.scss"));
     const moduleAssets = [...jsFiles, ...cssFiles];
 
     for (const asset of moduleAssets) {
-      // Extract module name
-      const pathParts = modulePath.split("/");
-      const moduleName = modulePath.includes("/libs/")
-        ? pathParts[pathParts.length - 2] // Get lib name (e.g., "footer-pages")
-        : "web"; // Main app
-
       const fileName = asset.split("/").pop()!;
       const baseName = fileName.replace(/\.(ts|scss)$/, "");
-
-      // Create predictable keys - use consistent pattern for all modules
       const fileType = fileName.endsWith(".ts") ? "js" : "css";
-      const key = moduleName === "web" ? `${baseName}_${fileType}` : `${moduleName}_${baseName}_${fileType}`;
-      entries[key] = asset;
+
+      entries[`${baseName}_${fileType}`] = asset;
     }
   }
 }

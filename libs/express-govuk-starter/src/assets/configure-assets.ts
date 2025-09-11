@@ -19,6 +19,7 @@ export async function configureAssets(app: Express, env: nunjucks.Environment, a
 
   const isProduction = process.env.NODE_ENV === "production";
   const { viteRoot, distPath } = assetConfig;
+  console.log(paths);
   const entries = getEntries(paths);
 
   if (!isProduction) {
