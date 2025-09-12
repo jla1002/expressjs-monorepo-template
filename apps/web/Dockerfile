@@ -26,6 +26,7 @@ RUN apk add --no-cache dumb-init
 RUN addgroup -g 1001 nodejs && \
     adduser -S -u 1001 -G nodejs nodejs
 
+# TODO: correct and test this. Set NODE_ENV=production
 COPY --from=dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=dependencies --chown=nodejs:nodejs /app/apps/web/node_modules ./apps/web/node_modules
 COPY --from=build --chown=nodejs:nodejs /app/apps/web/dist ./apps/web/dist

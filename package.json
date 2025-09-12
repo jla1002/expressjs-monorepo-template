@@ -19,10 +19,10 @@
     "build": "turbo build",
     "build:force": "turbo build --force",
     "clean": "find . -name '*.tsbuildinfo' -delete && find apps libs -name 'dist' -type d -prune -exec rm -rf {} +",
-    "start": "docker compose up -d && concurrently \"yarn start:api\" \"yarn start:web\"",
+    "start": "docker compose up -d && concurrently \"yarn:start:api\" \"yarn:start:web\"",
     "start:api": "NODE_ENV=production yarn workspace @hmcts/api run start",
     "start:web": "NODE_ENV=production yarn workspace @hmcts/web run start",
-    "dev": "docker compose up -d && yarn workspace @hmcts/postgres run generate && concurrently \"yarn:dev:api\" \"yarn:dev:web\"",
+    "dev": "docker compose up -d && yarn workspace @hmcts/postgres run generate && concurrently -n \"api,web\" \"yarn:dev:api\" \"yarn:dev:web\"",
     "dev:api": "yarn workspace @hmcts/api run dev",
     "dev:web": "yarn workspace @hmcts/web run dev",
     "dev:down": "docker compose down"

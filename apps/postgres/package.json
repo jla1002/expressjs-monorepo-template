@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "generate": "prisma generate",
+    "generate": "prisma generate --no-hints",
     "migrate": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
     "migrate:reset": "prisma migrate reset",

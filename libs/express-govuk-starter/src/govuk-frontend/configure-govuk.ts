@@ -22,8 +22,8 @@ export async function configureGovuk(app: Express, paths: string[], options: Gov
   const env = nunjucks.configure(allViewPaths, {
     autoescape: true,
     express: app,
-    watch: process.env.NODE_ENV === "development",
-    noCache: process.env.NODE_ENV === "development"
+    watch: process.env.NODE_ENV !== "production",
+    noCache: process.env.NODE_ENV !== "production"
   });
 
   app.set("view engine", "njk");
@@ -74,7 +74,7 @@ function mergeConfigs(paths: string[]): {
   const mergedI18nPaths: string[] = [];
 
   for (const modulePath of paths) {
-    const actualModulePath = process.env.NODE_ENV !== "production" ? modulePath : modulePath.replace("/src/", "/dist/");
+    const actualModulePath = process.env.NODE_ENV !== "production" ? modulePath : modulePath.replace("/src", "/dist");
 
     if (existsSync(path.join(actualModulePath, "pages"))) {
       mergedViewPaths.push(actualModulePath + "/pages");

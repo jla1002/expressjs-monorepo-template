@@ -720,6 +720,7 @@ __metadata:
     "@types/nunjucks": "npm:3.2.6"
     "@types/supertest": "npm:6.0.3"
     compression: "npm:1.8.1"
+    concurrently: "npm:9.2.1"
     config: "npm:4.1.1"
     connect-redis: "npm:9.0.0"
     cookie-parser: "npm:1.4.7"

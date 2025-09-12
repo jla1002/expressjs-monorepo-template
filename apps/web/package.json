@@ -6,7 +6,9 @@
   "main": "./dist/server.js",
   "types": "./dist/server.d.ts",
   "scripts": {
-    "dev": "nodemon --watch src --watch '../../**/*' --ext ts --exec tsx src/server.ts",
+    "dev": "concurrently -r \"yarn:dev:watch\" \"yarn:build:watch\"",
+    "dev:watch": "nodemon --watch yarn.lock --watch src --watch '../../**/*' --ext json,ts,scss --exec tsx src/server.ts",
+    "build:watch": "NODE_OPTIONS='--import tsx' vite build --watch",
     "build": "tsc && vite build",
     "clean": "rm -rf dist",
     "start": "node dist/server.js",
@@ -44,6 +46,7 @@
     "@types/govuk-frontend": "5.9.0",
     "@types/nunjucks": "3.2.6",
     "@types/supertest": "6.0.3",
+    "concurrently": "9.2.1",
     "nodemon": "3.1.10",
     "sass": "1.92.1",
     "supertest": "7.1.4",

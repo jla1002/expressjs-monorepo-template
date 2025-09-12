@@ -3,4 +3,7 @@
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
 - Add example form and confirmation page
 - move apps/database to libs/postgres-prisma-orm
-- Claude Code PR review
+- Fix router .ts
+- Remove asset dev mode
+- Add asset:build - DONE
+- Update watch - DONE

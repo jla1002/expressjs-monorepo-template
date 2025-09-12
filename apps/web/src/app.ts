@@ -46,7 +46,6 @@ export async function createApp(): Promise<Express> {
       dynatrace: config.get("dynatrace")
     },
     assetOptions: {
-      viteRoot: path.join(__dirname, "assets"), // TODO this doesn't seem to do anything, should be used for dev paths
       distPath: path.join(__dirname, "../dist")
     }
   });

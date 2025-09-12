@@ -4,6 +4,9 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc && cp -r src/govuk-frontend/views dist/govuk-frontend/ && cp -r src/cookies/views dist/cookies/",
     "dev": "tsc --watch",
