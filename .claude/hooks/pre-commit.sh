@@ -41,14 +41,13 @@ if ! yarn test:changed; then
 fi
 
 # Run build to check for compilation errors
-# TODO: Re-enable once crons tenant architecture is fixed
-# echo "Running build check..."
-# log_hook "Starting build check"
-# if ! yarn build; then
-#     echo "❌ Build failed"
-#     log_hook "Build failed"
-#     exit 2
-# fi
+echo "Running build check..."
+log_hook "Starting build check"
+if ! yarn build; then
+    echo "❌ Build failed"
+    log_hook "Build failed"
+    exit 2
+fi
 
 echo "✅ All pre-commit checks passed!"
 log_hook "Hook completed successfully"
