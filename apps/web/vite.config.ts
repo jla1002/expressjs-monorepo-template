@@ -1,7 +1,7 @@
-import { createBaseViteConfig } from "@hmcts/express-govuk-starter";
+import { createBaseViteConfig } from "@hmcts/express-govuk-starter/src/assets/vite-config.js";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { getModulePaths } from "./src/app.js";
+import { getModulePaths } from "./src/modules.js";
 
 const modulePaths = getModulePaths();
 const baseConfig = createBaseViteConfig(modulePaths);

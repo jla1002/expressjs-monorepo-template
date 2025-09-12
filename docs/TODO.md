@@ -4,6 +4,4 @@
 - Add example form and confirmation page
 - move apps/database to libs/postgres-prisma-orm
 - Fix router .ts
-- Remove asset dev mode
-- Add asset:build - DONE
-- Update watch - DONE
+- Update API with dynamic import of routes from libs

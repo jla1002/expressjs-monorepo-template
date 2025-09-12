@@ -2,10 +2,12 @@
   "name": "@hmcts/simple-router",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
   },
   "scripts": {
     "build": "tsc",

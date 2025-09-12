@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { configurePropertiesVolume, healthcheck, monitoringMiddleware } from "@hmcts/cloud-native-platform";
@@ -11,14 +10,14 @@ import {
   expressSessionRedis,
   notFoundHandler
 } from "@hmcts/express-govuk-starter";
-import { createSimpleRouter, type MountSpec } from "@hmcts/simple-router";
+import { createSimpleRouter } from "@hmcts/simple-router";
 import compression from "compression";
 import config from "config";
 import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
-import { glob } from "glob";
 import { createClient } from "redis";
+import { getModulePaths } from "./modules.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,7 +57,6 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  // TODO switch /src/ for /dist/ in prod
   const routeMounts = modulePaths.map((dir) => ({ pagesDir: dir + "/pages" }));
 
   app.use(await createSimpleRouter(...routeMounts));
@@ -66,15 +64,6 @@ export async function createApp(): Promise<Express> {
   app.use(errorHandler());
 
   return app;
-}
-
-/**
- * Return all the libs with pages/ and also this app
- */
-export function getModulePaths(): string[] {
-  const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/src`)).filter((dir) => existsSync(path.join(dir, "pages")));
-
-  return [__dirname, ...libRoots];
 }
 
 const getRedisClient = async () => {

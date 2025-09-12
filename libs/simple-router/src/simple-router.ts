@@ -37,14 +37,16 @@ async function discoverAndLoadRoutes(mounts: MountSpec[]): Promise<RouteEntry[]>
 }
 
 async function processMountSpec(mountSpec: MountSpec): Promise<RouteEntry[]> {
-  const pagesDir = resolve(mountSpec.pagesDir);
+  const dir = process.env.NODE_ENV === "production" ? mountSpec.pagesDir.replace("/src/", "/dist/") : mountSpec.pagesDir;
+  const routesDir = resolve(dir);
 
-  if (!existsSync(pagesDir)) {
-    throw new Error(`Pages directory does not exist: ${pagesDir}`);
+  console.log(`Mounting routes from ${routesDir} at prefix '${mountSpec.prefix || "/"}'`);
+  if (!existsSync(routesDir)) {
+    throw new Error(`Routes directory does not exist: ${routesDir}`);
   }
 
   const prefix = normalizePrefix(mountSpec.prefix || "");
-  const routes = discoverAndSortRoutes(pagesDir);
+  const routes = discoverAndSortRoutes(routesDir);
 
   const routeEntries: RouteEntry[] = [];
 
