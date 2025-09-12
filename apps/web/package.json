@@ -5,9 +5,10 @@
   "type": "module",
   "types": "./dist/server.d.ts",
   "scripts": {
-    "dev": "concurrently -r \"yarn:dev:watch\" \"yarn:build:watch\"",
-    "dev:watch": "nodemon --watch yarn.lock --watch src --watch '../../**/*' --ext json,ts,scss --exec tsx src/server.ts",
-    "build:watch": "NODE_OPTIONS='--import tsx' vite build --watch",
+    "dev": "yarn build:dev > /dev/null 2>&1 || concurrently -r \"yarn:dev:watch\" \"yarn:build:dev:watch\"",
+    "dev:watch": "nodemon --watch yarn.lock --watch src --watch ../../libs --ext json,ts,scss --exec tsx src/server.ts",
+    "build:dev:watch": "NODE_OPTIONS='--import tsx' vite build --watch",
+    "build:dev": "NODE_OPTIONS='--import tsx' vite build",
     "build": "tsc && vite build --configLoader runner",
     "clean": "rm -rf dist",
     "start": "node dist/server.js",
