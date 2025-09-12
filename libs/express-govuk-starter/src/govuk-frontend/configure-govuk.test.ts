@@ -28,7 +28,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     expect(env.addFilter).toBeDefined();
@@ -40,7 +42,9 @@ describe("configureGovuk", () => {
     const customPagesPath = join(testDir, "pages");
     mkdirSync(customPagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     // The environment should be configured with the custom view path
@@ -52,7 +56,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Check that filters are added
     expect(env.getFilter("date")).toBeDefined();
@@ -70,7 +76,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env.getGlobal("isProduction")).toBe(true);
 
@@ -90,13 +98,15 @@ describe("configureGovuk", () => {
 
     const useSpy = vi.spyOn(app, "use");
 
-    await configureGovuk(app, [testDir]);
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Check that middleware was added
     expect(useSpy).toHaveBeenCalled();
-    // Should add locale middleware, render interceptor, and translation middleware
+    // Should add locale middleware, render interceptor, translation middleware, static assets, and pageUrl middleware
     const middlewareCalls = useSpy.mock.calls;
-    expect(middlewareCalls.length).toBeGreaterThanOrEqual(4); // 3 i18n middlewares + pageUrl middleware
+    expect(middlewareCalls.length).toBeGreaterThanOrEqual(5); // 3 i18n middlewares + static assets + pageUrl middleware
   });
 
   it("should not set up i18n middleware when i18nContentPath is not provided", async () => {
@@ -106,11 +116,13 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    await configureGovuk(app, [testDir]);
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
-    // Should only add the pageUrl middleware
+    // Should add the static assets middleware and pageUrl middleware (2 total)
     const middlewareCalls = useSpy.mock.calls;
-    expect(middlewareCalls.length).toBe(1);
+    expect(middlewareCalls.length).toBe(2);
   });
 
   it("should configure assets when assets option is provided", async () => {
@@ -138,7 +150,9 @@ describe("configureGovuk", () => {
     writeFileSync(join(jsPath, "main.js"), "// main.js");
     writeFileSync(join(cssPath, "main.css"), "/* main.css */");
 
-    await configureGovuk(app, [testDir]);
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // The assets should be configured (checking that no error was thrown)
     expect(app.get("view engine")).toBe("njk");
@@ -151,7 +165,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    await configureGovuk(app, [testDir]);
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Get the last middleware added (pageUrl middleware)
     const lastMiddleware = useSpy.mock.calls[useSpy.mock.calls.length - 1][0] as any;
@@ -184,7 +200,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env.getGlobal("isProduction")).toBe(false);
     // In development, nunjucks should have watch and noCache enabled
@@ -198,7 +216,9 @@ describe("configureGovuk", () => {
     const pagesPath = join(testDir, "pages");
     mkdirSync(pagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, [testDir]);
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Verify it's a nunjucks environment
     expect(env).toBeDefined();
@@ -210,7 +230,9 @@ describe("configureGovuk", () => {
   });
 
   it("should handle empty paths gracefully", async () => {
-    const env = await configureGovuk(app, []);
+    const env = await configureGovuk(app, [], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     expect(app.get("view engine")).toBe("njk");
@@ -224,10 +246,28 @@ describe("configureGovuk", () => {
     mkdirSync(pages1, { recursive: true });
     mkdirSync(pages2, { recursive: true });
 
-    const env = await configureGovuk(app, [module1, module2]);
+    const env = await configureGovuk(app, [module1, module2], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     // Both view paths should be added to the environment
     expect(env.loaders).toBeDefined();
+  });
+
+  it("should add custom nunjucks globals", async () => {
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir },
+      nunjucksGlobals: {
+        customGlobal: "test value",
+        anotherGlobal: 123
+      }
+    });
+
+    expect(env.getGlobal("customGlobal")).toBe("test value");
+    expect(env.getGlobal("anotherGlobal")).toBe(123);
   });
 });
