@@ -2959,9 +2959,9 @@ __metadata:
     "@vitest/ui": "npm:3.2.4"
     concurrently: "npm:9.2.1"
     supertest: "npm:7.1.4"
-    tsx: "npm:^4.20.5"
+    tsx: "npm:4.20.5"
     turbo: "npm:2.5.6"
-    typescript: "npm:^5.9.2"
+    typescript: "npm:5.9.2"
     vitest: "npm:3.2.4"
   languageName: unknown
   linkType: soft
@@ -5293,7 +5293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^4.20.5":
+"tsx@npm:4.20.5":
   version: 4.20.5
   resolution: "tsx@npm:4.20.5"
   dependencies:
@@ -5391,7 +5391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.9.2":
+"typescript@npm:5.9.2":
   version: 5.9.2
   resolution: "typescript@npm:5.9.2"
   bin:
@@ -5401,7 +5401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.9.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>":
   version: 5.9.2
   resolution: "typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>::version=5.9.2&hash=5786d5"
   bin:
