@@ -4,4 +4,4 @@
 - Add example form and confirmation page
 - move apps/database to libs/postgres-prisma-orm
 - Update API with dynamic import of routes from libs
-- Remove mergeFooterLocales and correct the organisation of locale files from footer-pages and the apps/web
+- Update README of govuk-frontend to document the madness of asset loading an the differences between dev and prod. Especially the fact we need the exports field in package.json to make it work in prod because vite.config.ts use the node loader and not the ts loader.

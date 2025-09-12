@@ -50,10 +50,15 @@ expressjs-monorepo-template/
 │   ├── api/                    # REST API server (Express 5.x)
 │   ├── web/                    # Web frontend (Express 5.x + Nunjucks)
 │   └── postgres/               # Database configuration (Prisma)
-├── libs/                       # Modular packages
+├── libs/                       # Modular packages (auto-discovered)
 │   ├── cloud-native-platform/  # Cloud Native Platform features
 │   ├── express-gov-uk-starter/ # GOV.UK Frontend integration
-│   └── simple-router/          # Simple Router features
+│   ├── simple-router/          # Simple Router features
+│   └── [your-module]/          # Your feature modules
+│       └── src/
+│           ├── pages/          # Page routes (auto-registered)
+│           ├── locales/        # Translations (auto-loaded)
+│           └── assets/         # Module assets (auto-compiled)
 ├── e2e-tests/                  # End-to-end tests (Playwright)
 ├── docs/                       # Documentation and ADRs
 └── package.json                # Root configuration
@@ -121,7 +126,10 @@ yarn helm:lint                  # Validate Helm charts
 
 1. **Create module structure**:
 ```bash
-mkdir -p libs/my-feature/src
+mkdir -p libs/my-feature/src/pages      # Page controllers and templates
+mkdir -p libs/my-feature/src/locales    # Translation files (optional)
+mkdir -p libs/my-feature/src/assets/css # Module styles (optional)
+mkdir -p libs/my-feature/src/assets/js  # Module scripts (optional)
 cd libs/my-feature
 ```
 
@@ -131,26 +139,65 @@ cd libs/my-feature
   "name": "@hmcts/my-feature",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && yarn build:nunjucks",
+    "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
+    "dev": "tsc --watch",
     "test": "vitest run",
-    "dev": "tsc --watch"
+    "test:watch": "vitest watch"
   },
   "peerDependencies": {
     "express": "^5.1.0"
   }
 }
 ```
+**Note**: The `build:nunjucks` script is required if your module contains Nunjucks templates.
 
-3. **Import in your application**:
-```typescript
-import { myFeature } from '@hmcts/my-feature';
-
-// Use in Express app
-app.use(myFeature());
+3. **Create tsconfig.json**:
+```json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "dist", "node_modules", "src/assets/"]
+}
 ```
+
+4. **Create vitest.config.ts**:
+```typescript
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: "node",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"]
+    }
+  }
+});
+```
+
+5. **Register module in root tsconfig.json**:
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      // ... existing paths ...
+      "@hmcts/my-feature": ["libs/my-feature/src"]
+    }
+  }
+}
+```
+
+6. **Module auto-discovery**:
+If your module contains a `pages/` directory, it will be automatically discovered and loaded by the web application.
 
 ## 🧪 Testing Strategy
 
