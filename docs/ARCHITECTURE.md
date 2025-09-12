@@ -52,14 +52,42 @@ expressjs-monorepo-template/
 ├── apps/                       # Deployable applications
 │   ├── api/                    # REST API service
 │   ├── web/                    # Web frontend application
+│   │   └── src/
+│   │       └── modules.ts      # Module auto-discovery system
 │   └── postgres/               # Database schema and migrations
-├── libs/                       # Reusable packages
+├── libs/                       # Reusable packages (auto-discovered)
 │   ├── cloud-native-platform/  # Azure integration & monitoring
 │   ├── express-govuk-starter/  # GOV.UK Design System integration
-│   └── simple-router/          # File-based routing system
+│   ├── simple-router/          # File-based routing system
+│   └── [feature-modules]/      # Feature modules with pages/
+│       └── src/
+│           ├── pages/          # Page routes (auto-registered)
+│           ├── locales/        # Translations (auto-loaded)
+│           ├── views/          # Templates (auto-registered)
+│           └── assets/         # Module assets (auto-compiled)
 ├── e2e-tests/                  # Playwright E2E tests
 └── docs/                       # Documentation
 ```
+
+### Module Auto-Discovery System
+
+The web application features an intelligent module discovery system that automatically integrates feature modules:
+
+1. **Discovery Process** (`apps/web/src/modules.ts`):
+   - Scans all directories under `libs/*/src`
+   - Identifies modules containing a `pages/` directory
+   - Returns paths for automatic registration
+
+2. **Automatic Integration**:
+   - **Routes**: Pages in `module/src/pages/` are automatically registered with Simple Router
+   - **Views**: Templates in `module/src/pages/` and `module/src/views/` are added to Nunjucks paths
+   - **Locales**: Translation files in `module/src/locales/` are automatically loaded
+   - **Assets**: CSS and JS files in `module/src/assets/` are compiled and served
+
+3. **Zero Configuration**:
+   - No manual registration required
+   - Simply create the module structure and it's automatically discovered
+   - Modules must be added to root `tsconfig.json` paths for TypeScript resolution
 
 ## Core Components
 
@@ -88,6 +116,8 @@ expressjs-monorepo-template/
 - Page-specific content in controllers
 - Shared content in locale files
 - Co-located page templates and controllers
+- Module auto-discovery for seamless integration
+- Automatic asset compilation for modules
 
 ### 2. REST API (`apps/api`)
 
@@ -188,6 +218,7 @@ app.use(healthcheck()); // /health, /health/readiness, /health/liveness
 - HTTP method exports
 - Middleware composition
 - Zero configuration
+- Multi-directory mounting support
 
 **Example**:
 ```typescript
@@ -196,6 +227,14 @@ export const GET = async (req, res) => {
   const user = await getUser(req.params.id);
   res.json(user);
 };
+```
+
+**Module Integration**:
+```typescript
+// apps/web/src/app.ts
+const modulePaths = getModulePaths(); // Auto-discover modules
+const routeMounts = modulePaths.map((dir) => ({ pagesDir: `${dir}/pages` }));
+app.use(await createSimpleRouter(...routeMounts)); // Mount all module routes
 ```
 
 ## Scalability Design
@@ -221,5 +260,4 @@ export const GET = async (req, res) => {
 | Testing | Vitest, Playwright |
 | Container | Docker (Multi-stage Alpine) |
 | Orchestration | Kubernetes + Helm |
-| Cloud | Azure (Cloud Native Platform) |
 

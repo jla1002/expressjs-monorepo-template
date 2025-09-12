@@ -24,7 +24,13 @@ describe("configureGovuk", () => {
   });
 
   it("should configure nunjucks environment", async () => {
-    const env = await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     expect(env.addFilter).toBeDefined();
@@ -33,11 +39,11 @@ describe("configureGovuk", () => {
   });
 
   it("should add custom view paths", async () => {
-    const customViewPath = join(testDir, "views");
-    mkdirSync(customViewPath, { recursive: true });
+    const customPagesPath = join(testDir, "pages");
+    mkdirSync(customPagesPath, { recursive: true });
 
-    const env = await configureGovuk(app, {
-      viewPaths: [customViewPath]
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
     });
 
     expect(env).toBeDefined();
@@ -46,7 +52,13 @@ describe("configureGovuk", () => {
   });
 
   it("should add filters to nunjucks environment", async () => {
-    const env = await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Check that filters are added
     expect(env.getFilter("date")).toBeDefined();
@@ -60,7 +72,13 @@ describe("configureGovuk", () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
 
-    const env = await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env.getGlobal("isProduction")).toBe(true);
 
@@ -80,25 +98,31 @@ describe("configureGovuk", () => {
 
     const useSpy = vi.spyOn(app, "use");
 
-    await configureGovuk(app, {
-      i18nContentPath: localesPath
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
     });
 
     // Check that middleware was added
     expect(useSpy).toHaveBeenCalled();
-    // Should add locale middleware, render interceptor, and translation middleware
+    // Should add locale middleware, render interceptor, translation middleware, static assets, and pageUrl middleware
     const middlewareCalls = useSpy.mock.calls;
-    expect(middlewareCalls.length).toBeGreaterThanOrEqual(4); // 3 i18n middlewares + pageUrl middleware
+    expect(middlewareCalls.length).toBeGreaterThanOrEqual(5); // 3 i18n middlewares + static assets + pageUrl middleware
   });
 
   it("should not set up i18n middleware when i18nContentPath is not provided", async () => {
     const useSpy = vi.spyOn(app, "use");
 
-    await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
 
-    // Should only add the pageUrl middleware
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
+
+    // Should add the static assets middleware and pageUrl middleware (2 total)
     const middlewareCalls = useSpy.mock.calls;
-    expect(middlewareCalls.length).toBe(1);
+    expect(middlewareCalls.length).toBe(2);
   });
 
   it("should configure assets when assets option is provided", async () => {
@@ -118,16 +142,16 @@ describe("configureGovuk", () => {
     const imagesPath = join(testDir, "images");
     mkdirSync(imagesPath, { recursive: true });
 
-    await configureGovuk(app, {
-      assets: {
-        manifestPath,
-        srcPath: testDir,
-        publicPath: "/assets/",
-        viteRoot: testDir,
-        entries: {
-          main: "src/index.js" // Add required entries property
-        }
-      }
+    // Create js and css directories with files
+    const jsPath = join(assetsPath, "js");
+    const cssPath = join(assetsPath, "css");
+    mkdirSync(jsPath, { recursive: true });
+    mkdirSync(cssPath, { recursive: true });
+    writeFileSync(join(jsPath, "main.js"), "// main.js");
+    writeFileSync(join(cssPath, "main.css"), "/* main.css */");
+
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
     });
 
     // The assets should be configured (checking that no error was thrown)
@@ -137,7 +161,13 @@ describe("configureGovuk", () => {
   it("should add pageUrl and serviceUrl to res.locals", async () => {
     const useSpy = vi.spyOn(app, "use");
 
-    await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Get the last middleware added (pageUrl middleware)
     const lastMiddleware = useSpy.mock.calls[useSpy.mock.calls.length - 1][0] as any;
@@ -166,7 +196,13 @@ describe("configureGovuk", () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = "development";
 
-    const env = await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env.getGlobal("isProduction")).toBe(false);
     // In development, nunjucks should have watch and noCache enabled
@@ -176,7 +212,13 @@ describe("configureGovuk", () => {
   });
 
   it("should return nunjucks environment", async () => {
-    const env = await configureGovuk(app);
+    // Create a minimal pages directory
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir }
+    });
 
     // Verify it's a nunjucks environment
     expect(env).toBeDefined();
@@ -187,25 +229,45 @@ describe("configureGovuk", () => {
     expect(env.getGlobal).toBeDefined();
   });
 
-  it("should handle empty options gracefully", async () => {
-    const env = await configureGovuk(app, {});
+  it("should handle empty paths gracefully", async () => {
+    const env = await configureGovuk(app, [], {
+      assetOptions: { distPath: testDir }
+    });
 
     expect(env).toBeDefined();
     expect(app.get("view engine")).toBe("njk");
   });
 
-  it("should handle multiple view paths", async () => {
-    const viewPath1 = join(testDir, "views1");
-    const viewPath2 = join(testDir, "views2");
-    mkdirSync(viewPath1, { recursive: true });
-    mkdirSync(viewPath2, { recursive: true });
+  it("should handle multiple module paths", async () => {
+    const module1 = join(testDir, "module1");
+    const module2 = join(testDir, "module2");
+    const pages1 = join(module1, "pages");
+    const pages2 = join(module2, "pages");
+    mkdirSync(pages1, { recursive: true });
+    mkdirSync(pages2, { recursive: true });
 
-    const env = await configureGovuk(app, {
-      viewPaths: [viewPath1, viewPath2]
+    const env = await configureGovuk(app, [module1, module2], {
+      assetOptions: { distPath: testDir }
     });
 
     expect(env).toBeDefined();
     // Both view paths should be added to the environment
     expect(env.loaders).toBeDefined();
+  });
+
+  it("should add custom nunjucks globals", async () => {
+    const pagesPath = join(testDir, "pages");
+    mkdirSync(pagesPath, { recursive: true });
+
+    const env = await configureGovuk(app, [testDir], {
+      assetOptions: { distPath: testDir },
+      nunjucksGlobals: {
+        customGlobal: "test value",
+        anotherGlobal: 123
+      }
+    });
+
+    expect(env.getGlobal("customGlobal")).toBe("test value");
+    expect(env.getGlobal("anotherGlobal")).toBe(123);
   });
 });

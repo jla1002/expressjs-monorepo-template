@@ -1,16 +1,10 @@
 {
-  "name": "@hmcts/simple-router",
+  "name": "@hmcts/footer-pages",
   "version": "1.0.0",
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "production": "./dist/index.js",
-      "default": "./src/index.ts"
-    }
-  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && yarn build:nunjucks",
+    "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest watch",

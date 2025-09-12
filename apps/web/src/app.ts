@@ -17,12 +17,14 @@ import cookieParser from "cookie-parser";
 import type { Express } from "express";
 import express from "express";
 import { createClient } from "redis";
+import { getModulePaths } from "./modules.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const chartPath = path.join(__dirname, "../helm/values.yaml");
 
 export async function createApp(): Promise<Express> {
-  await configurePropertiesVolume(config, { chartPath: path.join(__dirname, "../helm/values.yaml") });
+  await configurePropertiesVolume(config, { chartPath });
 
   const app = express();
 
@@ -35,20 +37,15 @@ export async function createApp(): Promise<Express> {
   app.use(configureHelmet());
   app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
-  await configureGovuk(app, {
-    i18nContentPath: path.join(__dirname, "locales"),
-    viewPaths: [path.join(__dirname, "pages/")],
-    assets: {
-      viteRoot: path.join(__dirname, "assets"),
-      distPath: path.join(__dirname, "../dist"),
-      entries: {
-        jsEntry: "js/index.ts",
-        cssEntry: "css/index.scss"
-      }
-    },
+  const modulePaths = getModulePaths();
+
+  await configureGovuk(app, modulePaths, {
     nunjucksGlobals: {
       gtm: config.get("gtm"),
       dynatrace: config.get("dynatrace")
+    },
+    assetOptions: {
+      distPath: path.join(__dirname, "../dist")
     }
   });
 
@@ -60,7 +57,9 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  app.use(await createSimpleRouter({ pagesDir: path.join(__dirname, "/pages") }));
+  const routeMounts = modulePaths.map((dir) => ({ pagesDir: `${dir}/pages` }));
+
+  app.use(await createSimpleRouter(...routeMounts));
   app.use(notFoundHandler());
   app.use(errorHandler());
 

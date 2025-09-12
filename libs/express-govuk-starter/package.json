@@ -2,8 +2,17 @@
   "name": "@hmcts/express-govuk-starter",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./src/assets/vite-config.js": {
+      "production": "./dist/assets/vite-config.js",
+      "default": "./src/assets/vite-config.ts"
+    }
+  },
   "scripts": {
     "build": "tsc && cp -r src/govuk-frontend/views dist/govuk-frontend/ && cp -r src/cookies/views dist/cookies/",
     "dev": "tsc --watch",

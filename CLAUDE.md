@@ -76,29 +76,135 @@ model Case {
 
 ## Module Development Guidelines
 
+### Module Auto-Discovery System
+
+The web application automatically discovers and loads modules that contain a `pages/` directory. This is handled by the `getModulePaths()` function in `apps/web/src/modules.ts`, which:
+- Scans all directories under `libs/*/src`
+- Filters for modules containing a `pages/` directory
+- Returns paths for automatic route and view registration
+
 ### Creating a New Feature Module
 
 1. **Create module structure**:
 ```bash
-mkdir -p libs/my-feature/src
+mkdir -p libs/my-feature/src/pages      # Page controllers and templates
+mkdir -p libs/my-feature/src/locales    # Translation files (optional)
+mkdir -p libs/my-feature/src/views      # Shared templates (optional)
+mkdir -p libs/my-feature/src/assets/css # Module styles (optional)
+mkdir -p libs/my-feature/src/assets/js  # Module scripts (optional)
 ```
 
 2. **Package.json requirements**:
 ```json
 {
   "name": "@hmcts/my-feature",
+  "version": "1.0.0",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && yarn build:nunjucks",
+    "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
+    "dev": "tsc --watch",
     "test": "vitest run",
-    "dev": "tsc --watch"
+    "test:watch": "vitest watch"
   },
   "peerDependencies": {
     "express": "^5.1.0"
   }
 }
+```
+
+**Note**: The `build:nunjucks` script is required if your module contains Nunjucks templates in the `pages/` directory.
+
+3. **Create tsconfig.json**:
+```json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "dist", "node_modules", "src/assets/"]
+}
+```
+
+4. **Create vitest.config.ts**:
+```typescript
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: "node",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"]
+    }
+  }
+});
+```
+
+5. **Register module in root tsconfig.json**:
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      // ... existing paths ...
+      "@hmcts/my-feature": ["libs/my-feature/src"]
+    }
+  }
+}
+```
+
+### Module Structure
+
+```
+libs/my-feature/
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+└── src/
+    ├── pages/                  # Page routes (auto-discovered)
+    │   ├── my-page.ts          # Controller with GET/POST exports
+    │   └── my-page.njk         # Nunjucks template
+    ├── locales/                # i18n translations (optional)
+    │   ├── en.ts               # English translations
+    │   └── cy.ts               # Welsh translations
+    ├── views/                  # Shared templates (optional)
+    │   └── partials/
+    └── assets/                 # Module assets (optional)
+        ├── css/
+        │   └── module.scss
+        └── js/
+            └── module.ts
+```
+
+### Page Controller Pattern
+
+```typescript
+// libs/my-feature/src/pages/my-page.ts
+import type { Request, Response } from "express";
+
+const en = {
+  title: "My Page Title",
+  description: "Page description"
+};
+
+const cy = {
+  title: "Teitl Fy Nhudalen",
+  description: "Disgrifiad tudalen"
+};
+
+export const GET = async (_req: Request, res: Response) => {
+  res.render("my-page", { en, cy });
+};
+
+export const POST = async (req: Request, res: Response) => {
+  // Handle form submission
+  res.redirect("/success");
+};
 ```
 
 ### Express Middleware Pattern

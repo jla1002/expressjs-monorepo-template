@@ -32,7 +32,13 @@ function scanDirectory(dir: string, rootDir: string): Record<string, DiscoveredR
 }
 
 function isRouteFile(entry: Dirent): boolean {
-  return entry.isFile() && (entry.name.endsWith(".ts") || entry.name.endsWith(".js")) && !entry.name.includes(".test.") && !entry.name.includes(".spec.");
+  return (
+    entry.isFile() &&
+    (entry.name.endsWith(".ts") || entry.name.endsWith(".js")) &&
+    !entry.name.includes(".test.") &&
+    !entry.name.includes(".spec.") &&
+    !entry.name.endsWith(".d.ts")
+  );
 }
 
 function filePathToUrlPath(filePath: string): string {

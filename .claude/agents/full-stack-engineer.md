@@ -100,29 +100,54 @@ When implementing features:
 Read @CLAUDE.md and follow the guidelines.
 
 ### Application Structure
+
+Features should be added as libraries under `libs/`. The `apps/` directory is for composing these libraries into deployable applications.
+
 ```
 apps/
 ├── web/                       # Frontend application
 │   ├── src/
 │   │   ├── pages/             # Page controllers and templates
 │   │   ├── locales/           # Shared i18n translations
-│   │   ├── views/             # Shared view templates
+│   │   └── views/             # Shared view templates
 └── api/                       # Backend API
     └── src/
-        ├── routes/            # API endpoints
-        └── app.ts             # Express setup
+        └── routes/            # API endpoints
 
 libs/
 └── [feature]/
+    ├── package.json           # Module metadata and scripts
+    ├── tsconfig.json          # TypeScript configuration
+    ├── vitest.config.ts       # Test configuration
     └── src/
-        ├── api/               # API route handlers
-        ├── pages/             # Page route handlers & page templates
-        ├── locales/           # Shared i18n translations
-        ├── views/             # Shared templates
+        ├── pages/             # Page route handlers & templates (auto-discovered)
+        ├── locales/           # i18n translations (auto-loaded)
+        ├── views/             # Shared templates (auto-registered)
+        ├── assets/            # Module-specific frontend assets
+        │   ├── css/           # SCSS/CSS files
+        │   └── js/            # JavaScript/TypeScript files
         └── [domain]/          # Domain-driven structure
             ├── model.ts       # Data models
             ├── service.ts     # Business logic
             └── queries.ts     # Database queries
+```
+
+### Module Auto-Discovery
+
+The web application uses a module discovery system (`apps/web/src/modules.ts`) that:
+1. Scans all `libs/*/src` directories
+2. Identifies modules with a `pages/` directory
+3. Automatically registers their routes, views, and locales
+4. No manual registration required - just create the module structure
+
+```typescript
+// apps/web/src/modules.ts
+export function getModulePaths(): string[] {
+  const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/src`))
+    .filter((dir) => existsSync(path.join(dir, "pages")));
+  
+  return [__dirname, ...libRoots];
+}
 ```
 
 ### Implementation Patterns
@@ -178,6 +203,52 @@ export const POST = async (req: Request, res: Response) => {
     });
   }
 };
+```
+
+#### Module Configuration Pattern
+
+Nunjucks templates need to be copied to `dist/` for production. Use a build script in `package.json`:
+
+```json
+// libs/user-management/package.json
+{
+  "name": "@hmcts/user-management",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && yarn build:nunjucks",
+    "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
+    "dev": "tsc --watch",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0"
+  }
+}
+
+// libs/user-management/tsconfig.json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.ts", "dist", "node_modules", "src/assets/"]
+}
+```
+
+**Important**: Remember to add your module to the root `tsconfig.json`:
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@hmcts/user-management": ["libs/user-management/src"]
+    }
+  }
+}
 ```
 
 #### Accessible Form Pattern
@@ -267,6 +338,13 @@ type CreateUserData = {
 ```
 
 ### Production Readiness Checklist
+
+#### Module Setup ✅
+- [ ] Module registered in root `tsconfig.json` paths
+- [ ] `package.json` includes build:nunjucks script if needed
+- [ ] `tsconfig.json` configured with proper includes/excludes
+- [ ] `vitest.config.ts` created for testing
+- [ ] Module structure follows convention (pages/, locales/, assets/)
 
 #### Frontend ✅
 - [ ] WCAG 2.2 AA compliance tested

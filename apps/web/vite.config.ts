@@ -1,20 +1,13 @@
-import { resolve } from "node:path";
-import { createBaseViteConfig } from "@hmcts/express-govuk-starter";
+import { createBaseViteConfig } from "@hmcts/express-govuk-starter/src/assets/vite-config.js";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { getModulePaths } from "./src/modules.js";
 
-const baseConfig = createBaseViteConfig();
+const modulePaths = getModulePaths();
+const baseConfig = createBaseViteConfig(modulePaths);
 
 export default defineConfig(
   mergeConfig(baseConfig, {
-    build: {
-      rollupOptions: {
-        input: {
-          main: resolve(__dirname, "src/assets/js/index.ts"),
-          styles: resolve(__dirname, "src/assets/css/index.scss")
-        }
-      }
-    },
     plugins: [
       viteStaticCopy({
         targets: [
