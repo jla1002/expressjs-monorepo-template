@@ -4,9 +4,6 @@ import { MonitoringService } from "./monitoring-service.js";
 export function monitoringMiddleware(config: MonitoringMiddlewareConfig): (req: Request, res: Response, next: NextFunction) => void {
   const { serviceName, appInsightsConnectionString, enabled = true } = config;
 
-  // TODO remove before commit
-  return (_req: Request, _res: Response, next: NextFunction) => next();
-
   if (!enabled) {
     return (_req: Request, _res: Response, next: NextFunction) => next();
   }

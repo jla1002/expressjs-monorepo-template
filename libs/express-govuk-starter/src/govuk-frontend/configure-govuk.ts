@@ -39,7 +39,7 @@ export async function configureGovuk(app: Express, paths: string[], options: Gov
     app.use(translationMiddleware(translations));
   }
 
-  await configureAssets(app, env, options.assetOptions, paths);
+  await configureAssets(app, env, options.assetOptions);
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.pageUrl = req.path;
@@ -77,10 +77,10 @@ function mergeConfigs(paths: string[]): {
     const actualModulePath = process.env.NODE_ENV !== "production" ? modulePath : modulePath.replace("/src", "/dist");
 
     if (existsSync(path.join(actualModulePath, "pages"))) {
-      mergedViewPaths.push(actualModulePath + "/pages");
+      mergedViewPaths.push(`${actualModulePath}/pages`);
     }
     if (existsSync(path.join(actualModulePath, "locales"))) {
-      mergedI18nPaths.push(actualModulePath + "/locales");
+      mergedI18nPaths.push(`${actualModulePath}/locales`);
     }
   }
 

@@ -8,7 +8,7 @@ import { createAssetHelpers } from "./assets.js";
 /**
  * Configure asset handling for development and production
  */
-export async function configureAssets(app: Express, env: nunjucks.Environment, assetConfig: AssetOptions, paths: string[]): Promise<void> {
+export async function configureAssets(app: Express, env: nunjucks.Environment, assetConfig: AssetOptions): Promise<void> {
   if (!assetConfig) {
     return;
   }

@@ -20,233 +20,130 @@ describe("assets", () => {
   });
 
   describe("createAssetHelpers", () => {
-    describe("development mode", () => {
-      beforeEach(() => {
-        process.env.NODE_ENV = "development";
+    it("should load manifest and return hashed filenames", async () => {
+      const manifestContent = JSON.stringify({
+        "src/assets/js/main.ts": {
+          file: "js/main-abc123.js",
+          name: "mainJs",
+          isEntry: true
+        },
+        "src/assets/css/main.scss": {
+          file: "css/main-def456.css",
+          name: "mainCss.css",
+          isEntry: true
+        }
       });
 
-      it("should return development paths for asset entries", async () => {
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts",
-          mainCss: "css/main.scss"
-        };
-        const distPath = "/dist";
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
 
-        const helpers = createAssetHelpers(entries, distPath);
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
 
-        expect(helpers.mainJs).toBe("/js/main.ts");
-        expect(helpers.mainCss).toBe("/css/main.scss");
-      });
+      const helpers = createAssetHelpers(distPath);
 
-      it("should handle empty entries", async () => {
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {};
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers).toEqual({});
-      });
-
-      it("should handle nested paths", async () => {
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          component: "components/header/index.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.component).toBe("/components/header/index.ts");
-      });
+      expect(helpers.mainJs).toBe("/assets/js/main-abc123.js");
+      expect(helpers.mainCss).toBe("/assets/css/main-def456.css");
     });
 
-    describe("production mode", () => {
-      beforeEach(() => {
-        process.env.NODE_ENV = "production";
-      });
+    it("should handle empty manifest", async () => {
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(false);
 
-      it("should load manifest and return hashed filenames", async () => {
-        const manifestContent = JSON.stringify({
-          "src/assets/js/main.ts": {
-            file: "js/main-abc123.js",
-            isEntry: true
-          },
-          "src/assets/css/main.scss": {
-            file: "css/main-def456.css",
-            isEntry: true
-          }
-        });
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
 
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
+      const helpers = createAssetHelpers(distPath);
 
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts",
-          mainCss: "css/main.scss"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.mainJs).toBe("/assets/js/main-abc123.js");
-        expect(helpers.mainCss).toBe("/assets/css/main-def456.css");
-      });
-
-      it("should fallback to entry path if not in manifest", async () => {
-        const manifestContent = JSON.stringify({
-          "src/assets/js/other.ts": {
-            file: "js/other-xyz789.js"
-          }
-        });
-
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.mainJs).toBe("/assets/js/main.ts");
-      });
-
-      it("should handle missing manifest file", async () => {
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(false);
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.mainJs).toBe("/assets/js/main.ts");
-      });
-
-      it("should handle corrupt manifest file", async () => {
-        const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.readFileSync).mockReturnValue("not valid json");
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.mainJs).toBe("/assets/js/main.ts");
-        expect(consoleWarnSpy).toHaveBeenCalledWith("Failed to load Vite manifest:", expect.any(Error));
-
-        consoleWarnSpy.mockRestore();
-      });
-
-      it("should cache manifest across multiple calls", async () => {
-        const manifestContent = JSON.stringify({
-          "src/assets/js/main.ts": {
-            file: "js/main-abc123.js"
-          }
-        });
-
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries1 = { mainJs: "js/main.ts" };
-        const entries2 = { otherJs: "js/other.ts" };
-        const distPath = "/dist";
-
-        // First call should read the manifest
-        createAssetHelpers(entries1, distPath);
-        expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-
-        // Second call should use cached manifest
-        createAssetHelpers(entries2, distPath);
-        expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-      });
-
-      it("should handle filesystem errors", async () => {
-        const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-        vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
-        vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.readFileSync).mockImplementation(() => {
-          throw new Error("Permission denied");
-        });
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          mainJs: "js/main.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers.mainJs).toBe("/assets/js/main.ts");
-        expect(consoleWarnSpy).toHaveBeenCalledWith("Failed to load Vite manifest:", expect.objectContaining({ message: "Permission denied" }));
-
-        consoleWarnSpy.mockRestore();
-      });
+      expect(helpers).toEqual({});
     });
 
-    describe("edge cases", () => {
-      it("should handle entries with special characters", async () => {
-        process.env.NODE_ENV = "development";
-
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          "entry-with-dash": "js/entry-with-dash.ts",
-          entry_with_underscore: "js/entry_with_underscore.ts"
-        };
-        const distPath = "/dist";
-
-        const helpers = createAssetHelpers(entries, distPath);
-
-        expect(helpers["entry-with-dash"]).toBe("/js/entry-with-dash.ts");
-        expect(helpers.entry_with_underscore).toBe("/js/entry_with_underscore.ts");
+    it("should handle manifest with multiple names", async () => {
+      const manifestContent = JSON.stringify({
+        "src/assets/js/app.ts": {
+          file: "js/app-xyz789.js",
+          name: "app",
+          names: ["appMain", "appBundle"],
+          isEntry: true
+        }
       });
 
-      it("should handle absolute paths in entries", async () => {
-        process.env.NODE_ENV = "development";
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
 
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          absolute: "/absolute/path/to/file.ts"
-        };
-        const distPath = "/dist";
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
 
-        const helpers = createAssetHelpers(entries, distPath);
+      const helpers = createAssetHelpers(distPath);
 
-        expect(helpers.absolute).toBe("//absolute/path/to/file.ts");
+      expect(helpers.app).toBe("/assets/js/app-xyz789.js");
+      expect(helpers.appMain).toBe("/assets/js/app-xyz789.js");
+      expect(helpers.appBundle).toBe("/assets/js/app-xyz789.js");
+    });
+
+    it("should handle manifest read errors", async () => {
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readFileSync).mockImplementation(() => {
+        throw new Error("Read error");
       });
 
-      it("should handle entries without file extensions", async () => {
-        process.env.NODE_ENV = "development";
+      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-        const { createAssetHelpers } = await import("./assets.js");
-        const entries = {
-          noExt: "js/main"
-        };
-        const distPath = "/dist";
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
 
-        const helpers = createAssetHelpers(entries, distPath);
+      const helpers = createAssetHelpers(distPath);
 
-        expect(helpers.noExt).toBe("/js/main");
+      expect(helpers).toEqual({});
+      expect(consoleSpy).toHaveBeenCalledWith("Failed to load Vite manifest:", expect.any(Error));
+
+      consoleSpy.mockRestore();
+    });
+
+    it("should strip .css suffix from helper names", async () => {
+      const manifestContent = JSON.stringify({
+        "src/assets/css/styles.scss": {
+          file: "css/styles-hash.css",
+          name: "styles.css",
+          isEntry: true
+        }
       });
+
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
+
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
+
+      const helpers = createAssetHelpers(distPath);
+
+      expect(helpers.styles).toBe("/assets/css/styles-hash.css");
+      expect(helpers["styles.css"]).toBeUndefined();
+    });
+
+    it("should handle entries without name property", async () => {
+      const manifestContent = JSON.stringify({
+        "src/assets/js/vendor.ts": {
+          file: "js/vendor-abc.js",
+          isEntry: true
+        }
+      });
+
+      vi.mocked(path.join).mockReturnValue("/dist/assets/.vite/manifest.json");
+      vi.mocked(fs.existsSync).mockReturnValue(true);
+      vi.mocked(fs.readFileSync).mockReturnValue(manifestContent);
+
+      const { createAssetHelpers } = await import("./assets.js");
+      const distPath = "/dist";
+
+      const helpers = createAssetHelpers(distPath);
+
+      // Entry without name should be skipped
+      expect(Object.keys(helpers)).toHaveLength(0);
     });
   });
 });
