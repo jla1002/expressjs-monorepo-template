@@ -21,7 +21,7 @@ Use TodoWrite to create this checklist:
 ```
 - [ ] Retrieve $ARGUMENT specifications in /docs/tickets/$ARGUMENT/
 - [ ] Execute parallel implementation (engineering, testing, infrastructure)
-- [ ] Run code quality checks (lint, format, typecheck)
+- [ ] Run code quality checks (lint, format, unit test)
 - [ ] Perform code review
 - [ ] Execute all tests (unit and E2E)
 - [ ] Apply review feedback
@@ -62,6 +62,7 @@ PROMPT FOR AGENT:
    - Add .js extension to all relative imports
    - Create modules in libs/ not in apps/
    - Include Welsh translations for all user-facing text
+   - Do not create types.ts files, types should be co-located
 5. Write unit tests for all new code (co-located .test.ts files)
 6. Ensure >80% test coverage on business logic
 7. DO NOT run lint/format/tests - coordinator will handle
@@ -120,6 +121,7 @@ EXECUTE IN SEQUENCE:
 3. IF database changes made:
    - yarn workspace @hmcts/postgres run generate
    - yarn workspace @hmcts/postgres run migrate
+4. yarn test
 VERIFY: All checks pass, fix any issues found
 ```
 *Mark "Run code quality checks" as completed*
@@ -129,9 +131,10 @@ VERIFY: All checks pass, fix any issues found
 ### Step 3.2: Test Execution
 ```
 EXECUTE IN SEQUENCE:
-1. yarn test (run unit tests)
-2. yarn test:e2e (run Playwright E2E tests)
-3. yarn test:coverage (verify coverage >80%)
+1. yarn dev (test the app boots)
+2. yarn test (run unit tests)
+3. yarn test:e2e (run Playwright E2E tests)
+4. yarn test:coverage (verify coverage >80%)
 VERIFY: All tests pass
 IF tests fail:
   - Identify failing tests
@@ -206,8 +209,9 @@ EXECUTE FINAL VERIFICATION:
 1. yarn lint (ensure no linting errors)
 2. yarn format (ensure proper formatting)
 3. yarn test (all unit tests pass)
-4. yarn test:e2e (all E2E tests pass)
-5. git status (review all changes)
+4. yarn dev (app boots successfully)
+5. yarn test:e2e (all E2E tests pass)
+6. git status (review all changes)
 
 VERIFY ALL:
 - No linting or formatting issues

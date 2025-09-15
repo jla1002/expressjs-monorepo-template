@@ -181,6 +181,8 @@ libs/my-feature/
             └── module.ts
 ```
 
+**NOTE**: Pages in `pages/` are automatically registered as routes based on their file names. For example, `my-page.ts` becomes `/my-page`. To create nested routes, use subdirectories (e.g., `pages/admin/my-page.ts` becomes `/admin/my-page`).
+
 ### Page Controller Pattern
 
 ```typescript

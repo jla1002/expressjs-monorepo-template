@@ -150,6 +150,8 @@ export function getModulePaths(): string[] {
 }
 ```
 
+**NOTE**: By default all pages and routes are mounted at root level. To namespace routes, create subdirectories under `pages/`. E.g. `pages/admin/` for `/admin/*` routes.
+
 ### Implementation Patterns
 
 #### Full-Stack Feature Pattern

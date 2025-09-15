@@ -74,7 +74,7 @@ PROMPT FOR AGENT:
 3. Define form structures, including inputs, input types and validation rules
 4. Write content in English and Welsh
 5. If there are any ambiguities, ask the user for clarification
-IMPORTANT: Focus ONLY on user experience, NOT implementation"
+IMPORTANT: Focus ONLY on user experience, NOT implementation. Only focus on issues related to this ticket, do not try to solve cross-cutting concerns."
 
 VERIFY: File created WITHOUT technical implementation details
 ```
@@ -97,7 +97,7 @@ PROMPT FOR AGENT:
 4. API endpoints if the user story requires them
 5. Database schema if the user story requires it
 6. If there are any ambiguities, ask the user for clarification
-IMPORTANT: ADD to existing content, do not remove UI/UX sections"
+IMPORTANT: ADD to existing content, do not remove UI/UX sections. Only focus on issues related to this ticket, do not try to solve cross-cutting concerns."
 
 VERIFY: Implementation details added to specification
 ```
@@ -120,6 +120,7 @@ PROMPT FOR AGENT:
 4. Docker/Kubernetes updates
 5. CI/CD pipeline changes
 ADD infrastructure section ONLY if changes needed"
+IMPORTANT: Only focus on issues related to this ticket, do not try to solve cross-cutting concerns like sessions, CSRF or other tangential issues.
 
 VERIFY: Infrastructure section complete or confirmed not needed
 ```
@@ -138,6 +139,7 @@ PROMPT FOR AGENT:
 "Based on the user journeys in the specification, create test plan including:
 1. E2E test cases (Playwright)
 2. Accessibility testing (axe-core)
+IMPORTANT: Only focus on issues related to this ticket, do not try to solve cross-cutting concerns like implementing cross-browser testing.
 
 VERIFY: Test plan created at correct location
 ```
