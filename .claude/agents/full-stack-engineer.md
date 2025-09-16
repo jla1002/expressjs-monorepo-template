@@ -207,6 +207,25 @@ export const POST = async (req: Request, res: Response) => {
 };
 ```
 
+#### Session Storage Pattern
+
+Sessions are already set up in `apps/web/src/app.ts` using secure, HTTP-only cookies. Use the session object to store temporary data.
+
+Each module should namespace its session keys to avoid collisions.
+
+```typescript
+import { Session } from "express-session";
+
+interface UserSession extends Session {
+  userManagement?: {
+    createUserData?: {
+      name: string;
+      email: string;
+    };
+  };
+}
+```
+
 #### Module Configuration Pattern
 
 Nunjucks templates need to be copied to `dist/` for production. Use a build script in `package.json`:

@@ -32,7 +32,7 @@ Use TodoWrite to create this checklist:
 
 ### Step 1.1: Documentation Loading
 ```
-ACTION: Read specification and test plan
+ACTION: Read specification
 READ: docs/tickets/$ARGUMENT/specification.md
 READ: docs/tickets/$ARGUMENT/tasks.md
 VERIFY: All documentation available

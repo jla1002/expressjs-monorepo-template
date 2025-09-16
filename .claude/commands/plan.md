@@ -21,7 +21,6 @@ Use TodoWrite to create this checklist:
 - [ ] Create UI/UX specification
 - [ ] Add technical implementation details
 - [ ] Review infrastructure requirements  
-- [ ] Create test plan
 - [ ] Create task assignments
 ```
 
@@ -127,7 +126,7 @@ VERIFY: Infrastructure section complete or confirmed not needed
 *Mark "Review infrastructure requirements" as completed*
 
 ## PHASE 3: Planning
-*Mark "Create test plan" as in_progress*
+*Mark "Create task assignments" as in_progress*
 
 ### Step 3.1: Task Assignment Document
 ```
@@ -166,7 +165,7 @@ If any items remain incomplete, identify and complete them.
 
 ### Step 4: Clarifying Questions
 
-Relay any clarifying questions from the sub-agents to the user.
+Consolidate all clarifying questions from the sub-agents and relay to the user.
 
 ## Success Output
 "Task $ARGUMENT setup complete. Documentation created at docs/tickets/$ARGUMENT/"
