@@ -56,17 +56,22 @@ PROMPT FOR AGENT:
 1. Read the specification at docs/tickets/$ARGUMENT/specification.md
 2. Read the task list at docs/tickets/$ARGUMENT/tasks.md
 3. Implement ALL items under 'Implementation Tasks' section
-4. Follow CLAUDE.md conventions strictly:
+4. AS YOU COMPLETE EACH TASK:
+   - Use the Edit tool to update docs/tickets/$ARGUMENT/tasks.md
+   - Change '- [ ]' to '- [x]' for each completed task
+   - Update the checklist after completing each major section
+5. Follow CLAUDE.md conventions strictly:
    - Use singular snake_case for database tables
    - Use camelCase for TypeScript variables
    - Add .js extension to all relative imports
    - Create modules in libs/ not in apps/
    - Include Welsh translations for all user-facing text
    - Do not create types.ts files, types should be co-located
-5. Write unit tests for all new code (co-located .test.ts files)
-6. Ensure >80% test coverage on business logic
-7. DO NOT run lint/format/tests - coordinator will handle
-IMPORTANT: Complete ALL implementation tasks before finishing"
+6. Write unit tests for all new code (co-located .test.ts files)
+7. Ensure >80% test coverage on business logic
+8. DO NOT run lint/format/tests - coordinator will handle
+9. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
+IMPORTANT: You MUST update tasks.md to track your progress"
 ```
 
 #### Testing Implementation Agent
@@ -79,11 +84,16 @@ PROMPT FOR AGENT:
 1. Read the test plan at docs/tickets/$ARGUMENT/test-plan.md
 2. Read the task list at docs/tickets/$ARGUMENT/tasks.md
 3. Implement ALL items under 'Testing Tasks' section
-4. Create E2E tests using Playwright in e2e-tests/
-5. Include accessibility tests using axe-core
-6. Test both English and Welsh language flows
-7. Cover happy paths and error scenarios
-IMPORTANT: Complete ALL testing tasks before finishing"
+4. AS YOU COMPLETE EACH TASK:
+   - Use the Edit tool to update docs/tickets/$ARGUMENT/tasks.md
+   - Change '- [ ]' to '- [x]' for each completed test category
+   - Update the checklist after completing each test suite
+5. Create E2E tests using Playwright in e2e-tests/
+6. Include accessibility tests using axe-core
+7. Test both English and Welsh language flows
+8. Cover happy paths and error scenarios
+9. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
+IMPORTANT: You MUST update tasks.md to track your progress"
 ```
 
 #### Infrastructure Implementation Agent
@@ -99,14 +109,32 @@ PROMPT FOR AGENT:
    - Update Helm charts if needed
    - Modify Docker configurations if required
    - Update CI/CD pipeline if needed
+   - Use Edit tool to mark infrastructure tasks as [x] in docs/tickets/$ARGUMENT/tasks.md
 4. IF no infrastructure changes needed:
    - Report 'No infrastructure changes required'
+   - If infrastructure tasks exist in docs/tickets/$ARGUMENT/tasks.md, mark them as N/A
 5. DO NOT run migrations or builds - coordinator will handle
-IMPORTANT: Only make changes if explicitly needed in specification"
+6. Update docs/tickets/$ARGUMENT/tasks.md with your findings
+IMPORTANT: Document your infrastructure assessment in tasks.md"
 ```
 
 WAIT FOR ALL AGENTS TO COMPLETE
 VERIFY: All three agents have finished their tasks
+
+### Step 2.2: Validate Task Completion
+```
+ACTION: Read docs/tickets/$ARGUMENT/tasks.md
+VERIFY:
+- Implementation Tasks section has [x] markers for completed items
+- Testing Tasks section has [x] markers for completed items
+- Infrastructure assessment is documented
+
+IF tasks are NOT properly marked:
+  WARNING: Agents did not update task tracking
+  ACTION: Manually verify implementation by checking:
+    - ls libs/*/src/pages/ for new modules
+    - ls e2e-tests/tests/ for new tests
+    - git status for all changes
 ```
 *Mark "Execute parallel implementation" as completed*
 
@@ -224,10 +252,23 @@ VERIFY ALL:
 
 ## COMPLETION CHECK
 ```
-Review TodoWrite list in - All tasks from docs/tickets/$ARGUMENT/tasks.md should be marked completed.
-If any items remain incomplete:
-  - Identify the issue
-  - Complete or document why it cannot be completed
+ACTION: Final validation of task tracking
+1. Read docs/tickets/$ARGUMENT/tasks.md
+2. Count total tasks vs completed [x] tasks
+3. Generate completion report:
+   - Implementation Tasks: X/Y completed
+   - Testing Tasks: X/Y completed
+   - Infrastructure Tasks: X/Y completed or N/A
+
+IF any tasks remain unchecked:
+  - Identify which specific tasks are incomplete
+  - Verify if work was actually done (check git status)
+  - Either complete missing work OR document why task cannot be completed
+  - Update tasks.md accordingly
+
+FINAL VALIDATION:
+- All critical tasks must be marked [x] or have documented exceptions
+- Definition of Done checklist should reflect actual state
 ```
 
 ## Success Output
