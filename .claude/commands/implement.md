@@ -61,16 +61,9 @@ PROMPT FOR AGENT:
    - Change '- [ ]' to '- [x]' for each completed task
    - Update the checklist after completing each major section
 5. Follow CLAUDE.md conventions strictly:
-   - Use singular snake_case for database tables
-   - Use camelCase for TypeScript variables
-   - Add .js extension to all relative imports
-   - Create modules in libs/ not in apps/
-   - Include Welsh translations for all user-facing text
-   - Do not create types.ts files, types should be co-located
 6. Write unit tests for all new code (co-located .test.ts files)
 7. Ensure >80% test coverage on business logic
-8. DO NOT run lint/format/tests - coordinator will handle
-9. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
+8. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
 IMPORTANT: You MUST update tasks.md to track your progress"
 ```
 
@@ -88,10 +81,8 @@ PROMPT FOR AGENT:
    - Use the Edit tool to update docs/tickets/$ARGUMENT/tasks.md
    - Change '- [ ]' to '- [x]' for each completed test category
    - Update the checklist after completing each test suite
-5. Create E2E tests using Playwright in e2e-tests/
-6. Include accessibility tests using axe-core
-7. Test both English and Welsh language flows
-8. Cover happy paths and error scenarios
+5. Create E2E tests for the happy path using Playwright in e2e-tests/
+6. Include accessibility tests using axe-core in the happy path tests (not separate tests)
 9. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
 IMPORTANT: You MUST update tasks.md to track your progress"
 ```

@@ -353,13 +353,11 @@ const usersWithPosts = await prisma.user.findMany({
 
 When reviewing work from other agents:
 
-### Backend Engineer Agent Review
+### Full Stack Agent Review
 - **Database operations**: Check for proper transactions and error handling
 - **API design**: Ensure RESTful patterns and consistent responses
 - **Security**: Validate authentication, authorization, and input sanitization
 - **Performance**: Review query efficiency and caching strategies
-
-### Frontend Engineer Agent Review  
 - **Accessibility**: Verify WCAG 2.2 AA compliance
 - **GOV.UK compliance**: Check component usage and patterns
 - **Progressive enhancement**: Ensure functionality without JavaScript

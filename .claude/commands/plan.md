@@ -91,10 +91,10 @@ ACTION: SUPPLEMENT with technical details
 
 PROMPT FOR AGENT:
 "Review the UI/UX specification and ADD:
-1. Technical implementation approach
+1. High level technical implementation approach
 2. File structure and routing (paying attention to the guidelines in @CLAUDE.md - use libs/ instead of apps/ where possible)
 3. Error handling implementation
-4. API endpoints if the user story requires them
+4. RESTful API endpoints if the user story requires them
 5. Database schema if the user story requires it
 6. If there are any ambiguities, ask the user for clarification
 IMPORTANT: ADD to existing content, do not remove UI/UX sections. Only focus on issues related to this ticket, do not try to solve cross-cutting concerns."
@@ -137,8 +137,7 @@ OUTPUT: docs/tickets/$ARGUMENT/test-plan.md
 
 PROMPT FOR AGENT:
 "Based on the user journeys in the specification, create test plan including:
-1. E2E test cases (Playwright)
-2. Accessibility testing (axe-core)
+1. A small number of E2E tests for the happy path (Playwright) that test accessibility using axe-core during the happy path run through
 IMPORTANT: Only focus on issues related to this ticket, do not try to solve cross-cutting concerns like implementing cross-browser testing.
 
 VERIFY: Test plan created at correct location
@@ -160,13 +159,11 @@ EXAMPLE CONTENT STRUCTURE:
 - [ ] Write unit tests for all new code
 
 ## Testing Tasks (test-engineer)  
-- [ ] Ensure 80-90% test coverage on unit tests
 - [ ] Create E2E tests for happy path
-- [ ] Test error scenarios
-- [ ] Verify accessibility
 
 ## Review Tasks (code-reviewer)
 - [ ] Review code quality and standards
+- [ ] Ensure 80-90% test coverage
 - [ ] Check security implementation
 - [ ] Suggest improvements to user
 
