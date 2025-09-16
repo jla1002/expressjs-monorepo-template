@@ -652,10 +652,6 @@ export function createCacheHelpers(redis: Redis) {
 ## Security Requirements
 
 - Input validation on all endpoints
-- CSRF protection on state-changing operations
 - Parameterized database queries (Prisma)
 - No sensitive data in logs
 - Proper authentication and authorization
-- Rate limiting on sensitive endpoints
-- Security headers via Helmet
-- HTTPS enforcement in production

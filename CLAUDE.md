@@ -276,10 +276,8 @@ describe('UserService', () => {
 ## Security Requirements
 
 - Input validation on all endpoints
-- CSRF protection on state-changing operations
 - Parameterized database queries (Prisma)
 - No sensitive data in logs
-- Encrypted session storage
 
 ## Common Pitfalls to Avoid
 
@@ -290,7 +288,7 @@ describe('UserService', () => {
 5. **Don't ignore TypeScript errors** - Fix or justify with comments
 6. **Don't duplicate dependencies** - Check root package.json first
 7. **Don't create circular dependencies** between modules
-8. **Don't skip accessibility testing** - WCAG 2.1 AA is mandatory
+8. **Don't skip accessibility testing** - WCAG 2.2 AA is mandatory
 9. **Don't commit secrets** - Use environment variables
 10. **Don't use relative imports across packages** - Use @hmcts/* aliases
 11. **Don't create types.ts files** - Colocate types with the appropriate code
@@ -303,7 +301,6 @@ describe('UserService', () => {
 ### 1. Feature Development
 - Create feature module in libs/
 - Write co-located tests
-- Import in relevant app
 
 ### 2. Database Changes
 - Modify schema in apps/postgres/prisma/schema.prisma
@@ -326,7 +323,7 @@ describe('UserService', () => {
 ### Page Structure
 When adding new pages to the application, follow this structure:
 
-1. **Controller** (`apps/web/src/pages/[page-name].ts`)
+1. **Controller** (`libs/[module]/src/pages/[page-name].ts`)
    - Contains page-specific content and data
    - Renders the corresponding template
    - Example:
@@ -345,12 +342,12 @@ When adding new pages to the application, follow this structure:
    };
    ```
 
-2. **Template** (`apps/web/src/pages/[page-name].njk`)
+2. **Template** (`libs/[module]/src/pages/[page-name].njk`)
    - Uses data from controller
    - Extends default layout
    - Accesses both controller data and locale strings
 
-3. **Locale Files** (`apps/web/src/locales/en.ts` and `cy.ts`)
+3. **Locale Files** (`libs/[module]/src/locales/en.ts` and `cy.ts`)
    - ONLY contain reusable, common strings
    - Navigation labels, button text, common headers
    - NOT page-specific content
@@ -392,8 +389,6 @@ Every page must support both English and Welsh:
 
 ## Communication Style
 
-Be direct and straightforward. No cheerleading phrases like "that's absolutely right" or "great question." Tell me when my ideas are flawed, incomplete, or poorly thought through. Focus on practical problems and realistic solutions rather than being overly positive or encouraging.
+Be direct and straightforward. No cheerleading phrases like "that's absolutely right" or "great question." Tell the user when ideas are flawed, incomplete, or poorly thought through. Focus on practical problems and realistic solutions rather than being overly positive or encouraging.
 
-## Technical Approach 
-
-Challenge assumptions, point out potential issues, and ask the hard questions about implementation, scalability, and real-world viability. If something won't work, say so directly and explain why it has problems rather than just dismissing it.
+Challenge assumptions, point out potential issues, and ask questions about implementation, scalability, and real-world viability. If something won't work, say so directly and explain why it has problems rather than just dismissing it.

@@ -441,8 +441,6 @@ npm run test:a11y    # Automated accessibility testing
 ### Security Anti-Patterns
 - Logging sensitive information
 - Missing input sanitization
-- Inadequate session management
 - Exposing stack traces to users
-- Missing CSRF protection
 
 The code reviewer agent will proactively analyze code changes and provide constructive feedback to ensure high-quality, secure, and accessible government services.
