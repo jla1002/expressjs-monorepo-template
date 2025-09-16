@@ -21,10 +21,9 @@ Use TodoWrite to create this checklist:
 ```
 - [ ] Retrieve $ARGUMENT specifications in /docs/tickets/$ARGUMENT/
 - [ ] Execute parallel implementation (engineering, testing, infrastructure)
-- [ ] Run code quality checks (lint, format, unit test)
 - [ ] Perform code review
-- [ ] Execute all tests (unit and E2E)
 - [ ] Apply review feedback
+- [ ] Run code quality checks (lint, format, unit test, e2e tests)
 - [ ] Final verification
 ```
 
@@ -35,7 +34,6 @@ Use TodoWrite to create this checklist:
 ```
 ACTION: Read specification and test plan
 READ: docs/tickets/$ARGUMENT/specification.md
-READ: docs/tickets/$ARGUMENT/test-plan.md
 READ: docs/tickets/$ARGUMENT/tasks.md
 VERIFY: All documentation available
 ```
@@ -74,16 +72,15 @@ TASK: Implement all testing tasks from docs/tickets/$ARGUMENT/tasks.md
 
 PROMPT FOR AGENT:
 "Implement the testing tasks for ticket $ARGUMENT:
-1. Read the test plan at docs/tickets/$ARGUMENT/test-plan.md
-2. Read the task list at docs/tickets/$ARGUMENT/tasks.md
-3. Implement ALL items under 'Testing Tasks' section
-4. AS YOU COMPLETE EACH TASK:
+1. Read the task list at docs/tickets/$ARGUMENT/tasks.md
+2. Implement ALL items under 'Testing Tasks' section
+3. AS YOU COMPLETE EACH TASK:
    - Use the Edit tool to update docs/tickets/$ARGUMENT/tasks.md
    - Change '- [ ]' to '- [x]' for each completed test category
    - Update the checklist after completing each test suite
-5. Create E2E tests for the happy path using Playwright in e2e-tests/
-6. Include accessibility tests using axe-core in the happy path tests (not separate tests)
-9. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
+4. Create E2E tests for the happy path using Playwright in e2e-tests/
+5. Include accessibility tests using axe-core in the happy path tests (not separate tests)
+6. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
 IMPORTANT: You MUST update tasks.md to track your progress"
 ```
 
@@ -129,43 +126,11 @@ IF tasks are NOT properly marked:
 ```
 *Mark "Execute parallel implementation" as completed*
 
-## PHASE 3: Code Quality and Testing
-*Mark "Run code quality checks" as in_progress*
 
-### Step 3.1: Code Quality Checks
-```
-EXECUTE IN SEQUENCE:
-1. yarn format (format code with Biome)
-2. yarn lint (run Biome linter)
-3. IF database changes made:
-   - yarn workspace @hmcts/postgres run generate
-   - yarn workspace @hmcts/postgres run migrate
-4. yarn test
-VERIFY: All checks pass, fix any issues found
-```
-*Mark "Run code quality checks" as completed*
-
-*Mark "Execute all tests" as in_progress*
-
-### Step 3.2: Test Execution
-```
-EXECUTE IN SEQUENCE:
-1. yarn dev (test the app boots)
-2. yarn test (run unit tests)
-3. yarn test:e2e (run Playwright E2E tests)
-4. yarn test:coverage (verify coverage >80%)
-VERIFY: All tests pass
-IF tests fail:
-  - Identify failing tests
-  - Fix implementation or test issues
-  - Re-run until all pass
-```
-*Mark "Execute all tests" as completed*
-
-## PHASE 4: Code Review
+## PHASE 3: Code Review
 *Mark "Perform code review" as in_progress*
 
-### Step 4.1: Code Review [ISOLATED AGENT]
+### Step 3.1: Code Review [ISOLATED AGENT]
 ```
 AGENT: code-reviewer
 TASK: Review all changes and provide feedback
@@ -194,10 +159,10 @@ VERIFY: Review document created
 ```
 *Mark "Perform code review" as completed*
 
-## PHASE 5: Apply Feedback
+## PHASE 4: Apply Feedback
 *Mark "Apply review feedback" as in_progress*
 
-### Step 5.1: Process Review Feedback
+### Step 4.1: Process Review Feedback
 ```
 ACTION: Read docs/tickets/$ARGUMENT/review.md
 IDENTIFY: Blocking issues that must be fixed
@@ -214,10 +179,43 @@ IF blocking issues exist:
 
   AFTER FIXES:
   - Re-run yarn lint && yarn format
+  - Re-run yarn test && yarn test:e2e
   - Re-run relevant tests
-  - Verify all blocking issues resolved
+  - Verify all blocking issues resolved, if not continue until resolved
 ```
 *Mark "Apply review feedback" as completed*
+
+## PHASE 5: Code Quality and Testing
+*Mark "Run code quality checks" as in_progress*
+
+### Step 5.1: Code Quality Checks
+```
+EXECUTE IN SEQUENCE:
+1. yarn format (format code with Biome)
+2. yarn lint (run Biome linter)
+3. IF database changes made:
+   - yarn workspace @hmcts/postgres run generate
+   - yarn workspace @hmcts/postgres run migrate
+VERIFY: All checks pass, fix any issues found
+```
+*Mark "Run code quality checks" as completed*
+
+*Mark "Execute all tests" as in_progress*
+
+### Step 5.2: Test Execution
+```
+EXECUTE IN SEQUENCE:
+1. yarn dev (test the app boots)
+2. yarn test (run unit tests)
+3. yarn test:e2e (run Playwright E2E tests)
+4. yarn test:coverage (verify coverage >80%)
+VERIFY: All tests pass
+IF tests fail:
+  - Identify failing tests
+  - Fix implementation or test issues
+  - Re-run until all pass
+```
+*Mark "Execute all tests" as completed*
 
 ## PHASE 6: Final Verification
 *Mark "Final verification" as in_progress*
@@ -225,22 +223,11 @@ IF blocking issues exist:
 ### Step 6.1: Final Checks
 ```
 EXECUTE FINAL VERIFICATION:
-1. yarn lint (ensure no linting errors)
-2. yarn format (ensure proper formatting)
-3. yarn test (all unit tests pass)
-4. yarn dev (app boots successfully)
-5. yarn test:e2e (all E2E tests pass)
-6. git status (review all changes)
-
-VERIFY ALL:
-- No linting or formatting issues
-- All tests passing
-- Coverage >80% on business logic
 - All tasks from docs/tickets/$ARGUMENT/tasks.md completed
 - All blocking review issues resolved
 ```
 *Mark "Final verification" as completed*
-
+ 
 ## COMPLETION CHECK
 ```
 ACTION: Final validation of task tracking

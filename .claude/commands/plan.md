@@ -129,24 +129,7 @@ VERIFY: Infrastructure section complete or confirmed not needed
 ## PHASE 3: Planning
 *Mark "Create test plan" as in_progress*
 
-### Step 3.1: Test Planning [ISOLATED AGENT]
-```
-AGENT: test-engineer
-TASK: Create comprehensive test plan
-OUTPUT: docs/tickets/$ARGUMENT/test-plan.md
-
-PROMPT FOR AGENT:
-"Based on the user journeys in the specification, create test plan including:
-1. A small number of E2E tests for the happy path (Playwright) that test accessibility using axe-core during the happy path run through
-IMPORTANT: Only focus on issues related to this ticket, do not try to solve cross-cutting concerns like implementing cross-browser testing.
-
-VERIFY: Test plan created at correct location
-```
-*Mark "Create test plan" as completed*
-
-*Mark "Create task assignments" as in_progress*
-
-### Step 3.2: Task Assignment Document
+### Step 3.1: Task Assignment Document
 ```
 ACTION: Create docs/tickets/$ARGUMENT/tasks.md
 EXAMPLE CONTENT STRUCTURE:
