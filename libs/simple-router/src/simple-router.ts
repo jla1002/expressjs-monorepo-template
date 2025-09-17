@@ -1,10 +1,9 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Express, Router } from "express";
+import type { ErrorRequestHandler, Express, RequestHandler, Router } from "express";
 import { Router as expressRouter } from "express";
 import { discoverRoutes, sortRoutes } from "./route-discovery.js";
 import { extractHandlers, loadRouteModule, normalizeHandlers } from "./route-loader.js";
-import type { Handler, MountSpec, RouteEntry } from "./types.js";
 
 export async function createSimpleRouter(...mounts: MountSpec[]): Promise<Router> {
   const router = expressRouter();
@@ -161,4 +160,33 @@ function mountRoutes(router: Router | Express, routes: RouteEntry[]): void {
       (router as any)[method](path, ...handlers);
     }
   }
+}
+
+export type Handler = RequestHandler;
+export type HandlerExport = Handler | Handler[];
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete" | "del" | "head" | "options" | "trace" | "connect" | "all";
+
+export interface MountSpec {
+  pagesDir: string;
+  prefix?: string;
+  trailingSlash?: "off" | "enforce" | "redirect";
+}
+
+export interface RouteModule {
+  [key: string]: unknown;
+  onError?: ErrorRequestHandler;
+}
+
+export interface RouteEntry {
+  path: string;
+  method: string;
+  handlers: Handler[];
+  sourcePath: string;
+  mountSpec: MountSpec;
+}
+
+export interface DiscoveredRoute {
+  relativePath: string;
+  urlPath: string;
+  absolutePath: string;
 }
