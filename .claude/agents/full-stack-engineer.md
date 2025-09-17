@@ -275,7 +275,7 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
 #### Accessible Form Pattern
 ```html
 <!-- libs/user-management/src/pages/create-user.njk -->
-{% extends "layouts/base.njk" %}
+{% extends "layouts/default.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton, govukInput, govukErrorSummary %}
 
 {% block content %}
