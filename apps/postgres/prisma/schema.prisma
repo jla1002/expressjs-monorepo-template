@@ -95,24 +95,6 @@ model CaseNote {
   @@map("case_note")
 }
 
-model OnboardingSubmission {
-  id              String   @id @default(cuid())
-  referenceNumber String   @unique @map("reference_number")
-  firstName       String   @map("first_name")
-  lastName        String   @map("last_name")
-  dateOfBirth     DateTime @map("date_of_birth")
-  address1        String   @map("address1")
-  address2        String?  @map("address2")
-  townCity        String   @map("town_city")
-  county          String?  @map("county")
-  postcode        String   @map("postcode")
-  role            String   @map("role")
-  otherRole       String?  @map("other_role")
-  submittedAt     DateTime @default(now()) @map("submitted_at")
-
-  @@map("onboarding_submission")
-}
-
 enum UserRole {
   ADMIN
   MANAGER

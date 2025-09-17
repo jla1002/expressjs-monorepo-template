@@ -330,6 +330,25 @@ const usersWithPosts = await prisma.user.findMany({
 });
 ```
 
+### Asset Optimization
+```html
+<!-- ❌ HIGH PRIORITY: Unoptimized images -->
+<img src="/images/large-photo.jpg" alt="Photo">
+
+<!-- ✅ GOOD: Responsive, optimized images -->
+<img 
+  src="/images/photo-320.webp"
+  srcset="/images/photo-320.webp 320w,
+          /images/photo-640.webp 640w,
+          /images/photo-960.webp 960w"
+  sizes="(max-width: 640px) 100vw, 50vw"
+  alt="Descriptive text explaining the photo content"
+  loading="lazy"
+  width="320"
+  height="240"
+/>
+```
+
 ## Agent Interaction Review
 
 When reviewing work from other agents:
@@ -354,10 +373,13 @@ When reviewing work from other agents:
 
 ```bash
 # Run before providing review feedback
-yarn lint         # Code style and quality
-yarn test         # Test suite execution
-yarn build        # Ensure build succeeds
-yarn test:e2e  # End-to-end tests with a11y checks
+npm run typecheck    # TypeScript type checking
+npm run lint         # Code style and quality
+npm run test:run     # Test suite execution
+npm run build        # Ensure build succeeds
+
+# Additional accessibility checks
+npm run test:a11y    # Automated accessibility testing
 ```
 
 ## Review Feedback Template
