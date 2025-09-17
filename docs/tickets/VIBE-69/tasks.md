@@ -64,16 +64,6 @@
 - [ ] Test form with accessibility tools (screen reader, keyboard navigation)
 - [ ] Test date input fields appear on same row
 
-### Cross-Browser Testing
-- [ ] Test form in Chrome, Firefox, Safari, Edge
-- [ ] Test on mobile devices (responsive design)
-- [ ] Verify progressive enhancement (JavaScript disabled)
-
-### Performance Testing
-- [ ] Measure page load times for all 8 form pages
-- [ ] Test session handling under load
-- [ ] Verify no memory leaks in session management
-
 ## Review Tasks (code-reviewer)
 
 ### Code Quality Review
@@ -86,7 +76,6 @@
 ### Testing Review
 - [ ] Verify 80-90% test coverage achieved
 - [ ] Review test quality and edge case coverage
-- [ ] Check E2E test comprehensiveness
 
 ### Security Review
 - [ ] Verify input validation on all form fields
