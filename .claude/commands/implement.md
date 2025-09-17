@@ -81,7 +81,7 @@ PROMPT FOR AGENT:
 4. Create E2E tests for the happy path using Playwright in e2e-tests/
 5. Include accessibility tests using axe-core in the happy path tests (not separate tests)
 6. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
-IMPORTANT: You MUST update tasks.md to track your progress"
+IMPORTANT: Do not run the tests until all implementation is complete - coordinator will handle"
 ```
 
 #### Infrastructure Implementation Agent
@@ -205,10 +205,11 @@ VERIFY: All checks pass, fix any issues found
 ### Step 5.2: Test Execution
 ```
 EXECUTE IN SEQUENCE:
-1. yarn dev (test the app boots)
-2. yarn test (run unit tests)
-3. yarn test:e2e (run Playwright E2E tests)
-4. yarn test:coverage (verify coverage >80%)
+1. Kill all other processes running on ports 3000 or 3001
+2. yarn dev (test the app boots)
+3. yarn test (run unit tests)
+4. yarn test:e2e (run Playwright E2E tests)
+5. yarn test:coverage (verify coverage >80%)
 VERIFY: All tests pass
 IF tests fail:
   - Identify failing tests

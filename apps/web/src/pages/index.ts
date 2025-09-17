@@ -6,6 +6,12 @@ const en = {
   intro:
     "A comprehensive monorepo template that demonstrates best practices for building HMCTS digital services using Express.js, TypeScript, and GOV.UK Design System.",
 
+  exampleForm: {
+    title: "Try our example onboarding form",
+    description: "See how we collect information using best practice form design",
+    linkText: "See example form"
+  },
+
   cloudNativeTitle: "Cloud Native Platform",
   cloudNativeDescription: "Features for cloud deployment and operations:",
   cloudNativeFeatures: [
@@ -115,6 +121,12 @@ const cy = {
   subtitle: "Dechreuwr Node.js barod i gynhyrchu gyda galluoedd cwmwl-gynhenid",
   intro:
     "Templed monorepo cynhwysfawr sy'n dangos arferion gorau ar gyfer adeiladu gwasanaethau digidol HMCTS gan ddefnyddio Express.js, TypeScript, a System Dylunio GOV.UK.",
+
+  exampleForm: {
+    title: "Rhowch gynnig ar ein ffurflen hyfforddi enghreifftiol",
+    description: "Gwelwch sut rydym yn casglu gwybodaeth gan ddefnyddio dyluniad ffurflen arfer gorau",
+    linkText: "Gweld ffurflen enghreifftiol"
+  },
 
   cloudNativeTitle: "Platfform Cwmwl Cynhenid",
   cloudNativeDescription: "Nodweddion ar gyfer defnyddio a gweithrediadau cwmwl:",
