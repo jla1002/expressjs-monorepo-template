@@ -132,8 +132,11 @@ Homepage
 │  What is your address?                                      │
 │  ══════════════════════                                     │
 │                                                             │
-│  ┌─ Building and street ─────────────────────────────────┐  │
+│  ┌─ Address Line 1 ────────────────────────────────────────┐  │
 │  │ [                                                   ] │  │
+│  └─────────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌─ Address Line 2 ────────────────────────────────────────┐  │
 │  │ [                                 ] (optional)      │  │
 │  └─────────────────────────────────────────────────────────┘  │
 │                                                             │
@@ -290,8 +293,8 @@ dateOfBirth: {
 ```typescript
 address: {
   title: "What is your address?",
-  buildingStreetLabel: "Building and street",
-  buildingStreet2Label: "Address line 2 (optional)",
+  address1Label: "Address line 1",
+  address2Label: "Address line 2 (optional)",
   townCityLabel: "Town or city",
   countyLabel: "County (optional)",
   postcodeLabel: "Postcode",
@@ -382,8 +385,8 @@ dateOfBirth: {
 ```typescript
 address: {
   title: "Beth yw eich cyfeiriad?",
-  buildingStreetLabel: "Adeilad a stryd",
-  buildingStreet2Label: "Llinell cyfeiriad 2 (dewisol)",
+  address1Label: "Llinell cyfeiriad 1",
+  address2Label: "Llinell cyfeiriad 2 (dewisol)",
   townCityLabel: "Tref neu ddinas",
   countyLabel: "Sir (dewisol)",
   postcodeLabel: "Cod post",
@@ -481,8 +484,8 @@ interface DateOfBirthForm {
 ### Address Page
 ```typescript
 interface AddressForm {
-  buildingStreet: string;   // Required, max 200 characters
-  buildingStreet2?: string; // Optional, max 200 characters
+  address1: string;   // Required, max 200 characters
+  address2?: string; // Optional, max 200 characters
   townCity: string;         // Required, max 100 characters
   county?: string;          // Optional, max 100 characters
   postcode: string;         // Required, UK postcode format
@@ -490,14 +493,14 @@ interface AddressForm {
 ```
 
 **Input Types:**
-- Building/street: `<input type="text" autocomplete="address-line1">`
+- Address line 1: `<input type="text" autocomplete="address-line1">`
 - Address line 2: `<input type="text" autocomplete="address-line2">`
 - Town/city: `<input type="text" autocomplete="address-level2">`
 - County: `<input type="text" autocomplete="address-level1">`
 - Postcode: `<input type="text" autocomplete="postal-code">`
 
 **Validation Rules:**
-- Building/street, town/city, postcode required
+- Address line 1, town/city, postcode required
 - Postcode must match UK format (flexible regex)
 - Maximum character limits enforced
 - Trim whitespace
@@ -541,7 +544,8 @@ interface RoleForm {
 - Too young: "You must be at least 16 years old"
 
 **Address Page:**
-- Building/street empty: "Enter building and street"
+- Address line 1 empty: "Enter address line 1"
+- Address line 2 empty: "Enter address line 2" (if required)
 - Town/city empty: "Enter town or city"
 - Postcode empty: "Enter postcode"
 - Postcode invalid: "Enter a real postcode"
@@ -573,7 +577,8 @@ interface RoleForm {
 - Too young: "Rhaid i chi fod o leiaf 16 oed"
 
 **Address Page:**
-- Building/street empty: "Rhowch yr adeilad a'r stryd"
+- Address line 1 empty: "Rhowch linell gyfeiriad 1"
+- Address line 2 empty: "Rhowch linell gyfeiriad 2" (if required)
 - Town/city empty: "Rhowch dref neu ddinas"
 - Postcode empty: "Rhowch god post"
 - Postcode invalid: "Rhowch god post go iawn"
@@ -651,25 +656,6 @@ interface RoleForm {
 - ARIA labels for complex interactions
 - Page titles descriptive and unique
 
-### Visual Design
-- Color contrast minimum 4.5:1 for normal text
-- Color contrast minimum 3:1 for large text and UI elements
-- Information not conveyed by color alone
-- Text readable up to 200% zoom
-- Target size minimum 44x44px for interactive elements
-
-### Content Accessibility
-- Plain English language (reading age 9)
-- Consistent terminology throughout
-- Clear instructions and help text
-- Error messages specific and actionable
-
-### Assistive Technology
-- Compatible with JAWS, NVDA, VoiceOver
-- High contrast mode support
-- Voice control software compatibility
-- Switch control device support
-
 ## Back Button Navigation
 
 ### Back Link Behavior
@@ -701,8 +687,8 @@ interface OnboardingSession {
     year: string;
   };
   address?: {
-    buildingStreet: string;
-    buildingStreet2?: string;
+    address1: string;
+    address2?: string;
     townCity: string;
     county?: string;
     postcode: string;
@@ -747,42 +733,6 @@ interface OnboardingSession {
 - Keyboard-only navigation testing
 - Color contrast verification
 - High contrast mode testing
-
-### User Testing
-- Task completion rate >95%
-- Average completion time <5 minutes
-- User satisfaction score >4/5
-- Error recovery success rate >90%
-
-### Cross-Browser Testing
-- Visual regression testing
-- Functional testing across browsers
-- Performance testing on low-end devices
-- Network throttling tests
-
-## Clarifying Questions
-
-The following areas may need clarification from stakeholders:
-
-1. **Data Persistence**: How long should form data be retained after submission? Should incomplete sessions be preserved between browser sessions?
-
-2. **Reference Number Generation**: What format should the reference number follow? Should it be sequential, random, or follow a specific pattern?
-
-3. **Email Confirmation**: Should users receive an actual email confirmation? What email service should be used for the example?
-
-4. **Analytics Tracking**: Should form completion and abandonment be tracked? What specific events should be monitored?
-
-5. **Multiple Submissions**: Should users be prevented from submitting multiple applications? How should duplicate submissions be handled?
-
-6. **Data Export**: Do administrators need to access submitted data? What format should data export take?
-
-7. **Additional Validation**: Are there any specific business rules for validation beyond standard field validation?
-
-8. **Integration Requirements**: Does this form need to integrate with any existing systems or databases?
-
-9. **Content Management**: Who will be responsible for updating content and translations? Should this be configurable?
-
-10. **Support Contact**: What contact information should be provided if users need help completing the form?
 
 ---
 
@@ -903,9 +853,9 @@ libs/onboarding/
     │   └── reference-generator.ts # Reference number generation
     └── assets/                   # Optional frontend assets
         ├── css/
-        │   └── onboarding.scss    # Module-specific styles
+        │   └── onboarding.scss   # Module-specific styles
         └── js/
-            └── form-enhancement.ts # Progressive enhancement
+            └── onboarding.ts     # Client-side enhancements
 ```
 
 ### Homepage Integration
@@ -1034,7 +984,7 @@ export function validateFormData<T>(schema: ZodSchema<T>, data: any): Validation
   const errors: Record<string, { text: string; href: string }> = {};
   const errorSummary: Array<{ text: string; href: string }> = [];
 
-  result.error.errors.forEach((error) => {
+  for (const error of result.error.errors) {
     const field = error.path[0] as string;
     const errorData = {
       text: error.message,
@@ -1094,8 +1044,8 @@ export interface OnboardingFormData {
     year: string;
   };
   address: {
-    buildingStreet: string;
-    buildingStreet2?: string;
+    address1: string;
+    address2?: string;
     townCity: string;
     county?: string;
     postcode: string;
@@ -1136,8 +1086,8 @@ export interface DateOfBirthFormRequest {
 }
 
 export interface AddressFormRequest {
-  buildingStreet: string;
-  buildingStreet2?: string;
+  address1: string;
+  address2?: string;
   townCity: string;
   county?: string;
   postcode: string;
@@ -1251,11 +1201,11 @@ export const dateOfBirthSchema = z.object({
 
 // Address validation schema
 export const addressSchema = z.object({
-  buildingStreet: z.string()
+  address1: z.string()
     .trim()
-    .min(1, { message: 'Enter building and street' })
-    .max(200, { message: 'Building and street must be 200 characters or fewer' }),
-  buildingStreet2: z.string()
+    .min(1, { message: 'Enter address line 1' })
+    .max(200, { message: 'Address line 1 must be 200 characters or fewer' }),
+  address2: z.string()
     .trim()
     .max(200, { message: 'Address line 2 must be 200 characters or fewer' })
     .optional(),
@@ -1408,10 +1358,10 @@ export class OnboardingService {
   }
 
   static formatAddressForDisplay(addressData: AddressFormData): string[] {
-    const lines = [addressData.buildingStreet];
+    const lines = [addressData.address1];
 
-    if (addressData.buildingStreet2) {
-      lines.push(addressData.buildingStreet2);
+    if (addressData.address2) {
+      lines.push(addressData.address2);
     }
 
     lines.push(addressData.townCity);
@@ -1451,8 +1401,8 @@ model OnboardingSubmission {
   firstName       String   @map("first_name")
   lastName        String   @map("last_name")
   dateOfBirth     DateTime @map("date_of_birth")
-  buildingStreet  String   @map("building_street")
-  buildingStreet2 String?  @map("building_street_2")
+  address1        String   @map("address1")
+  address2        String?  @map("address2")
   townCity        String   @map("town_city")
   county          String?  @map("county")
   postcode        String   @map("postcode")
@@ -1485,8 +1435,8 @@ export class SubmissionService {
         firstName: formData.name.firstName,
         lastName: formData.name.lastName,
         dateOfBirth,
-        buildingStreet: formData.address.buildingStreet,
-        buildingStreet2: formData.address.buildingStreet2,
+        address1: formData.address.address1,
+        address2: formData.address.address2,
         townCity: formData.address.townCity,
         county: formData.address.county,
         postcode: formData.address.postcode,
