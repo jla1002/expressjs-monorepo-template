@@ -81,7 +81,7 @@ PROMPT FOR AGENT:
 4. Create E2E tests for the happy path using Playwright in e2e-tests/
 5. Include accessibility tests using axe-core in the happy path tests (not separate tests)
 6. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
-IMPORTANT: You MUST update tasks.md to track your progress"
+IMPORTANT: Do not run yarn test:e2e until the full-stack-engineer has completed their work - the orchestrator will handle this"
 ```
 
 #### Infrastructure Implementation Agent
