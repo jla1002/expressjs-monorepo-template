@@ -1,0 +1,109 @@
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block page_title %}
+  {% if hasErrors %}Error: {% endif %}{{ title }}
+{% endblock %}
+
+{% block backLink %}
+  {% if showBackLink %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "/onboarding/date-of-birth"
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if hasErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <form method="post" novalidate>
+        <h1 class="govuk-heading-l">{{ title }}</h1>
+
+        {{ govukInput({
+          id: "address1",
+          name: "address1",
+          type: "text",
+          autocomplete: "address-line1",
+          label: {
+            text: address1Label,
+            classes: "govuk-label--m"
+          },
+          errorMessage: errors.address1 if errors.address1,
+          value: formData.address1
+        }) }}
+
+        {{ govukInput({
+          id: "address2",
+          name: "address2",
+          type: "text",
+          autocomplete: "address-line2",
+          label: {
+            text: address2Label,
+            classes: "govuk-label--m"
+          },
+          errorMessage: errors.address2 if errors.address2,
+          value: formData.address2
+        }) }}
+
+        {{ govukInput({
+          id: "townCity",
+          name: "townCity",
+          type: "text",
+          autocomplete: "address-level2",
+          label: {
+            text: townCityLabel,
+            classes: "govuk-label--m"
+          },
+          classes: "govuk-!-width-two-thirds",
+          errorMessage: errors.townCity if errors.townCity,
+          value: formData.townCity
+        }) }}
+
+        {{ govukInput({
+          id: "county",
+          name: "county",
+          type: "text",
+          autocomplete: "address-level1",
+          label: {
+            text: countyLabel,
+            classes: "govuk-label--m"
+          },
+          classes: "govuk-!-width-two-thirds",
+          errorMessage: errors.county if errors.county,
+          value: formData.county
+        }) }}
+
+        {{ govukInput({
+          id: "postcode",
+          name: "postcode",
+          type: "text",
+          autocomplete: "postal-code",
+          label: {
+            text: postcodeLabel,
+            classes: "govuk-label--m"
+          },
+          classes: "govuk-input--width-10",
+          errorMessage: errors.postcode if errors.postcode,
+          value: formData.postcode
+        }) }}
+
+        {{ govukButton({
+          text: buttonText
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

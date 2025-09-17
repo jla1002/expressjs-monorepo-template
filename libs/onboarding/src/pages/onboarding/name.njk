@@ -1,0 +1,57 @@
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block page_title %}
+  {% if hasErrors %}Error: {% endif %}{{ title }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if hasErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <form method="post" novalidate>
+        <h1 class="govuk-heading-l">{{ title }}</h1>
+
+        {{ govukInput({
+          id: "firstName",
+          name: "firstName",
+          type: "text",
+          autocomplete: "given-name",
+          label: {
+            text: firstNameLabel,
+            classes: "govuk-label--m"
+          },
+          errorMessage: errors.firstName if errors.firstName,
+          value: formData.firstName
+        }) }}
+
+        {{ govukInput({
+          id: "lastName",
+          name: "lastName",
+          type: "text",
+          autocomplete: "family-name",
+          label: {
+            text: lastNameLabel,
+            classes: "govuk-label--m"
+          },
+          errorMessage: errors.lastName if errors.lastName,
+          value: formData.lastName
+        }) }}
+
+        {{ govukButton({
+          text: buttonText
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

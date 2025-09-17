@@ -107,7 +107,13 @@ const en = {
   ],
 
   learnMoreTitle: "Learn More",
-  learnMoreDescription: "Explore the codebase and documentation to understand the full capabilities of this template."
+  learnMoreDescription: "Explore the codebase and documentation to understand the full capabilities of this template.",
+
+  exampleForm: {
+    title: "Try our example onboarding form",
+    description: "See how we collect information using best practice form design",
+    linkText: "See example form"
+  }
 };
 
 const cy = {
@@ -217,7 +223,13 @@ const cy = {
   ],
 
   learnMoreTitle: "Dysgu Mwy",
-  learnMoreDescription: "Archwiliwch y sylfaen cod a'r dogfennaeth i ddeall galluoedd llawn y templed hwn."
+  learnMoreDescription: "Archwiliwch y sylfaen cod a'r dogfennaeth i ddeall galluoedd llawn y templed hwn.",
+
+  exampleForm: {
+    title: "Rhowch gynnig ar ein ffurflen hyfforddi enghreifftiol",
+    description: "Gwelwch sut rydym yn casglu gwybodaeth gan ddefnyddio dyluniad ffurflen arfer gorau",
+    linkText: "Gweld ffurflen enghreifftiol"
+  }
 };
 
 export const GET = async (_req: Request, res: Response) => {

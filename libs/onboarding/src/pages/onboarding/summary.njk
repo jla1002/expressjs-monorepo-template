@@ -1,0 +1,117 @@
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block page_title %}
+  {% if hasErrors %}Error: {% endif %}{{ title }}
+{% endblock %}
+
+{% block backLink %}
+  {% if showBackLink %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "/onboarding/role"
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if hasErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: sections.name
+            },
+            value: {
+              text: displayData.name
+            },
+            actions: {
+              items: [
+                {
+                  href: "/onboarding/name?from=summary",
+                  text: changeText,
+                  visuallyHiddenText: sections.name
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: sections.dateOfBirth
+            },
+            value: {
+              text: displayData.dateOfBirth
+            },
+            actions: {
+              items: [
+                {
+                  href: "/onboarding/date-of-birth?from=summary",
+                  text: changeText,
+                  visuallyHiddenText: sections.dateOfBirth
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: sections.address
+            },
+            value: {
+              html: displayData.address | join('<br>')
+            },
+            actions: {
+              items: [
+                {
+                  href: "/onboarding/address?from=summary",
+                  text: changeText,
+                  visuallyHiddenText: sections.address
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: sections.role
+            },
+            value: {
+              text: displayData.role
+            },
+            actions: {
+              items: [
+                {
+                  href: "/onboarding/role?from=summary",
+                  text: changeText,
+                  visuallyHiddenText: sections.role
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      <form method="post">
+        {{ govukButton({
+          text: buttonText,
+          attributes: {
+            id: "submit"
+          }
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

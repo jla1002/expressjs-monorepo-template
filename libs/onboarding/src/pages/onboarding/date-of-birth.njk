@@ -1,0 +1,92 @@
+{% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block page_title %}
+  {% if hasErrors %}Error: {% endif %}{{ title }}
+{% endblock %}
+
+{% block backLink %}
+  {% if showBackLink %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "/onboarding/name"
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if hasErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <form method="post" novalidate>
+        <div class="govuk-form-group{% if errors.day or errors.month or errors.year %} govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset" role="group" aria-describedby="date-of-birth-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">{{ title }}</h1>
+            </legend>
+            <div id="date-of-birth-hint" class="govuk-hint">
+              {{ hint }}
+            </div>
+
+            {% if errors.day or errors.month or errors.year %}
+              <p id="date-of-birth-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                {% if errors.day %}{{ errors.day.text }}{% endif %}
+                {% if errors.month %}{{ errors.month.text }}{% endif %}
+                {% if errors.year %}{{ errors.year.text }}{% endif %}
+              </p>
+            {% endif %}
+
+            <div class="govuk-date-input" id="date-of-birth">
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="day">
+                    {{ dayLabel }}
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2{% if errors.day %} govuk-input--error{% endif %}"
+                         id="day" name="day" type="text" inputmode="numeric" pattern="[0-9]*"
+                         value="{{ formData.day }}">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="month">
+                    {{ monthLabel }}
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2{% if errors.month %} govuk-input--error{% endif %}"
+                         id="month" name="month" type="text" inputmode="numeric" pattern="[0-9]*"
+                         value="{{ formData.month }}">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="year">
+                    {{ yearLabel }}
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4{% if errors.year %} govuk-input--error{% endif %}"
+                         id="year" name="year" type="text" inputmode="numeric" pattern="[0-9]*"
+                         value="{{ formData.year }}">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {{ govukButton({
+          text: buttonText
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}
