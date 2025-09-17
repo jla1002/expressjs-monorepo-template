@@ -276,6 +276,7 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
 ```html
 <!-- libs/user-management/src/pages/create-user.njk -->
 {% extends "layouts/base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton, govukInput, govukErrorSummary %}
 
 {% block content %}
 <div class="govuk-grid-row">

@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "types": "./dist/server.d.ts",
   "scripts": {
     "dev": "concurrently -r \"yarn:dev:watch\" \"yarn:build:dev:watch\"",
     "dev:watch": "mkdir -p dist/assets; nodemon -w yarn.lock -w dist/assets -w src -w ../../libs -e 'json,ts,scss,js,css' -x tsx src/server.ts",
