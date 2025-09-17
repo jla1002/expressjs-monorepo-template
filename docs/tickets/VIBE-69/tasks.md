@@ -50,12 +50,6 @@
 - [ ] Test session persistence across page refreshes
 - [ ] Test accessibility with Axe-core integration
 
-### Edge Cases
-- [ ] Test browser back/forward button behavior
-- [ ] Test form submission with JavaScript disabled
-- [ ] Test deep linking to form steps (should redirect to start)
-- [ ] Test concurrent form submissions in different tabs
-
 ## Review Tasks (code-reviewer)
 
 ### Code Quality Review
@@ -102,13 +96,6 @@
 - [ ] Document any design decisions made during implementation
 - [ ] Create screenshots of implemented pages for reference
 - [ ] Note any deviations from original specification
-
-### Accessibility Audit
-- [ ] Manual keyboard navigation testing
-- [ ] Screen reader testing with NVDA/JAWS
-- [ ] Color contrast verification
-- [ ] Focus management review
-- [ ] Error announcement testing
 
 ## Clarified Requirements
 
