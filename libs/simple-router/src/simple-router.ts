@@ -39,7 +39,6 @@ async function processMountSpec(mountSpec: MountSpec): Promise<RouteEntry[]> {
   const dir = process.env.NODE_ENV === "production" ? mountSpec.pagesDir.replace("/src/", "/dist/") : mountSpec.pagesDir;
   const routesDir = resolve(dir);
 
-  console.log(`Mounting routes from ${routesDir} at prefix '${mountSpec.prefix || "/"}'`);
   if (!existsSync(routesDir)) {
     throw new Error(`Routes directory does not exist: ${routesDir}`);
   }
