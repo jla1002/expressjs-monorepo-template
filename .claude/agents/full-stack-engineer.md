@@ -236,6 +236,12 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
   "name": "@hmcts/user-management",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
     "build": "tsc && yarn build:nunjucks",
     "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",

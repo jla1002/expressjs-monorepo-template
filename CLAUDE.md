@@ -100,6 +100,12 @@ mkdir -p libs/my-feature/src/assets/js  # Module scripts (optional)
   "name": "@hmcts/my-feature",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
     "build": "tsc && yarn build:nunjucks",
     "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
