@@ -1322,7 +1322,7 @@ The onboarding module integrates seamlessly with the existing web application th
 
 **Template System Integration**
 - Uses existing Nunjucks configuration from main web app
-- Extends `layouts/base.njk` for consistent page structure
+- Extends `layouts/default.njk` for consistent page structure
 - Integrates with existing i18n middleware for language switching
 
 **No External Module Dependencies**
