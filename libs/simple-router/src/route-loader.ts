@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import type { Handler, HandlerExport, HttpMethod, RouteModule } from "./types.js";
+import type { Handler, HandlerExport, HttpMethod, RouteModule } from "./simple-router.js";
 
 const VALID_METHODS: HttpMethod[] = ["get", "post", "put", "patch", "delete", "del", "head", "options", "trace", "connect", "all"];
 

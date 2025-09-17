@@ -1,7 +1,7 @@
 import type { Dirent } from "node:fs";
 import { readdirSync } from "node:fs";
 import { join, relative } from "node:path";
-import type { DiscoveredRoute } from "./types.js";
+import type { DiscoveredRoute } from "./simple-router.js";
 
 export function discoverRoutes(pagesDir: string): DiscoveredRoute[] {
   return Object.values(scanDirectory(pagesDir, pagesDir));
