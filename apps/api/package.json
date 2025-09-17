@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "./dist/server.js",
-  "types": "./dist/server.d.ts",
   "scripts": {
     "dev": "nodemon --watch src --exec tsx src/server.ts",
     "build": "tsc",
