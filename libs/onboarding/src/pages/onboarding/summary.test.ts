@@ -77,7 +77,7 @@ describe("Summary page controller", () => {
         summaryData: {
           name: "John Doe",
           dateOfBirth: "1 January 1990",
-          address: "123 Test Street, London, SW1A 1AA",
+          address: ["123 Test Street", "London", "SW1A 1AA"],
           role: "Frontend Developer"
         },
         changeLinks: {
@@ -120,14 +120,18 @@ describe("Summary page controller", () => {
     it("should handle submission errors", async () => {
       (isSessionComplete as any).mockReturnValue(true);
       (submitOnboarding as any).mockRejectedValue(new Error("Database error"));
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const req = mockRequest();
       const res = mockResponse();
 
       await POST(req, res);
 
+      expect(consoleSpy).toHaveBeenCalledWith("Error submitting onboarding:", expect.any(Error));
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.render).toHaveBeenCalledWith("errors/500");
+
+      consoleSpy.mockRestore();
     });
   });
 });

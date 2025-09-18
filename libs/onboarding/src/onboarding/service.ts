@@ -10,7 +10,7 @@ import {
   type RoleData,
   type OnboardingSubmission
 } from "./validation.js";
-import { getOnboardingSession, setSessionData, getAllSessionData, isSessionComplete } from "./session.js";
+import { getOnboardingSession, setSessionData, getAllSessionData, clearOnboardingSession, isSessionComplete } from "./session.js";
 import { createOnboardingSubmission } from "./queries.js";
 
 // Process name form submission

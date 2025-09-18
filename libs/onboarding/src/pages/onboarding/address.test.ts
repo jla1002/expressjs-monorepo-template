@@ -19,6 +19,7 @@ vi.mock("../../onboarding/navigation.js", () => ({
 
 import { processAddressSubmission, getSessionDataForPage } from "../../onboarding/service.js";
 import { formatZodErrors, createErrorSummary } from "../../onboarding/validation.js";
+import { getPreviousPage } from "../../onboarding/navigation.js";
 
 describe("address page", () => {
   let mockReq: Partial<Request>;

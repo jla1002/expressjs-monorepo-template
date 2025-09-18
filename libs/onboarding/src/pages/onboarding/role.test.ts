@@ -19,6 +19,7 @@ vi.mock("../../onboarding/navigation.js", () => ({
 
 import { processRoleSubmission, getSessionDataForPage } from "../../onboarding/service.js";
 import { formatZodErrors, createErrorSummary } from "../../onboarding/validation.js";
+import { getPreviousPage } from "../../onboarding/navigation.js";
 
 describe("role page", () => {
   let mockReq: Partial<Request>;

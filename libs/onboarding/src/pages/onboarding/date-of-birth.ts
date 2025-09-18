@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { processDateOfBirthSubmission, getSessionDataForPage } from "../../onboarding/service.js";
 import { formatZodErrors, createErrorSummary } from "../../onboarding/validation.js";
 import { getPreviousPage } from "../../onboarding/navigation.js";
-import { ONBOARDING_ROUTES } from "../../onboarding/routes.js";
 import { ZodError } from "zod";
 
 const en = {
@@ -46,9 +45,9 @@ export const POST = async (req: Request, res: Response) => {
     // Handle return parameter for change links
     const returnTo = req.query.return;
     if (returnTo === "summary") {
-      res.redirect(ONBOARDING_ROUTES.SUMMARY);
+      res.redirect("/onboarding/summary");
     } else {
-      res.redirect(ONBOARDING_ROUTES.ADDRESS);
+      res.redirect("/onboarding/address");
     }
   } catch (error) {
     if (error instanceof ZodError) {

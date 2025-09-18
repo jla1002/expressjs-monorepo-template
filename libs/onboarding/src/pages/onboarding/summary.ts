@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { getAllSessionData, isSessionComplete } from "../../onboarding/session.js";
 import { submitOnboarding } from "../../onboarding/service.js";
 import { formatDateForDisplay, formatAddressForDisplay, formatRoleForDisplay, getPreviousPage, getChangePageRoute } from "../../onboarding/navigation.js";
-import { ONBOARDING_ROUTES } from "../../onboarding/routes.js";
 
 const en = {
   title: "Check your answers",
@@ -34,7 +33,7 @@ const cy = {
 
 export const GET = async (req: Request, res: Response) => {
   if (!isSessionComplete(req.session)) {
-    return res.redirect(ONBOARDING_ROUTES.START);
+    return res.redirect("/onboarding/start");
   }
 
   const sessionData = getAllSessionData(req.session);
@@ -44,7 +43,7 @@ export const GET = async (req: Request, res: Response) => {
   const summaryData = {
     name: `${sessionData.name?.firstName} ${sessionData.name?.lastName}`,
     dateOfBirth: sessionData.dateOfBirth ? formatDateForDisplay(sessionData.dateOfBirth) : "",
-    address: sessionData.address ? formatAddressForDisplay(sessionData.address).join(", ") : "",
+    address: sessionData.address ? formatAddressForDisplay(sessionData.address) : [],
     role: sessionData.role ? formatRoleForDisplay(sessionData.role) : ""
   };
 
@@ -66,14 +65,14 @@ export const GET = async (req: Request, res: Response) => {
 
 export const POST = async (req: Request, res: Response) => {
   if (!isSessionComplete(req.session)) {
-    return res.redirect(ONBOARDING_ROUTES.START);
+    return res.redirect("/onboarding/start");
   }
 
   try {
     await submitOnboarding(req.session);
-    res.redirect(ONBOARDING_ROUTES.CONFIRMATION);
-  } catch {
-    // Error is already logged by the monitoring service
+    res.redirect("/onboarding/confirmation");
+  } catch (error) {
+    console.error("Error submitting onboarding:", error);
     res.status(500).render("errors/500");
   }
 };
