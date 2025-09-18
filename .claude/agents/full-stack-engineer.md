@@ -276,7 +276,9 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
 ```html
 <!-- libs/user-management/src/pages/create-user.njk -->
 {% extends "layouts/default.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton, govukInput, govukErrorSummary %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -627,11 +629,10 @@ export function createCacheHelpers(redis: Redis) {
 ## Anti-Patterns to Avoid
 
 ### Design Anti-Patterns
-- **Multiple things per page**: Cognitive overload for users
 - **Custom components over GOV.UK**: Break consistency
 - **Desktop-first design**: Mobile users struggle
 - **Color-only information**: Accessibility failure
-- **Complex navigation**: Users get lost
+- **Inadequate error messages**: Provide helpful guidance
 
 ### Technical Anti-Patterns
 - **Fat route handlers**: Business logic belongs in services
@@ -639,15 +640,13 @@ export function createCacheHelpers(redis: Redis) {
 - **JavaScript dependency**: Core functionality must work without JS
 - **Synchronous blocking operations**: Use async/await
 - **Missing error handling**: Always handle edge cases
-- **Hardcoded values**: Use environment variables
+- **Hardcoded values**: Use the config module and environment variables
 - **Missing validation**: Never trust user input
 - **Class-based when functional works**: Favor functions over classes
 - **Missing .js extensions**: Required for ES modules
 - **Generic utility files**: Be specific (dates/formatting.ts not utils.ts or date-formatting.ts)
 - **Circular dependencies**: Keep clear dependency graphs
-- **Inadequate error messages**: Provide helpful guidance
-- **Colocate unit tests**: Tests should be next to implementation
-- **Colocate types**: Types should be next to implementation, DO NOT CREATE types.ts
+- **Creating types.ts files**: Types should be next to implementation, DO NOT CREATE types.ts
 - **Changing apps/**: New features should be in libs/, apps/ is for composition only
 
 ## Security Requirements
