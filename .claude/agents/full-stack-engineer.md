@@ -118,7 +118,6 @@ libs/
 └── [feature]/
     ├── package.json           # Module metadata and scripts
     ├── tsconfig.json          # TypeScript configuration
-    ├── vitest.config.ts       # Test configuration
     └── src/
         ├── pages/             # Page route handlers & templates (auto-discovered)
         ├── locales/           # i18n translations (auto-loaded)
@@ -293,20 +292,6 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
 
     <form method="post" novalidate>
       {{ govukInput({
-        id: "name",
-        name: "name",
-        type: "text",
-        autocomplete: "name",
-        label: {
-          text: nameLabel,
-          isPageHeading: true,
-          classes: "govuk-label--l"
-        },
-        errorMessage: errors.name,
-        value: data.name
-      }) }}
-
-      {{ govukInput({
         id: "email",
         name: "email",
         type: "email",
@@ -367,7 +352,6 @@ type CreateUserData = {
 - [ ] Module registered in root `tsconfig.json` paths
 - [ ] `package.json` includes build:nunjucks script if needed
 - [ ] `tsconfig.json` configured with proper includes/excludes
-- [ ] `vitest.config.ts` created for testing
 - [ ] Module structure follows convention (pages/, locales/, assets/)
 
 #### Frontend ✅

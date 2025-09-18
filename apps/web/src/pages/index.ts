@@ -107,7 +107,11 @@ const en = {
   ],
 
   learnMoreTitle: "Learn More",
-  learnMoreDescription: "Explore the codebase and documentation to understand the full capabilities of this template."
+  learnMoreDescription: "Explore the codebase and documentation to understand the full capabilities of this template.",
+
+  exampleFormTitle: "Example Form",
+  exampleFormDescription: "See how multi-page forms work with validation and session management.",
+  exampleFormLinkText: "See example form"
 };
 
 const cy = {
@@ -217,7 +221,11 @@ const cy = {
   ],
 
   learnMoreTitle: "Dysgu Mwy",
-  learnMoreDescription: "Archwiliwch y sylfaen cod a'r dogfennaeth i ddeall galluoedd llawn y templed hwn."
+  learnMoreDescription: "Archwiliwch y sylfaen cod a'r dogfennaeth i ddeall galluoedd llawn y templed hwn.",
+
+  exampleFormTitle: "Ffurflen Enghreifftiol",
+  exampleFormDescription: "Gweld sut mae ffurflenni aml-dudalen yn gweithio gyda dilysu a rheoli sesiynau.",
+  exampleFormLinkText: "Gweld ffurflen enghreifftiol"
 };
 
 export const GET = async (_req: Request, res: Response) => {

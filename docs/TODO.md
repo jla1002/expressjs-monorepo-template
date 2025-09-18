@@ -1,7 +1,9 @@
 - Find a place for the team name
 - Infrastructure folder for terraform
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
-- Add example form and confirmation page
 - move apps/database to libs/postgres-prisma-orm
+- make the prisma modules load from libs/**/prisma/*.prisma
 - Update API with dynamic import of routes from libs
 - Update README of govuk-frontend to document the madness of asset loading an the differences between dev and prod. Especially the fact we need the exports field in package.json to make it work in prod because vite.config.ts use the node loader and not the ts loader.
+- Add example of url parameter route in onboarding for confirmation page
+- Add example of API call in onboarding for confirmation page
