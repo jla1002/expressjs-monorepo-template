@@ -48,24 +48,19 @@ export const POST = async (req: Request, res: Response) => {
   try {
     processRoleSubmission(req.session, req.body);
 
-    // Handle return parameter for change links
-    const returnTo = req.query.return;
-    if (returnTo === "summary") {
-      res.redirect("/onboarding/summary");
-    } else {
-      res.redirect("/onboarding/summary");
-    }
+    // Always redirect to summary page (last page in flow)
+    res.redirect("/onboarding/summary");
   } catch (error) {
     if (error instanceof ZodError) {
       const errors = formatZodErrors(error);
       const errorSummary = createErrorSummary(errors);
-      const previousPage = getPreviousPage("role");
+      const backLink = getPreviousPage("role");
 
       res.render("onboarding/role", {
         errors,
         errorSummary,
         data: req.body,
-        previousPage,
+        backLink,
         en,
         cy
       });

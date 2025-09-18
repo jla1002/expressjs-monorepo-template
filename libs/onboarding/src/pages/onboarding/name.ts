@@ -49,13 +49,13 @@ export const POST = async (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       const errors = formatZodErrors(error);
       const errorSummary = createErrorSummary(errors);
-      const previousPage = getPreviousPage("name");
+      const backLink = getPreviousPage("name");
 
       res.render("onboarding/name", {
         errors,
         errorSummary,
         data: req.body,
-        previousPage,
+        backLink,
         en,
         cy
       });
