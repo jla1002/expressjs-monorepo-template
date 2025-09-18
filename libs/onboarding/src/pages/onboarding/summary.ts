@@ -44,7 +44,7 @@ export const GET = async (req: Request, res: Response) => {
   const summaryData = {
     name: `${sessionData.name?.firstName} ${sessionData.name?.lastName}`,
     dateOfBirth: sessionData.dateOfBirth ? formatDateForDisplay(sessionData.dateOfBirth) : "",
-    address: sessionData.address ? formatAddressForDisplay(sessionData.address) : [],
+    address: sessionData.address ? formatAddressForDisplay(sessionData.address).join(", ") : "",
     role: sessionData.role ? formatRoleForDisplay(sessionData.role) : ""
   };
 

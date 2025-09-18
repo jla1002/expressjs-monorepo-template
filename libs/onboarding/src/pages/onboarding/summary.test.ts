@@ -77,7 +77,7 @@ describe("Summary page controller", () => {
         summaryData: {
           name: "John Doe",
           dateOfBirth: "1 January 1990",
-          address: ["123 Test Street", "London", "SW1A 1AA"],
+          address: "123 Test Street, London, SW1A 1AA",
           role: "Frontend Developer"
         },
         changeLinks: {
