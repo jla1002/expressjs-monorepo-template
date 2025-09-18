@@ -160,7 +160,7 @@ function flattenErrors(nested: NestedErrors): ValidationError[] {
     if ("field" in value && "text" in value && "href" in value) {
       result.push(value as ValidationError);
     } else {
-      result.push(...flattenErrors(value as NestedErrors));
+      result.push(...flattenErrors(value));
     }
   }
   return result;

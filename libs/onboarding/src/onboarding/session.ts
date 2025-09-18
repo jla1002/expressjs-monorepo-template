@@ -27,9 +27,7 @@ export function setSessionData<T extends keyof NonNullable<OnboardingSession["on
   data: NonNullable<OnboardingSession["onboarding"]>[T]
 ): void {
   const onboardingSession = session as OnboardingSession;
-  if (!onboardingSession.onboarding) {
-    onboardingSession.onboarding = {};
-  }
+  onboardingSession.onboarding ??= {};
   onboardingSession.onboarding[key] = data;
 }
 

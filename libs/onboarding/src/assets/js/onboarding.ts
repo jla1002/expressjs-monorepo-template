@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     [dayInput, monthInput, yearInput].forEach((input) => {
       input.addEventListener("input", (e) => {
         const target = e.target as HTMLInputElement;
-        target.value = target.value.replace(/[^0-9]/g, "");
+        target.value = target.value.replace(/\D/g, "");
       });
     });
 
