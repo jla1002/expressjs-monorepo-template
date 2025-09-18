@@ -1,0 +1,104 @@
+{% extends "layouts/default.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block pageTitle %}{{ title }}{% endblock %}
+
+{% block beforeContent %}
+  {% if previousPage %}
+    {{ govukBackLink({
+      text: back,
+      href: previousPage
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">{{ heading }}</h1>
+
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: rows.name
+          },
+          value: {
+            text: summaryData.name
+          },
+          actions: {
+            items: [
+              {
+                href: changeLinks.name,
+                text: change,
+                visuallyHiddenText: rows.name
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: rows.dateOfBirth
+          },
+          value: {
+            text: summaryData.dateOfBirth
+          },
+          actions: {
+            items: [
+              {
+                href: changeLinks.dateOfBirth,
+                text: change,
+                visuallyHiddenText: rows.dateOfBirth
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: rows.address
+          },
+          value: {
+            html: summaryData.address | join('<br>')
+          },
+          actions: {
+            items: [
+              {
+                href: changeLinks.address,
+                text: change,
+                visuallyHiddenText: rows.address
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: rows.role
+          },
+          value: {
+            text: summaryData.role
+          },
+          actions: {
+            items: [
+              {
+                href: changeLinks.role,
+                text: change,
+                visuallyHiddenText: rows.role
+              }
+            ]
+          }
+        }
+      ]
+    }) }}
+
+    <form method="post">
+      {{ govukButton({
+        text: submitButton
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
