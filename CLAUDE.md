@@ -135,24 +135,7 @@ mkdir -p libs/my-feature/src/assets/js  # Module scripts (optional)
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "dist", "node_modules", "src/assets/"]
 }
 ```
-
-4. **Create vitest.config.ts**:
-```typescript
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: "node",
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html"]
-    }
-  }
-});
-```
-
-5. **Register module in root tsconfig.json**:
+4. **Register module in root tsconfig.json**:
 ```json
 {
   "compilerOptions": {
@@ -170,7 +153,6 @@ export default defineConfig({
 libs/my-feature/
 ├── package.json
 ├── tsconfig.json
-├── vitest.config.ts
 └── src/
     ├── pages/                  # Page routes (auto-discovered)
     │   ├── my-page.ts          # Controller with GET/POST exports
@@ -192,7 +174,7 @@ libs/my-feature/
 ### Page Controller Pattern
 
 ```typescript
-// libs/my-feature/src/pages/my-page.ts
+// libs/[module]/src/pages/[page-name].ts
 import type { Request, Response } from "express";
 
 const en = {
@@ -210,12 +192,83 @@ export const GET = async (_req: Request, res: Response) => {
 };
 
 export const POST = async (req: Request, res: Response) => {
-  // Handle form submission
   res.redirect("/success");
 };
 ```
 
+### Nunjucks Template Pattern
+
+```html
+<!-- libs/[my-module]/src/pages/[page-name].njk -->
+{% extends "layouts/default.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    {% if errors %}
+      {{ govukErrorSummary({
+        titleText: errorSummaryTitle,
+        errorList: errors
+      }) }}
+    {% endif %}
+
+    <form method="post" novalidate>
+      {{ govukInput({
+        id: "email",
+        name: "email",
+        type: "email",
+        autocomplete: "email",
+        label: {
+          text: emailLabel
+        },
+        errorMessage: errors.email,
+        value: data.email
+      }) }}
+
+      {{ govukButton({
+        text: continueButtonText
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+```
+
+### Content Organization
+
+**Shared/Common Content** (goes in locale files libs/[module]/src/locales/en.ts and cy.ts):
+- Common button text (Back, Continue, Submit)
+- Phase banner text
+- Service name
+- Common error messages
+- Content used by multiple pages
+
+**Page-Specific Content** (goes in controllers):
+- Page titles
+- Section headings
+- Body text
+- Lists specific to that page
+- Contact details specific to that page
+- Any content unique to that page
+
+### Welsh Language Support
+
+Every page must support both English and Welsh:
+
+1. **In Controllers**: Provide both `en` and `cy` objects with page content
+2. **In Templates**: Use the current language data automatically selected by the i18n middleware
+3. **In Locale Files**: Maintain parallel structure between en.ts and cy.ts
+4. **Testing**: Always test pages with `?lng=cy` query parameter to verify Welsh content
+
+
 ### Express Middleware Pattern
+
+Reusable middleware should be placed in a dedicated `libs/[module]/src/[middleware-name]-middleware.ts` file and exported as a function:
 
 ```typescript
 // libs/auth/src/authenticate-middleware.ts
@@ -302,88 +355,11 @@ describe('UserService', () => {
 13. **Don't export functions in order to test them** - Only export functions that are intended to be used outside the module
 14. **Don't add comments unless they are meaningful** - If necessary, explain why something is done, not what is done
 
-## Development Workflow
-
-### 1. Feature Development
-- Create feature module in libs/
-- Write co-located tests
-
-### 2. Database Changes
-- Modify schema in apps/postgres/prisma/schema.prisma
-- Run `yarn workspace @hmcts/postgres run generate`
-- Create migration if needed
-
-### 3. Adding Dependencies
-- Check if available in root package.json
-- Add to specific package only if needed
-- Use exact versions (no ~ or ^)
-
 ## Debugging Tips
 
 1. **Module Loading**: Check imports in apps/*/src/app.ts
 2. **Database Issues**: Enable Prisma logging with `DEBUG=prisma:query`
 3. **Run commands from the root directory**: Run yarn test etc from the root directory
-
-## Adding Pages and Content
-
-### Page Structure
-When adding new pages to the application, follow this structure:
-
-1. **Controller** (`libs/[module]/src/pages/[page-name].ts`)
-   - Contains page-specific content and data
-   - Renders the corresponding template
-   - Example:
-   ```typescript
-   export const GET = async (_req: Request, res: Response) => {
-     res.render("page-name", {
-       en: {
-         title: "Page Title",
-         // Page-specific English content
-       },
-       cy: {
-         title: "Teitl Tudalen",
-         // Page-specific Welsh content
-       }
-     });
-   };
-   ```
-
-2. **Template** (`libs/[module]/src/pages/[page-name].njk`)
-   - Uses data from controller
-   - Extends default layout
-   - Accesses both controller data and locale strings
-
-3. **Locale Files** (`libs/[module]/src/locales/en.ts` and `cy.ts`)
-   - ONLY contain reusable, common strings
-   - Navigation labels, button text, common headers
-   - NOT page-specific content
-
-### Content Organization
-
-**Shared/Common Content** (goes in locale files):
-- Navigation labels
-- Footer links
-- Common button text (Back, Continue, Submit)
-- Phase banner text
-- Service name
-- Common error messages
-
-**Page-Specific Content** (goes in controllers):
-- Page titles
-- Section headings
-- Body text
-- Lists specific to that page
-- Contact details specific to that page
-- Any content unique to that page
-
-### Welsh Language Support
-
-Every page must support both English and Welsh:
-
-1. **In Controllers**: Provide both `en` and `cy` objects with page content
-2. **In Templates**: Use the current language data automatically selected by the i18n middleware
-3. **In Locale Files**: Maintain parallel structure between en.ts and cy.ts
-4. **Testing**: Always test pages with `?lng=cy` query parameter to verify Welsh content
 
 ## Core Principles
 
