@@ -37,7 +37,7 @@ export const GET = async (req: Request, res: Response) => {
   }
 
   const sessionData = getAllSessionData(req.session);
-  const previousPage = getPreviousPage("summary");
+  const backLink = getPreviousPage("summary");
 
   // Prepare summary data for display
   const summaryData = {
@@ -57,7 +57,7 @@ export const GET = async (req: Request, res: Response) => {
   res.render("onboarding/summary", {
     summaryData,
     changeLinks,
-    previousPage,
+    backLink,
     en,
     cy
   });

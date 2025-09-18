@@ -86,7 +86,7 @@ describe("Summary page controller", () => {
           address: "/onboarding/address?return=summary",
           role: "/onboarding/role?return=summary"
         },
-        previousPage: "/onboarding/role",
+        backLink: "/onboarding/role",
         en: expect.any(Object),
         cy: expect.any(Object)
       });

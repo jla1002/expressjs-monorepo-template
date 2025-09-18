@@ -10,6 +10,7 @@ export interface OnboardingSession extends Session {
     role?: RoleData;
     isComplete?: boolean;
     submittedAt?: Date;
+    confirmationId?: string;
   };
 }
 

@@ -78,10 +78,17 @@ test.describe('Onboarding Form - Happy Path Journey', () => {
     // Confirmation page
     await expect(page).toHaveURL('/onboarding/confirmation');
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/Onboarding complete/i);
-    await expect(page.getByText(/Your onboarding has been submitted/i)).toBeVisible();
+    await expect(page.getByText(/Your reference number/i)).toBeVisible();
 
     // Verify confirmation panel is displayed
     await expect(page.locator('.govuk-panel--confirmation')).toBeVisible();
+
+    // Verify confirmation ID is displayed (should be a CUID format)
+    const confirmationPanel = page.locator('.govuk-panel--confirmation');
+    const panelText = await confirmationPanel.textContent();
+    expect(panelText).toMatch(/Your reference number/i);
+    // Check that there's some kind of ID displayed (CUID format starts with 'c')
+    expect(panelText).toMatch(/c[a-z0-9]{20,}/i);
   });
 
   test('should handle "Other" role selection with text input', async ({ page }) => {

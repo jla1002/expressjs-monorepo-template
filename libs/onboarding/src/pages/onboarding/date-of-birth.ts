@@ -28,11 +28,11 @@ const cy = {
 
 export const GET = async (req: Request, res: Response) => {
   const data = getSessionDataForPage(req.session, "date-of-birth");
-  const previousPage = getPreviousPage("date-of-birth");
+  const backLink = getPreviousPage("date-of-birth");
 
   res.render("onboarding/date-of-birth", {
     data,
-    previousPage,
+    backLink,
     en,
     cy
   });

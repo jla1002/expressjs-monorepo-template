@@ -4,17 +4,6 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% block pageTitle %}{{ title }}{% endblock %}
-
-{% block beforeContent %}
-  {% if previousPage %}
-    {{ govukBackLink({
-      text: back,
-      href: previousPage
-    }) }}
-  {% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">

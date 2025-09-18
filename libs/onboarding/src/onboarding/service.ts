@@ -76,8 +76,8 @@ export async function submitOnboarding(session: Session): Promise<string> {
 
   const submission = await createOnboardingSubmission(submissionData, sessionId);
 
-  // Mark as complete and clear session
-  clearOnboardingSession(session);
+  // Store confirmation ID before clearing session
+  setSessionData(session, "confirmationId", submission.id);
 
   return submission.id;
 }

@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
+import { getOnboardingSession, clearOnboardingSession } from "../../onboarding/session.js";
 
 const en = {
   title: "Onboarding complete",
   heading: "Onboarding complete",
   panelTitle: "Onboarding complete",
-  body: "Your onboarding has been submitted.",
+  referenceLabel: "Your reference number",
   whatHappensNext: "What happens next",
   nextSteps: "We will process your information and you will be able to access the service.",
   returnButton: "Return to homepage"
@@ -14,14 +15,25 @@ const cy = {
   title: "Ymgymryd wedi'i gwblhau",
   heading: "Ymgymryd wedi'i gwblhau",
   panelTitle: "Ymgymryd wedi'i gwblhau",
-  body: "Mae eich ymgymryd wedi'i gyflwyno.",
+  referenceLabel: "Eich rhif cyfeirnod",
   whatHappensNext: "Beth sy'n digwydd nesaf",
   nextSteps: "Byddwn yn prosesu eich gwybodaeth a byddwch yn gallu cael mynediad at y gwasanaeth.",
   returnButton: "Dychwelyd i'r hafan"
 };
 
-export const GET = async (_req: Request, res: Response) => {
+export const GET = async (req: Request, res: Response) => {
+  const sessionData = getOnboardingSession(req.session);
+  const confirmationId = sessionData.confirmationId;
+
+  // Clear the session after displaying the confirmation
+  clearOnboardingSession(req.session);
+
+  if (!confirmationId) {
+    return res.redirect("/onboarding/start");
+  }
+
   res.render("onboarding/confirmation", {
+    confirmationId,
     en,
     cy
   });

@@ -47,7 +47,7 @@ describe("Name page controller", () => {
 
       expect(res.render).toHaveBeenCalledWith("onboarding/name", {
         data: undefined,
-        previousPage: "/onboarding/start",
+        backLink: "/onboarding/start",
         en: expect.objectContaining({
           title: "What is your name?",
           firstNameLabel: "First name",
