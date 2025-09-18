@@ -88,9 +88,7 @@ describe("Summary page controller", () => {
         },
         previousPage: "/onboarding/role",
         en: expect.any(Object),
-        cy: expect.any(Object),
-        back: expect.any(Object),
-        change: expect.any(Object)
+        cy: expect.any(Object)
       });
     });
   });

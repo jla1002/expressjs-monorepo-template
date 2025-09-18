@@ -51,14 +51,14 @@ describe("Name page controller", () => {
         en: expect.objectContaining({
           title: "What is your name?",
           firstNameLabel: "First name",
-          lastNameLabel: "Last name"
+          lastNameLabel: "Last name",
+          back: "Back",
+          continue: "Continue"
         }),
         cy: expect.objectContaining({
           title: "Beth yw eich enw?",
           firstNameLabel: "Enw cyntaf"
-        }),
-        back: expect.any(Object),
-        continue: expect.any(Object)
+        })
       });
     });
 

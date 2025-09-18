@@ -200,13 +200,12 @@ describe("formatZodErrors", () => {
     const result = nameSchema.safeParse(invalidData);
     if (!result.success) {
       const formattedErrors = formatZodErrors(result.error);
-      expect(formattedErrors.length).toBeGreaterThan(0);
 
-      // Check that the first error is about firstName
-      const firstNameError = formattedErrors.find((err) => err.field === "firstName");
-      expect(firstNameError).toEqual({
+      // Check that the formatted errors have the firstName error
+      expect(formattedErrors.firstName).toBeDefined();
+      expect(formattedErrors.firstName).toEqual({
         field: "firstName",
-        message: "Enter your first name",
+        text: "Enter your first name",
         href: "#firstName"
       });
     }
@@ -215,18 +214,19 @@ describe("formatZodErrors", () => {
 
 describe("createErrorSummary", () => {
   it("should create GOV.UK error summary", () => {
-    const errors = [
-      {
+    const errors = {
+      firstName: {
         field: "firstName",
-        message: "Enter your first name",
+        text: "Enter your first name",
         href: "#firstName"
       }
-    ];
+    };
 
     const summary = createErrorSummary(errors);
     expect(summary.titleText).toBe("There is a problem");
     expect(summary.errorList).toHaveLength(1);
     expect(summary.errorList[0]).toEqual({
+      field: "firstName",
       text: "Enter your first name",
       href: "#firstName"
     });
