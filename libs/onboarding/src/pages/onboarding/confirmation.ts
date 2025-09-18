@@ -23,7 +23,7 @@ const cy = {
 
 export const GET = async (req: Request, res: Response) => {
   const sessionData = getOnboardingSession(req.session);
-  const confirmationId = sessionData.confirmationId;
+  const confirmationId = sessionData?.confirmationId;
 
   // Clear the session after displaying the confirmation
   clearOnboardingSession(req.session);

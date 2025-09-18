@@ -88,13 +88,13 @@ export function getSessionDataForPage(session: Session, page: string) {
 
   switch (page) {
     case "name":
-      return sessionData.name;
+      return sessionData?.name;
     case "date-of-birth":
-      return sessionData.dateOfBirth;
+      return sessionData?.dateOfBirth;
     case "address":
-      return sessionData.address;
+      return sessionData?.address;
     case "role":
-      return sessionData.role;
+      return sessionData?.role;
     default:
       return null;
   }

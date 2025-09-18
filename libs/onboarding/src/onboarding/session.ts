@@ -42,16 +42,16 @@ export function clearOnboardingSession(session: Session): void {
 // Helper to check if all required data is collected
 export function isSessionComplete(session: Session): boolean {
   const sessionData = getOnboardingSession(session);
-  return !!(sessionData.name && sessionData.dateOfBirth && sessionData.address && sessionData.role);
+  return !!(sessionData?.name && sessionData?.dateOfBirth && sessionData?.address && sessionData?.role);
 }
 
 // Helper to get all session data for summary page
 export function getAllSessionData(session: Session) {
   const sessionData = getOnboardingSession(session);
   return {
-    name: sessionData.name,
-    dateOfBirth: sessionData.dateOfBirth,
-    address: sessionData.address,
-    role: sessionData.role
+    name: sessionData?.name,
+    dateOfBirth: sessionData?.dateOfBirth,
+    address: sessionData?.address,
+    role: sessionData?.role
   };
 }
