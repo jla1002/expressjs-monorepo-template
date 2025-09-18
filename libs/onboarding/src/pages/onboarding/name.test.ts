@@ -1,11 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Request, Response } from "express";
 import { GET, POST } from "./name.js";
+import { ZodError } from "zod";
 
 // Mock service helpers
 vi.mock("../../onboarding/service.js", () => ({
   processNameSubmission: vi.fn(),
   getSessionDataForPage: vi.fn()
+}));
+
+// Mock validation helpers
+vi.mock("../../onboarding/validation.js", () => ({
+  formatZodErrors: vi.fn(),
+  createErrorSummary: vi.fn()
 }));
 
 // Mock navigation helpers
@@ -14,6 +21,7 @@ vi.mock("../../onboarding/navigation.js", () => ({
 }));
 
 import { processNameSubmission, getSessionDataForPage } from "../../onboarding/service.js";
+import { formatZodErrors, createErrorSummary } from "../../onboarding/validation.js";
 import { getPreviousPage } from "../../onboarding/navigation.js";
 
 const mockRequest = (overrides = {}) =>
@@ -106,6 +114,68 @@ describe("Name page controller", () => {
       await POST(req, res);
 
       expect(res.redirect).toHaveBeenCalledWith("/onboarding/summary");
+    });
+
+    it("should handle validation errors and render form with errors", async () => {
+      const mockZodError = new ZodError([
+        {
+          code: "too_small",
+          minimum: 1,
+          type: "string",
+          inclusive: true,
+          exact: false,
+          message: "First name is required",
+          path: ["firstName"]
+        }
+      ]);
+
+      const mockErrors = {
+        firstName: { text: "First name is required" }
+      };
+
+      const mockErrorSummary = [{ text: "First name is required", href: "#firstName" }];
+
+      (processNameSubmission as any).mockImplementation(() => {
+        throw mockZodError;
+      });
+      (formatZodErrors as any).mockReturnValue(mockErrors);
+      (createErrorSummary as any).mockReturnValue(mockErrorSummary);
+
+      const req = mockRequest({
+        body: { firstName: "", lastName: "Doe" }
+      });
+      const res = mockResponse();
+
+      await POST(req, res);
+
+      expect(formatZodErrors).toHaveBeenCalledWith(mockZodError);
+      expect(createErrorSummary).toHaveBeenCalledWith(mockErrors);
+      expect(res.render).toHaveBeenCalledWith(
+        "onboarding/name",
+        expect.objectContaining({
+          errors: mockErrors,
+          errorSummary: mockErrorSummary,
+          data: { firstName: "", lastName: "Doe" },
+          backLink: "/onboarding/start"
+        })
+      );
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    it("should re-throw non-ZodError exceptions", async () => {
+      const generalError = new Error("Database connection failed");
+      (processNameSubmission as any).mockImplementation(() => {
+        throw generalError;
+      });
+
+      const req = mockRequest({
+        body: { firstName: "John", lastName: "Doe" }
+      });
+      const res = mockResponse();
+
+      await expect(POST(req, res)).rejects.toThrow("Database connection failed");
+      expect(res.render).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
     });
   });
 });

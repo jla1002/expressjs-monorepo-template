@@ -6,12 +6,14 @@ import {
   processAddressSubmission,
   processRoleSubmission,
   prepareSubmissionData,
+  submitOnboarding,
   getSessionDataForPage
 } from "./service.js";
+import { createOnboardingSubmission } from "./queries.js";
 
 // Mock the queries module
 vi.mock("./queries.js", () => ({
-  createOnboardingSubmission: vi.fn().mockResolvedValue({ id: "test-id" })
+  createOnboardingSubmission: vi.fn()
 }));
 
 describe("service functions", () => {
@@ -196,6 +198,144 @@ describe("service functions", () => {
 
     it("should return null for unknown page", () => {
       expect(getSessionDataForPage(mockSession, "unknown")).toBeNull();
+    });
+  });
+
+  describe("prepareSubmissionData", () => {
+    it("should throw error when missing required name data", () => {
+      const mockSession = {
+        data: {
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          },
+          role: { roleType: "prosecutor" }
+        }
+      } as any;
+
+      expect(() => prepareSubmissionData(mockSession)).toThrow("Session data incomplete - cannot submit");
+    });
+
+    it("should throw error when missing dateOfBirth data", () => {
+      const mockSession = {
+        data: {
+          name: { firstName: "John", lastName: "Doe" },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          },
+          role: { roleType: "prosecutor" }
+        }
+      } as any;
+
+      expect(() => prepareSubmissionData(mockSession)).toThrow("Session data incomplete - cannot submit");
+    });
+
+    it("should throw error when missing address data", () => {
+      const mockSession = {
+        data: {
+          name: { firstName: "John", lastName: "Doe" },
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          role: { roleType: "prosecutor" }
+        }
+      } as any;
+
+      expect(() => prepareSubmissionData(mockSession)).toThrow("Session data incomplete - cannot submit");
+    });
+
+    it("should throw error when missing role data", () => {
+      const mockSession = {
+        data: {
+          name: { firstName: "John", lastName: "Doe" },
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          }
+        }
+      } as any;
+
+      expect(() => prepareSubmissionData(mockSession)).toThrow("Session data incomplete - cannot submit");
+    });
+
+    it("should include roleOther when role type is 'other'", () => {
+      const mockSession = {
+        onboarding: {
+          name: { firstName: "John", lastName: "Doe" },
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          },
+          role: { roleType: "other", roleOther: "Legal advisor" }
+        }
+      } as any;
+
+      const result = prepareSubmissionData(mockSession);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          roleType: "other",
+          roleOther: "Legal advisor"
+        })
+      );
+    });
+
+    it("should not include roleOther when role type is not 'other'", () => {
+      const mockSession = {
+        onboarding: {
+          name: { firstName: "John", lastName: "Doe" },
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          },
+          role: { roleType: "prosecutor" }
+        }
+      } as any;
+
+      const result = prepareSubmissionData(mockSession);
+
+      expect(result.roleOther).toBeUndefined();
+    });
+  });
+
+  describe("submitOnboarding", () => {
+    it("should submit onboarding data and return confirmation ID", async () => {
+      const mockSession = {
+        id: "session-123",
+        onboarding: {
+          name: { firstName: "John", lastName: "Doe" },
+          dateOfBirth: { day: 15, month: 6, year: 1990 },
+          address: {
+            addressLine1: "123 Test Street",
+            town: "London",
+            postcode: "SW1A 1AA"
+          },
+          role: { roleType: "prosecutor" }
+        }
+      } as any;
+
+      const mockSubmission = { id: "submission-456" };
+      vi.mocked(createOnboardingSubmission).mockResolvedValue(mockSubmission);
+
+      const result = await submitOnboarding(mockSession);
+
+      expect(createOnboardingSubmission).toHaveBeenCalledWith(
+        expect.objectContaining({
+          firstName: "John",
+          lastName: "Doe",
+          roleType: "prosecutor"
+        }),
+        "session-123"
+      );
+      expect(result).toBe("submission-456");
     });
   });
 });
