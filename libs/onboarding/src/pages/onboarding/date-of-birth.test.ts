@@ -19,7 +19,6 @@ vi.mock("../../onboarding/navigation.js", () => ({
 
 import { processDateOfBirthSubmission, getSessionDataForPage } from "../../onboarding/service.js";
 import { formatZodErrors, createErrorSummary } from "../../onboarding/validation.js";
-import { getPreviousPage } from "../../onboarding/navigation.js";
 
 describe("date-of-birth page", () => {
   let mockReq: Partial<Request>;

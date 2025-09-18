@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { getOnboardingSession, clearOnboardingSession } from "../../onboarding/session.js";
+import { ONBOARDING_ROUTES } from "../../onboarding/routes.js";
 
 const en = {
   title: "Onboarding complete",
@@ -29,7 +30,7 @@ export const GET = async (req: Request, res: Response) => {
   clearOnboardingSession(req.session);
 
   if (!confirmationId) {
-    return res.redirect("/onboarding/start");
+    return res.redirect(ONBOARDING_ROUTES.START);
   }
 
   res.render("onboarding/confirmation", {

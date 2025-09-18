@@ -120,18 +120,14 @@ describe("Summary page controller", () => {
     it("should handle submission errors", async () => {
       (isSessionComplete as any).mockReturnValue(true);
       (submitOnboarding as any).mockRejectedValue(new Error("Database error"));
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const req = mockRequest();
       const res = mockResponse();
 
       await POST(req, res);
 
-      expect(consoleSpy).toHaveBeenCalledWith("Error submitting onboarding:", expect.any(Error));
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.render).toHaveBeenCalledWith("errors/500");
-
-      consoleSpy.mockRestore();
     });
   });
 });

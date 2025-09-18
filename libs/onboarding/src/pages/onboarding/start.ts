@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ONBOARDING_ROUTES } from "../../onboarding/routes.js";
 
 const en = {
   title: "Onboarding form example",
@@ -23,5 +24,9 @@ const cy = {
 };
 
 export const GET = async (_req: Request, res: Response) => {
-  res.render("onboarding/start", { en, cy });
+  res.render("onboarding/start", {
+    en,
+    cy,
+    nextPageUrl: ONBOARDING_ROUTES.NAME
+  });
 };

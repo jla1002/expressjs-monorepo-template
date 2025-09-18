@@ -39,7 +39,8 @@ describe("Start page controller", () => {
         cy: expect.objectContaining({
           title: expect.any(String),
           startButton: "Dechrau nawr"
-        })
+        }),
+        nextPageUrl: "/onboarding/name"
       });
     });
   });

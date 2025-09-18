@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { getAllSessionData, isSessionComplete } from "../../onboarding/session.js";
 import { submitOnboarding } from "../../onboarding/service.js";
 import { formatDateForDisplay, formatAddressForDisplay, formatRoleForDisplay, getPreviousPage, getChangePageRoute } from "../../onboarding/navigation.js";
+import { ONBOARDING_ROUTES } from "../../onboarding/routes.js";
 
 const en = {
   title: "Check your answers",
@@ -33,7 +34,7 @@ const cy = {
 
 export const GET = async (req: Request, res: Response) => {
   if (!isSessionComplete(req.session)) {
-    return res.redirect("/onboarding/start");
+    return res.redirect(ONBOARDING_ROUTES.START);
   }
 
   const sessionData = getAllSessionData(req.session);
@@ -65,14 +66,14 @@ export const GET = async (req: Request, res: Response) => {
 
 export const POST = async (req: Request, res: Response) => {
   if (!isSessionComplete(req.session)) {
-    return res.redirect("/onboarding/start");
+    return res.redirect(ONBOARDING_ROUTES.START);
   }
 
   try {
     await submitOnboarding(req.session);
-    res.redirect("/onboarding/confirmation");
-  } catch (error) {
-    console.error("Error submitting onboarding:", error);
+    res.redirect(ONBOARDING_ROUTES.CONFIRMATION);
+  } catch {
+    // Error is already logged by the monitoring service
     res.status(500).render("errors/500");
   }
 };

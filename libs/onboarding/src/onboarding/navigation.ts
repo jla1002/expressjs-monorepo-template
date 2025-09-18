@@ -1,26 +1,50 @@
 // Navigation helper functions for onboarding flow
+import { ONBOARDING_ROUTES } from "./routes.js";
 
 const PAGE_ORDER = ["start", "name", "date-of-birth", "address", "role", "summary", "confirmation"];
 
 export function getPreviousPage(currentPage: string): string | null {
   const currentIndex = PAGE_ORDER.indexOf(currentPage);
-  return currentIndex > 0 ? `/onboarding/${PAGE_ORDER[currentIndex - 1]}` : null;
+  if (currentIndex <= 0) return null;
+
+  const previousPage = PAGE_ORDER[currentIndex - 1];
+  const routeMap: Record<string, string> = {
+    start: ONBOARDING_ROUTES.START,
+    name: ONBOARDING_ROUTES.NAME,
+    "date-of-birth": ONBOARDING_ROUTES.DATE_OF_BIRTH,
+    address: ONBOARDING_ROUTES.ADDRESS,
+    role: ONBOARDING_ROUTES.ROLE,
+    summary: ONBOARDING_ROUTES.SUMMARY,
+    confirmation: ONBOARDING_ROUTES.CONFIRMATION
+  };
+  return routeMap[previousPage] || null;
 }
 
 export function getNextPage(currentPage: string): string {
   const currentIndex = PAGE_ORDER.indexOf(currentPage);
-  return `/onboarding/${PAGE_ORDER[currentIndex + 1]}`;
+  const nextPage = PAGE_ORDER[currentIndex + 1];
+
+  const routeMap: Record<string, string> = {
+    start: ONBOARDING_ROUTES.START,
+    name: ONBOARDING_ROUTES.NAME,
+    "date-of-birth": ONBOARDING_ROUTES.DATE_OF_BIRTH,
+    address: ONBOARDING_ROUTES.ADDRESS,
+    role: ONBOARDING_ROUTES.ROLE,
+    summary: ONBOARDING_ROUTES.SUMMARY,
+    confirmation: ONBOARDING_ROUTES.CONFIRMATION
+  };
+  return routeMap[nextPage] || ONBOARDING_ROUTES.SUMMARY;
 }
 
 // Get page route for change links on summary page
 export function getChangePageRoute(field: string): string {
   const pageMap: Record<string, string> = {
-    name: "/onboarding/name",
-    dateOfBirth: "/onboarding/date-of-birth",
-    address: "/onboarding/address",
-    role: "/onboarding/role"
+    name: ONBOARDING_ROUTES.NAME,
+    dateOfBirth: ONBOARDING_ROUTES.DATE_OF_BIRTH,
+    address: ONBOARDING_ROUTES.ADDRESS,
+    role: ONBOARDING_ROUTES.ROLE
   };
-  return pageMap[field] || "/onboarding/start";
+  return pageMap[field] || ONBOARDING_ROUTES.START;
 }
 
 // Check if current page has a back link
