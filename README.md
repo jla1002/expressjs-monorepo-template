@@ -168,23 +168,7 @@ cd libs/my-feature
 }
 ```
 
-4. **Create vitest.config.ts**:
-```typescript
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: "node",
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html"]
-    }
-  }
-});
-```
-
-5. **Register module in root tsconfig.json**:
+4. **Register module in root tsconfig.json**:
 ```json
 {
   "compilerOptions": {
@@ -196,7 +180,7 @@ export default defineConfig({
 }
 ```
 
-6. **Module auto-discovery**:
+5. **Module auto-discovery**:
 If your module contains a `pages/` directory, it will be automatically discovered and loaded by the web application.
 
 ## 🧪 Testing Strategy
