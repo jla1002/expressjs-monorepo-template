@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { healthcheck } from "@hmcts/cloud-native-platform";
@@ -45,5 +44,5 @@ export async function createApp(): Promise<Express> {
 export function getRouterConfigs(): MountSpec[] {
   const libRoots = glob.sync(path.join(__dirname, `../../../libs/*/src/routes`));
 
-  return [__dirname + "/routes", ...libRoots].map((path) => ({ path }));
+  return [`${__dirname}/routes`, ...libRoots].map((path) => ({ path }));
 }
