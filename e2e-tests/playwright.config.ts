@@ -7,7 +7,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 4 : undefined,
   reporter: process.env.CI
-    ? [['dot'], ['html', { outputFolder: 'playwright-report' }]]
+    ? [
+        ['dot'],
+        ['github'],
+        ['junit', { outputFile: 'junit-results.xml' }],
+        ['html', { outputFolder: 'playwright-report', open: 'never' }]
+      ]
     : 'list',
   use: {
     baseURL: 'http://localhost:3000',
