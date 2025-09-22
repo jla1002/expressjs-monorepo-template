@@ -10,12 +10,13 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "generate": "prisma generate --no-hints",
-    "migrate": "prisma migrate deploy",
-    "migrate:dev": "prisma migrate dev",
-    "migrate:reset": "prisma migrate reset",
-    "studio": "prisma studio",
+    "build": "yarn collate && tsc",
+    "collate": "tsx src/collate-schema.ts",
+    "generate": "yarn collate && prisma generate --no-hints",
+    "migrate": "yarn collate && prisma migrate deploy",
+    "migrate:dev": "yarn collate && prisma migrate dev",
+    "migrate:reset": "yarn collate && prisma migrate reset",
+    "studio": "yarn collate && prisma studio",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "format": "biome format --write .",
@@ -26,6 +27,7 @@
     "@prisma/client": "6.16.2"
   },
   "devDependencies": {
+    "glob": "11.0.0",
     "prisma": "6.16.2"
   }
 }

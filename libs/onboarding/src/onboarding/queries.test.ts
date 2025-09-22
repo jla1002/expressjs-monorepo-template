@@ -40,13 +40,10 @@ describe("queries", () => {
 
       vi.mocked(prisma.onboardingSubmission.create).mockResolvedValue(mockResult as any);
 
-      const result = await createOnboardingSubmission(mockData, "session-123");
+      const result = await createOnboardingSubmission(mockData);
 
       expect(prisma.onboardingSubmission.create).toHaveBeenCalledWith({
-        data: {
-          ...mockData,
-          sessionId: "session-123"
-        }
+        data: mockData
       });
       expect(result).toEqual(mockResult);
     });

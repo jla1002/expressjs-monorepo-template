@@ -36,7 +36,7 @@ async function discoverAndLoadRoutes(mounts: MountSpec[]): Promise<RouteEntry[]>
 }
 
 async function processMountSpec(mountSpec: MountSpec): Promise<RouteEntry[]> {
-  const dir = process.env.NODE_ENV === "production" ? mountSpec.pagesDir.replace("/src/", "/dist/") : mountSpec.pagesDir;
+  const dir = process.env.NODE_ENV === "production" ? mountSpec.path.replace("/src/", "/dist/") : mountSpec.path;
   const routesDir = resolve(dir);
 
   if (!existsSync(routesDir)) {
@@ -138,8 +138,8 @@ function validateRoutes(routes: RouteEntry[]): void {
         `Route conflict detected:\n` +
           `  ${key}\n` +
           `  Defined in:\n` +
-          `    1. ${existing.sourcePath} (mount: ${existing.mountSpec.pagesDir})\n` +
-          `    2. ${route.sourcePath} (mount: ${route.mountSpec.pagesDir})`
+          `    1. ${existing.sourcePath} (mount: ${existing.mountSpec.path})\n` +
+          `    2. ${route.sourcePath} (mount: ${route.mountSpec.path})`
       );
     }
 
@@ -166,7 +166,7 @@ export type HandlerExport = Handler | Handler[];
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete" | "del" | "head" | "options" | "trace" | "connect" | "all";
 
 export interface MountSpec {
-  pagesDir: string;
+  path: string;
   prefix?: string;
   trailingSlash?: "off" | "enforce" | "redirect";
 }

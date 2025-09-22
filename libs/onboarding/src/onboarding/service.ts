@@ -72,12 +72,8 @@ export function prepareSubmissionData(session: Session): OnboardingSubmission {
 // Submit complete onboarding data
 export async function submitOnboarding(session: Session): Promise<string> {
   const submissionData = prepareSubmissionData(session);
-  const sessionId = session.id;
 
-  const submission = await createOnboardingSubmission(submissionData, sessionId);
-
-  // Store confirmation ID before clearing session
-  setSessionData(session, "confirmationId", submission.id);
+  const submission = await createOnboardingSubmission(submissionData);
 
   return submission.id;
 }
