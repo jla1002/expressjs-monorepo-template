@@ -68,7 +68,7 @@ This specification outlines the infrastructure pipeline implementation for autom
 │                                                                              │
 │  ┌───────────────────────────────────────────────────┐                       │
 │  │    Platform Services (ASO-managed):               │                       │
-│  │    PostgreSQL Flexible Server, KeyVault      │                       │
+│  │    PostgreSQL Flexible Server, KeyVault           │                       │
 │  └───────────────────────────────────────────────────┘                       │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
