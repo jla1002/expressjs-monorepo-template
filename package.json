@@ -14,7 +14,7 @@
     "format": "turbo format",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
-    "lint:fix-changed": "turbo lint:fix --filter='...[HEAD^1]'",
+    "lint:fix:changed": "turbo lint:fix --filter='...[HEAD^1]'",
     "lint:changed": "turbo lint --filter='...[HEAD^1]'",
     "build": "turbo build",
     "build:force": "turbo build --force",
