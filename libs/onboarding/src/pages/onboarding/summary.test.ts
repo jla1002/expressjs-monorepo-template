@@ -5,7 +5,8 @@ import { GET, POST } from "./summary.js";
 // Mock dependencies
 vi.mock("../../onboarding/session.js", () => ({
   getAllSessionData: vi.fn(),
-  isSessionComplete: vi.fn()
+  isSessionComplete: vi.fn(),
+  clearOnboardingSession: vi.fn()
 }));
 
 vi.mock("../../onboarding/service.js", () => ({
@@ -20,7 +21,7 @@ vi.mock("../../onboarding/navigation.js", () => ({
   getChangePageRoute: vi.fn()
 }));
 
-import { getAllSessionData, isSessionComplete } from "../../onboarding/session.js";
+import { getAllSessionData, isSessionComplete, clearOnboardingSession } from "../../onboarding/session.js";
 import { submitOnboarding } from "../../onboarding/service.js";
 import { formatDateForDisplay, formatAddressForDisplay, formatRoleForDisplay, getPreviousPage, getChangePageRoute } from "../../onboarding/navigation.js";
 
@@ -106,7 +107,7 @@ describe("Summary page controller", () => {
 
     it("should submit onboarding and redirect to confirmation on success", async () => {
       (isSessionComplete as any).mockReturnValue(true);
-      (submitOnboarding as any).mockResolvedValue(undefined);
+      (submitOnboarding as any).mockResolvedValue("test-confirmation-id");
 
       const req = mockRequest();
       const res = mockResponse();
@@ -114,7 +115,8 @@ describe("Summary page controller", () => {
       await POST(req, res);
 
       expect(submitOnboarding).toHaveBeenCalledWith(req.session);
-      expect(res.redirect).toHaveBeenCalledWith("/onboarding/confirmation");
+      expect(clearOnboardingSession).toHaveBeenCalledWith(req.session);
+      expect(res.redirect).toHaveBeenCalledWith("/onboarding/confirmation/test-confirmation-id");
     });
 
     it("should handle submission errors", async () => {

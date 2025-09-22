@@ -57,7 +57,7 @@ export async function createApp(): Promise<Express> {
     }
   });
 
-  const routeMounts = modulePaths.map((dir) => ({ pagesDir: `${dir}/pages` }));
+  const routeMounts = modulePaths.map((dir) => ({ path: `${dir}/pages` }));
 
   app.use(await createSimpleRouter(...routeMounts));
   app.use(notFoundHandler());

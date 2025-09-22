@@ -332,8 +332,7 @@ describe("service functions", () => {
           firstName: "John",
           lastName: "Doe",
           roleType: "prosecutor"
-        }),
-        "session-123"
+        })
       );
       expect(result).toBe("submission-456");
     });

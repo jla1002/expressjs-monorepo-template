@@ -2,7 +2,7 @@ import { prisma } from "@hmcts/postgres";
 import type { OnboardingSubmission } from "./validation.js";
 
 // Submit onboarding data to database
-export async function createOnboardingSubmission(data: OnboardingSubmission, sessionId?: string) {
+export async function createOnboardingSubmission(data: OnboardingSubmission) {
   return prisma.onboardingSubmission.create({
     data: {
       firstName: data.firstName,
@@ -13,8 +13,7 @@ export async function createOnboardingSubmission(data: OnboardingSubmission, ses
       town: data.town,
       postcode: data.postcode,
       roleType: data.roleType,
-      roleOther: data.roleOther,
-      sessionId: sessionId
+      roleOther: data.roleOther
     }
   });
 }

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { getAllSessionData, isSessionComplete } from "../../onboarding/session.js";
+import { getAllSessionData, isSessionComplete, clearOnboardingSession } from "../../onboarding/session.js";
 import { submitOnboarding } from "../../onboarding/service.js";
 import { formatDateForDisplay, formatAddressForDisplay, formatRoleForDisplay, getPreviousPage, getChangePageRoute } from "../../onboarding/navigation.js";
 
@@ -69,8 +69,9 @@ export const POST = async (req: Request, res: Response) => {
   }
 
   try {
-    await submitOnboarding(req.session);
-    res.redirect("/onboarding/confirmation");
+    const confirmationId = await submitOnboarding(req.session);
+    clearOnboardingSession(req.session);
+    res.redirect(`/onboarding/confirmation/${confirmationId}`);
   } catch (error) {
     console.error("Error submitting onboarding:", error);
     res.status(500).render("errors/500");

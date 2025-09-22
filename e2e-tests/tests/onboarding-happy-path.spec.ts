@@ -75,8 +75,8 @@ test.describe('Onboarding Form - Happy Path Journey', () => {
     // Submit the form
     await page.getByRole('button', { name: /submit/i }).click();
 
-    // Confirmation page
-    await expect(page).toHaveURL('/onboarding/confirmation');
+    // Confirmation page - should now have confirmation ID in URL
+    await expect(page).toHaveURL(/\/onboarding\/confirmation\/c[a-z0-9]{20,}/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/Onboarding complete/i);
     await expect(page.getByText(/Your reference number/i)).toBeVisible();
 
@@ -89,6 +89,11 @@ test.describe('Onboarding Form - Happy Path Journey', () => {
     expect(panelText).toMatch(/Your reference number/i);
     // Check that there's some kind of ID displayed (CUID format starts with 'c')
     expect(panelText).toMatch(/c[a-z0-9]{20,}/i);
+
+    // Also verify the ID in the URL matches what's displayed
+    const url = page.url();
+    const confirmationIdFromUrl = url.split('/').pop();
+    expect(panelText).toContain(confirmationIdFromUrl);
   });
 
   test('should handle "Other" role selection with text input', async ({ page }) => {

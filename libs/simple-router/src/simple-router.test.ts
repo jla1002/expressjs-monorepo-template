@@ -24,7 +24,7 @@ describe("simple-router", () => {
     });
 
     it("should return an Express router", async () => {
-      const router = await createSimpleRouter({ pagesDir: testDir });
+      const router = await createSimpleRouter({ path: testDir });
 
       expect(router).toBeDefined();
       expect(typeof router).toBe("function");
@@ -38,7 +38,7 @@ export const GET = (req, res) => res.send('Hello World');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const response = await request(app).get("/");
 
@@ -55,7 +55,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const getResponse = await request(app).get("/");
       const postResponse = await request(app).post("/");
@@ -75,7 +75,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "posts", "index.ts"), `export const GET = (req, res) => res.send('Posts');`);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const homeResponse = await request(app).get("/");
       const aboutResponse = await request(app).get("/about");
@@ -92,7 +92,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "posts", "[id]", "index.ts"), `export const GET = (req, res) => res.send('Post: ' + req.params.id);`);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const response = await request(app).get("/posts/123");
 
@@ -103,7 +103,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(testDir, "index.ts"), `export const GET = (req, res) => res.send('Admin Home');`);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir, prefix: "/admin" }));
+      app.use(await createSimpleRouter({ path: testDir, prefix: "/admin" }));
 
       const response = await request(app).get("/admin");
 
@@ -121,7 +121,7 @@ export const PUT = (req, res) => res.send('PUT response');
       writeFileSync(join(adminDir, "index.ts"), `export const GET = (req, res) => res.send('Admin');`);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir }, { pagesDir: adminDir, prefix: "/admin" }));
+      app.use(await createSimpleRouter({ path: pagesDir }, { path: adminDir, prefix: "/admin" }));
 
       const mainResponse = await request(app).get("/");
       const adminResponse = await request(app).get("/admin");
@@ -149,7 +149,7 @@ export const GET = [middleware1, middleware2, handler];
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const response = await request(app).get("/");
 
@@ -164,7 +164,7 @@ export const Post = (req, res) => res.send('mixed case post');
       writeFileSync(join(testDir, "index.ts"), routeContent);
 
       const app = express();
-      app.use(await createSimpleRouter({ pagesDir: testDir }));
+      app.use(await createSimpleRouter({ path: testDir }));
 
       const getResponse = await request(app).get("/");
       const postResponse = await request(app).post("/");
@@ -186,7 +186,7 @@ export const Post = (req, res) => res.send('mixed case post');
 
       for (const { prefix, expected } of variations) {
         const testApp = express();
-        testApp.use(await createSimpleRouter({ pagesDir: testDir, prefix }));
+        testApp.use(await createSimpleRouter({ path: testDir, prefix }));
 
         const path = expected === "/" ? "/" : expected;
         const response = await request(testApp).get(path);

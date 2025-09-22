@@ -154,12 +154,16 @@ libs/my-feature/
 ├── package.json
 ├── tsconfig.json
 └── src/
+    ├── routes/                 # API routes (auto-discovered)
+    │   └── my-api.njk          # API route file (if needed)
     ├── pages/                  # Page routes (auto-discovered)
     │   ├── my-page.ts          # Controller with GET/POST exports
     │   └── my-page.njk         # Nunjucks template
     ├── locales/                # i18n translations (optional)
     │   ├── en.ts               # English translations
     │   └── cy.ts               # Welsh translations
+    ├── prisma/                 # Prisma schema (optional)
+    │   └── schema.prisma       # Prisma schema file
     ├── views/                  # Shared templates (optional)
     │   └── partials/
     └── assets/                 # Module assets (optional)

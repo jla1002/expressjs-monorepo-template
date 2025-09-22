@@ -129,7 +129,6 @@ model OnboardingSubmission {
   roleType     String   @map("role_type")
   roleOther    String?  @map("role_other")
   submittedAt  DateTime @default(now()) @map("submitted_at")
-  sessionId    String?  @map("session_id")
 
   @@index([submittedAt])
   @@map("onboarding_submission")
