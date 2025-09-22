@@ -82,9 +82,8 @@ jobs:
         id: e2e-tests
         run: |
           # Capture all output including server logs
-          yarn workspace e2e-tests run test:e2e 2>&1 | tee e2e-server-logs.txt || TEST_EXIT_CODE=$?
-          echo "test-exit-code=${TEST_EXIT_CODE:-0}" >> $GITHUB_OUTPUT
-          exit ${TEST_EXIT_CODE:-0}
+          set -o pipefail
+          yarn workspace e2e-tests run test:e2e 2>&1 | tee e2e-server-logs.txt
 
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -97,7 +96,7 @@ jobs:
 
       - name: Upload Playwright test results
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always() && steps.e2e-tests.outcome == 'failure'
         with:
           name: playwright-test-results
           path: |
@@ -107,7 +106,7 @@ jobs:
 
       - name: Upload application logs
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always() && steps.e2e-tests.outcome == 'failure'
         with:
           name: application-logs
           path: e2e-server-logs.txt
@@ -115,7 +114,7 @@ jobs:
 
       - name: Comment PR with results
         uses: thollander/actions-comment-pull-request@v2
-        if: github.event_name == 'pull_request' && failure()
+        if: github.event_name == 'pull_request' && always() && steps.e2e-tests.outcome == 'failure'
         with:
           message: |
             ## ❌ E2E Tests Failed
