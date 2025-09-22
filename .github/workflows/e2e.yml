@@ -85,7 +85,9 @@ jobs:
           set -o pipefail
           yarn workspace e2e-tests run test:e2e 2>&1 | tee e2e-server-logs.txt
 
+      # Publish test results to PR checks
       - name: Test Report
+        id: test-report
         uses: dorny/test-reporter@v1
         if: always()
         with:
@@ -94,6 +96,7 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
+      # Upload artifacts on failure for debugging   
       - name: Upload Playwright test results
         uses: actions/upload-artifact@v4
         if: always() && steps.e2e-tests.outcome == 'failure'
@@ -102,8 +105,9 @@ jobs:
           path: |
             e2e-tests/test-results/
             e2e-tests/playwright-report/
-          retention-days: 30
+          retention-days: 7
 
+      # Upload application logs on failure for debugging
       - name: Upload application logs
         uses: actions/upload-artifact@v4
         if: always() && steps.e2e-tests.outcome == 'failure'
@@ -112,17 +116,12 @@ jobs:
           path: e2e-server-logs.txt
           retention-days: 7
 
-      - name: Comment PR with results
-        uses: thollander/actions-comment-pull-request@v2
-        if: github.event_name == 'pull_request' && always() && steps.e2e-tests.outcome == 'failure'
+      # Publish test results as a PR comment
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always() && github.event_name == 'pull_request'
         with:
-          message: |
-            ## ❌ E2E Tests Failed
-
-            The E2E tests have failed. Please check:
-            - **Test Report**: See the "E2E Test Results" check below
-            - **Artifacts**: Download `playwright-test-results` for screenshots/videos
-            - **Application Logs**: Download `application-logs` for server output
-
-            [View Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          comment_tag: e2e-test-results
+          files: e2e-tests/junit-results.xml
+          check_name: E2E Test Results
+          comment_title: 🎭 Playwright E2E Test Results
+          fail_on: nothing
