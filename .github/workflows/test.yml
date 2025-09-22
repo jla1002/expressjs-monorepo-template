@@ -158,7 +158,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Generate Prisma client
-        run: yarn workspace @hmcts/postgres run generate
+        run: yarn db:generate
 
       - name: Restore Playwright browsers cache
         uses: actions/cache/restore@v4
