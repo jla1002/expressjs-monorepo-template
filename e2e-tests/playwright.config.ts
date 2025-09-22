@@ -6,12 +6,15 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 4 : undefined,
-  reporter: process.env.CI ? 'dot' : 'list',
+  reporter: process.env.CI
+    ? [['dot'], ['html', { outputFolder: 'playwright-report' }]]
+    : 'list',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     headless: true,
     screenshot: "only-on-failure",
+    video: process.env.CI ? 'retain-on-failure' : 'off',
   },
   projects: [
     {
@@ -25,5 +28,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     cwd: '..',
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });

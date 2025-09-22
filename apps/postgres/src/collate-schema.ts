@@ -5,12 +5,19 @@ import { globSync } from "glob";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function collateSchemas() {
+export async function collateSchemas(
+  deps = {
+    readFile: fs.readFile,
+    writeFile: fs.writeFile,
+    mkdir: fs.mkdir,
+    globSync
+  }
+) {
   const baseSchemaPath = path.join(__dirname, "../prisma/schema.prisma");
-  const baseSchema = await fs.readFile(baseSchemaPath, "utf-8");
+  const baseSchema = await deps.readFile(baseSchemaPath, "utf-8");
 
   const libsDir = path.join(__dirname, "../../../libs");
-  const schemaPaths = globSync("*/prisma/*.prisma", {
+  const schemaPaths = deps.globSync("*/prisma/*.prisma", {
     cwd: libsDir,
     absolute: true
   });
@@ -20,7 +27,7 @@ async function collateSchemas() {
   const definedEnums = new Set<string>();
 
   for (const schemaPath of schemaPaths) {
-    const schemaContent = await fs.readFile(schemaPath, "utf-8");
+    const schemaContent = await deps.readFile(schemaPath, "utf-8");
 
     // Extract models
     const modelDefinitions = schemaContent.match(/^model\s+\w+\s*{[\s\S]*?^}/gm);
@@ -48,8 +55,8 @@ async function collateSchemas() {
   }
 
   const distDir = path.join(__dirname, "../dist");
-  await fs.mkdir(distDir, { recursive: true });
-  await fs.writeFile(path.join(distDir, "schema.prisma"), combinedSchema);
+  await deps.mkdir(distDir, { recursive: true });
+  await deps.writeFile(path.join(distDir, "schema.prisma"), combinedSchema);
 
   console.log(`✅ Prisma schema collated successfully!`);
   console.log(`📊 Total: ${definedModels.size} models, ${definedEnums.size} enums`);
