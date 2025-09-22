@@ -31,25 +31,21 @@ export async function collateSchemas(
 
     // Extract models
     const modelDefinitions = schemaContent.match(/^model\s+\w+\s*{[\s\S]*?^}/gm);
-    if (modelDefinitions) {
-      for (const model of modelDefinitions) {
-        const modelNameMatch = model.match(/^model\s+(\w+)/);
-        if (modelNameMatch && !definedModels.has(modelNameMatch[1])) {
-          combinedSchema += `\n${model}`;
-          definedModels.add(modelNameMatch[1]);
-        }
+    for (const model of modelDefinitions || []) {
+      const modelNameMatch = model.match(/^model\s+(\w+)/);
+      if (modelNameMatch && !definedModels.has(modelNameMatch[1])) {
+        combinedSchema += `\n${model}`;
+        definedModels.add(modelNameMatch[1]);
       }
     }
 
     // Extract enums
     const enumDefinitions = schemaContent.match(/^enum\s+\w+\s*{[\s\S]*?^}/gm);
-    if (enumDefinitions) {
-      for (const enumDef of enumDefinitions) {
-        const enumNameMatch = enumDef.match(/^enum\s+(\w+)/);
-        if (enumNameMatch && !definedEnums.has(enumNameMatch[1])) {
-          combinedSchema += `\n${enumDef}`;
-          definedEnums.add(enumNameMatch[1]);
-        }
+    for (const enumDef of enumDefinitions || []) {
+      const enumNameMatch = enumDef.match(/^enum\s+(\w+)/);
+      if (enumNameMatch && !definedEnums.has(enumNameMatch[1])) {
+        combinedSchema += `\n${enumDef}`;
+        definedEnums.add(enumNameMatch[1]);
       }
     }
   }
