@@ -92,7 +92,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Generate Prisma client
-        run: yarn workspace @hmcts/postgres run generate
+        run: yarn db:generate
 
       - name: Setup Turbo cache
         uses: actions/cache@v4
