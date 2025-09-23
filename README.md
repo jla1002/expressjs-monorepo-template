@@ -54,9 +54,12 @@ expressjs-monorepo-template/
 │   ├── cloud-native-platform/  # Cloud Native Platform features
 │   ├── express-gov-uk-starter/ # GOV.UK Frontend integration
 │   ├── simple-router/          # Simple Router features
+│   ├── footer-pages/           # Module with example footer pages
 │   └── [your-module]/          # Your feature modules
 │       └── src/
 │           ├── pages/          # Page routes (auto-registered)
+│           ├── routes/         # API routes (auto-registered)
+│           ├── prisma/         # Prisma schema
 │           ├── locales/        # Translations (auto-loaded)
 │           └── assets/         # Module assets (auto-compiled)
 ├── e2e-tests/                  # End-to-end tests (Playwright)
@@ -97,29 +100,22 @@ yarn dev
 ```bash
 # Development
 yarn dev                        # Start all services concurrently
-yarn start:web                  # Start web application only
-yarn start:api                  # Start API server only
 
 # Testing
 yarn test                       # Run all tests across workspaces
-yarn test:unit                  # Unit tests only
 yarn test:e2e                   # Playwright E2E tests
-yarn test:a11y                  # Accessibility tests with axe-core
 yarn test:coverage              # Generate coverage report
 
 # Code Quality
-yarn lint                       # Run Biome linter
+yarn lint:fix                    # Run Biome linter
 yarn format                     # Format code with Biome
 
 # Database Operations
-yarn workspace @hmcts/postgres run generate    # Generate Prisma client
-yarn workspace @hmcts/postgres run migrate     # Run database migrations
-yarn workspace @hmcts/postgres run studio      # Open Prisma Studio GUI
-
-# Build & Deployment
-yarn build                      # Build all packages
-yarn docker:build               # Build Docker images
-yarn helm:lint                  # Validate Helm charts
+yarn db:migrate                 # Apply migrations  
+yarn db:migrate:dev             # Auto apply migrations, add new migrations if necessary
+yarn db:generate                # Generate the Prisma client
+yarn db:studio                  # Open Prisma Studio
+yarn db:drop                    # Drop all tables and reset the database
 ```
 
 ### Creating a New Feature Module
