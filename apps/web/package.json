@@ -32,7 +32,7 @@
     "express": "5.1.0",
     "express-session": "1.18.2",
     "glob": "11.0.3",
-    "govuk-frontend": "5.11.2",
+    "govuk-frontend": "5.12.0",
     "helmet": "8.1.0",
     "nunjucks": "3.2.4",
     "redis": "5.8.2"
@@ -48,7 +48,7 @@
     "@types/supertest": "6.0.3",
     "concurrently": "9.2.1",
     "nodemon": "3.1.10",
-    "sass": "1.93.0",
+    "sass": "1.93.1",
     "supertest": "7.1.4",
     "vite": "7.1.7",
     "vite-plugin-static-copy": "3.1.2"
