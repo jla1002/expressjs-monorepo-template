@@ -153,6 +153,8 @@ mkdir -p libs/my-feature/src/assets/js  # Module scripts (optional)
 libs/my-feature/
 ├── package.json
 ├── tsconfig.json
+├── prisma/                     # Prisma schema (optional)
+│   └── schema.prisma           # Prisma schema file
 └── src/
     ├── routes/                 # API routes (auto-discovered)
     │   └── my-api.njk          # API route file (if needed)
@@ -162,8 +164,6 @@ libs/my-feature/
     ├── locales/                # i18n translations (optional)
     │   ├── en.ts               # English translations
     │   └── cy.ts               # Welsh translations
-    ├── prisma/                 # Prisma schema (optional)
-    │   └── schema.prisma       # Prisma schema file
     ├── views/                  # Shared templates (optional)
     │   └── partials/
     └── assets/                 # Module assets (optional)

@@ -118,11 +118,11 @@ libs/
 └── [feature]/
     ├── package.json           # Module metadata and scripts
     ├── tsconfig.json          # TypeScript configuration
+    ├── prisma/                # Prisma schema (optional)
     └── src/
-        ├── routes/             # API route handlers (auto-discovered)
+        ├── routes/            # API route handlers (auto-discovered)
         ├── pages/             # Page route handlers & templates (auto-discovered)
         ├── locales/           # i18n translations (auto-loaded)
-        ├── prisma/            # Prisma schema (optional)
         ├── views/             # Shared templates (auto-registered)
         ├── assets/            # Module-specific frontend assets
         │   ├── css/           # SCSS/CSS files
