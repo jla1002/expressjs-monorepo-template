@@ -3,32 +3,24 @@
 ## Core Development Commands
 
 ```bash
-# Install dependencies (run from root)
-yarn install
-
-# Start development environment
-yarn dev             # Start all services concurrently
-yarn start:db        # Start PostgreSQL in Docker
-yarn start:api       # Start API server on port 3001
-yarn start:web       # Start web frontend on port 3000
+# Development
+yarn dev                        # Start all services concurrently
 
 # Testing
-yarn test            # Run unit tests across workspaces
-yarn test:e2e        # Playwright E2E tests
+yarn test                       # Run all tests across workspaces
+yarn test:e2e                   # Playwright E2E tests
+yarn test:coverage              # Generate coverage report
 
-# Code quality
-yarn lint            # Run Biome linter
-yarn format          # Format code with Biome
-yarn test:coverage   # Run tests with coverage report
+# Code Quality
+yarn lint:fix                    # Run Biome linter
+yarn format                     # Format code with Biome
 
-# Database operations
-yarn workspace @hmcts/postgres run generate    # Generate Prisma client
-yarn workspace @hmcts/postgres run migrate     # Run migrations
-yarn workspace @hmcts/postgres run studio      # Open Prisma Studio
-
-# Build and deployment
-yarn build           # Build all packages
-yarn docker:build    # Build Docker images
+# Database Operations
+yarn db:migrate                 # Apply migrations  
+yarn db:migrate:dev             # Auto apply migrations, add new migrations if necessary
+yarn db:generate                # Generate the Prisma client
+yarn db:studio                  # Open Prisma Studio
+yarn db:drop                    # Drop all tables and reset the database
 ```
 
 ## Naming Conventions (STRICT - MUST FOLLOW)
@@ -155,7 +147,7 @@ libs/my-feature/
 ├── tsconfig.json
 └── src/
     ├── routes/                 # API routes (auto-discovered)
-    │   └── my-api.njk          # API route file (if needed)
+    │   └── my-api.ts          # API route file (if needed)
     ├── pages/                  # Page routes (auto-discovered)
     │   ├── my-page.ts          # Controller with GET/POST exports
     │   └── my-page.njk         # Nunjucks template
@@ -266,7 +258,7 @@ Every page must support both English and Welsh:
 
 1. **In Controllers**: Provide both `en` and `cy` objects with page content
 2. **In Templates**: Use the current language data automatically selected by the i18n middleware
-3. **In Locale Files**: Maintain parallel structure between en.ts and cy.ts
+3. **In Locale Files**: Maintain the same structure between en.ts and cy.ts
 4. **Testing**: Always test pages with `?lng=cy` query parameter to verify Welsh content
 
 
@@ -331,7 +323,6 @@ describe('UserService', () => {
   - **Enforcement**: TypeScript will error on missing `.js` extensions with:
     - `"module": "nodenext"` and `"moduleResolution": "nodenext"` in tsconfig.json
     - Error: "Relative import paths need explicit file extensions in ECMAScript imports"
-- **Formatting**: Biome with 160 character line width
 - **Linting**: Fix all Biome warnings before commit
 - **No CommonJS**: Use `import`/`export`, never `require()`/`module.exports`
 - **Pinned dependencies**: Specific versions only (`"express": "5.1.0"`) - except peer dependencies
