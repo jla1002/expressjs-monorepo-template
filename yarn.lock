@@ -743,7 +743,7 @@ __metadata:
     nodemon: "npm:3.1.10"
     nunjucks: "npm:3.2.4"
     redis: "npm:5.8.2"
-    sass: "npm:1.93.1"
+    sass: "npm:1.93.2"
     supertest: "npm:7.1.4"
     vite: "npm:7.1.7"
     vite-plugin-static-copy: "npm:3.1.2"
@@ -1155,14 +1155,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.55.0":
-  version: 1.55.0
-  resolution: "@playwright/test@npm:1.55.0"
+"@playwright/test@npm:1.55.1":
+  version: 1.55.1
+  resolution: "@playwright/test@npm:1.55.1"
   dependencies:
-    playwright: "npm:1.55.0"
+    playwright: "npm:1.55.1"
   bin:
     playwright: cli.js
-  checksum: 10c0/e68b59cd8271f1b57c0649fc0562ab2d5f6bba8c3653dd7bd52ca1338dc380fde34588d0254e3cd3f0f2b20af04a80dfb080419ceb7475990bb2fc4d8c474984
+  checksum: 10c0/23fa213844bc594b03c0a907ef69da7e26a6c3295ee602b1567d26a473d30253468b832698779b02a304b71ae14aa0875645c526678227cc0675324dbf77e118
   languageName: node
   linkType: hard
 
@@ -2636,7 +2636,7 @@ __metadata:
   resolution: "e2e-tests@workspace:e2e-tests"
   dependencies:
     "@axe-core/playwright": "npm:4.10.2"
-    "@playwright/test": "npm:1.55.0"
+    "@playwright/test": "npm:1.55.1"
   languageName: unknown
   linkType: soft
 
@@ -2971,7 +2971,7 @@ __metadata:
     concurrently: "npm:9.2.1"
     supertest: "npm:7.1.4"
     tsx: "npm:4.20.5"
-    turbo: "npm:2.5.6"
+    turbo: "npm:2.5.7"
     typescript: "npm:5.9.2"
     vitest: "npm:3.2.4"
   languageName: unknown
@@ -4415,27 +4415,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.55.0":
-  version: 1.55.0
-  resolution: "playwright-core@npm:1.55.0"
+"playwright-core@npm:1.55.1":
+  version: 1.55.1
+  resolution: "playwright-core@npm:1.55.1"
   bin:
     playwright-core: cli.js
-  checksum: 10c0/c39d6aa30e7a4e73965942ca5e13405ae05c9cb49f755a35f04248c864c0b24cf662d9767f1797b3ec48d1cf4e54774dce4a19c16534bd5cfd2aa3da81c9dc3a
+  checksum: 10c0/39837a8c1232ec27486eac8c3fcacc0b090acc64310f7f9004b06715370fc426f944e3610fe8c29f17cd3d68280ed72c75f660c02aa5b5cf0eb34bab0031308f
   languageName: node
   linkType: hard
 
-"playwright@npm:1.55.0":
-  version: 1.55.0
-  resolution: "playwright@npm:1.55.0"
+"playwright@npm:1.55.1":
+  version: 1.55.1
+  resolution: "playwright@npm:1.55.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.55.0"
+    playwright-core: "npm:1.55.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10c0/51605b7e57a5650e57972c5fdfc09d7a9934cca1cbee5beacca716fa801e25cb5bb7c1663de90c22b300fde884e5545a2b13a0505a93270b660687791c478304
+  checksum: 10c0/b84a97b0d764403df512f5bbb10c7343974e151a28202cc06f90883a13e8a45f4491a0597f0ae5fb03a026746cbc0d200f0f32195bfaa381aee5ca5770626771
   languageName: node
   linkType: hard
 
@@ -4788,9 +4788,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:1.93.1":
-  version: 1.93.1
-  resolution: "sass@npm:1.93.1"
+"sass@npm:1.93.2":
+  version: 1.93.2
+  resolution: "sass@npm:1.93.2"
   dependencies:
     "@parcel/watcher": "npm:^2.4.1"
     chokidar: "npm:^4.0.0"
@@ -4801,7 +4801,7 @@ __metadata:
       optional: true
   bin:
     sass: sass.js
-  checksum: 10c0/65b3d001612a3099b6097d70340b9e8524a1213aa0d9b6c0c5ff07a01224946eef144ba2d2bdb9449761950fa395b99034824d7c3bf60b705a377a54cc661703
+  checksum: 10c0/5a19f12dbe8c142e40c1e0473d1e624898242b1c21010301e169b528be8c580df6356329c798522b525eb11eda4b04b9b77422badc55c47889600f8477201d2b
   languageName: node
   linkType: hard
 
@@ -5320,58 +5320,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-darwin-64@npm:2.5.6"
+"turbo-darwin-64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-darwin-64@npm:2.5.7"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-darwin-arm64@npm:2.5.6"
+"turbo-darwin-arm64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-darwin-arm64@npm:2.5.7"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-linux-64@npm:2.5.6"
+"turbo-linux-64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-linux-64@npm:2.5.7"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-linux-arm64@npm:2.5.6"
+"turbo-linux-arm64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-linux-arm64@npm:2.5.7"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-windows-64@npm:2.5.6"
+"turbo-windows-64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-windows-64@npm:2.5.7"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo-windows-arm64@npm:2.5.6"
+"turbo-windows-arm64@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo-windows-arm64@npm:2.5.7"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:2.5.6":
-  version: 2.5.6
-  resolution: "turbo@npm:2.5.6"
+"turbo@npm:2.5.7":
+  version: 2.5.7
+  resolution: "turbo@npm:2.5.7"
   dependencies:
-    turbo-darwin-64: "npm:2.5.6"
-    turbo-darwin-arm64: "npm:2.5.6"
-    turbo-linux-64: "npm:2.5.6"
-    turbo-linux-arm64: "npm:2.5.6"
-    turbo-windows-64: "npm:2.5.6"
-    turbo-windows-arm64: "npm:2.5.6"
+    turbo-darwin-64: "npm:2.5.7"
+    turbo-darwin-arm64: "npm:2.5.7"
+    turbo-linux-64: "npm:2.5.7"
+    turbo-linux-arm64: "npm:2.5.7"
+    turbo-windows-64: "npm:2.5.7"
+    turbo-windows-arm64: "npm:2.5.7"
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -5387,7 +5387,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10c0/b9657bf211bbcfe3911496e4fee6c9a24526bc37e9cadf7f0c76d0376e9c9dfafaacec27f5a61bb621dfe330600ce68c1b21e4cdc19bdccd3ebfe66766fcf62f
+  checksum: 10c0/2dca7038ae55decb95edf74b65c0e7527af0aa7194566dfa7a0186036ccc80a010c18badab98a1ec7211615e584b70821ac1d8479699a21f85cc88db768b93e1
   languageName: node
   linkType: hard
 
