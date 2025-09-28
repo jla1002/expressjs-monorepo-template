@@ -1,22 +1,24 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createBaseViteConfig } from "@hmcts/express-govuk-starter/src/assets/vite-config.js";
+import { assets as footerPagesAssets } from "@hmcts/footer-pages";
+import { assets as onboardingAssets } from "@hmcts/onboarding";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { assets as onboardingAssets } from "@hmcts/onboarding";
-import { assets as footerPagesAssets } from "@hmcts/footer-pages";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const baseConfig = createBaseViteConfig([
-  path.join(__dirname, "src", "assets"), 
-  onboardingAssets,
-  footerPagesAssets
-]);
+const baseConfig = createBaseViteConfig([path.join(__dirname, "src", "assets"), onboardingAssets, footerPagesAssets]);
 
 export default defineConfig(
   mergeConfig(baseConfig, {
+    resolve: {
+      extensionAlias: {
+        ".js": [".ts", ".js"],
+        ".jsx": [".tsx", ".jsx"]
+      }
+    },
     plugins: [
       viteStaticCopy({
         targets: [

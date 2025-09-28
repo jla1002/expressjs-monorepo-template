@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { healthcheck } from "@hmcts/cloud-native-platform";
 import { apiRoutes as onboardingRoutes } from "@hmcts/onboarding";
-import { createSimpleRouter, type MountSpec } from "@hmcts/simple-router";
+import { createSimpleRouter } from "@hmcts/simple-router";
 import compression from "compression";
 import cors from "cors";
 import type { Express } from "express";
