@@ -13,12 +13,6 @@ const baseConfig = createBaseViteConfig([path.join(__dirname, "src", "assets"), 
 
 export default defineConfig(
   mergeConfig(baseConfig, {
-    resolve: {
-      extensionAlias: {
-        ".js": [".ts", ".js"],
-        ".jsx": [".tsx", ".jsx"]
-      }
-    },
     plugins: [
       viteStaticCopy({
         targets: [
