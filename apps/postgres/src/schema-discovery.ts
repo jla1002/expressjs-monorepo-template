@@ -1,4 +1,3 @@
-
 // Schema discovery functionality for module integration
 import { prismaSchemas as onboardingSchemas } from "@hmcts/onboarding";
 
