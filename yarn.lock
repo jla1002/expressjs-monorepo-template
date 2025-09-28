@@ -596,6 +596,7 @@ __metadata:
   resolution: "@hmcts/api@workspace:apps/api"
   dependencies:
     "@hmcts/cloud-native-platform": "workspace:*"
+    "@hmcts/onboarding": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@hmcts/simple-router": "workspace:*"
     "@types/compression": "npm:1.8.1"
@@ -682,7 +683,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/onboarding@workspace:libs/onboarding":
+"@hmcts/onboarding@workspace:*, @hmcts/onboarding@workspace:libs/onboarding":
   version: 0.0.0-use.local
   resolution: "@hmcts/onboarding@workspace:libs/onboarding"
   dependencies:
@@ -696,6 +697,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hmcts/postgres@workspace:apps/postgres"
   dependencies:
+    "@hmcts/onboarding": "workspace:*"
     "@prisma/client": "npm:6.16.2"
     glob: "npm:11.0.3"
     prisma: "npm:6.16.2"
@@ -720,6 +722,7 @@ __metadata:
     "@hmcts/cookie-manager": "npm:1.1.0"
     "@hmcts/express-govuk-starter": "workspace:*"
     "@hmcts/footer-pages": "workspace:*"
+    "@hmcts/onboarding": "workspace:*"
     "@hmcts/postgres": "workspace:*"
     "@hmcts/simple-router": "workspace:*"
     "@types/compression": "npm:1.8.1"

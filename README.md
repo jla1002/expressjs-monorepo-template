@@ -50,18 +50,18 @@ expressjs-monorepo-template/
 │   ├── api/                    # REST API server (Express 5.x)
 │   ├── web/                    # Web frontend (Express 5.x + Nunjucks)
 │   └── postgres/               # Database configuration (Prisma)
-├── libs/                       # Modular packages (auto-discovered)
+├── libs/                       # Modular packages (explicitly registered)
 │   ├── cloud-native-platform/  # Cloud Native Platform features
 │   ├── express-gov-uk-starter/ # GOV.UK Frontend integration
 │   ├── simple-router/          # Simple Router features
 │   ├── footer-pages/           # Module with example footer pages
 │   └── [your-module]/          # Your feature modules
 │       └── src/
-│           ├── pages/          # Page routes (auto-registered)
-│           ├── routes/         # API routes (auto-registered)
+│           ├── pages/          # Page routes (imported in web app)
+│           ├── routes/         # API routes (imported in API app)
 │           ├── prisma/         # Prisma schema
-│           ├── locales/        # Translations (auto-loaded)
-│           └── assets/         # Module assets (auto-compiled)
+│           ├── locales/        # Translations (loaded by govuk-starter)
+│           └── assets/         # Module assets (compiled by vite)
 ├── e2e-tests/                  # End-to-end tests (Playwright)
 ├── docs/                       # Documentation and ADRs
 └── package.json                # Root configuration
@@ -176,8 +176,29 @@ cd libs/my-feature
 }
 ```
 
-5. **Module auto-discovery**:
-If your module contains a `pages/` directory, it will be automatically discovered and loaded by the web application.
+5. **Create src/index.ts with module exports**:
+```typescript
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Business logic exports
+export * from "./my-feature/service.js";
+
+// Module configuration for app registration
+export const pageRoutes = { path: path.join(__dirname, "pages") };
+export const apiRoutes = { path: path.join(__dirname, "routes") };
+export const prismaSchemas = path.join(__dirname, "../prisma");
+export const assets = path.join(__dirname, "assets/");
+```
+
+6. **Register module in applications**:
+   - **For web app** (if module has pages): Add import and route to `apps/web/src/app.ts`
+   - **For API app** (if module has routes): Add import and route to `apps/api/src/app.ts`
+   - **For database schemas** (if module has prisma): Add import to `apps/postgres/src/index.ts`
+   - **Add dependency** to relevant app package.json files: `"@hmcts/my-feature": "workspace:*"`
 
 ## 🧪 Testing Strategy
 
@@ -190,10 +211,8 @@ If your module contains a `pages/` directory, it will be automatically discovere
 
 ```bash
 # Run specific test suites
-yarn test                    # All tests
-yarn test:unit              # Unit tests only
+yarn test                   # Unit tests
 yarn test:e2e               # E2E tests
-yarn test:a11y              # Accessibility tests
 yarn test:coverage          # Coverage report
 ```
 
