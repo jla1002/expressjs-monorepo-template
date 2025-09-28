@@ -38,7 +38,7 @@ export async function createApp(): Promise<Express> {
   app.use(configureHelmet());
   app.use(expressSessionRedis({ redisConnection: await getRedisClient() }));
 
-  const modulePaths = [__dirname, onboardingPages.path, footerPages.path];
+  const modulePaths = [__dirname, onboardingPages.path + "/../", footerPages.path + "/../"];
 
   await configureGovuk(app, modulePaths, {
     nunjucksGlobals: {
