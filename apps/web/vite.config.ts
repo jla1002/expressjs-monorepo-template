@@ -1,10 +1,19 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createBaseViteConfig } from "@hmcts/express-govuk-starter/src/assets/vite-config.js";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { getModulePaths } from "./src/modules.js";
+import { assets as onboardingAssets } from "@hmcts/onboarding";
+import { assets as footerPagesAssets } from "@hmcts/footer-pages";
 
-const modulePaths = getModulePaths();
-const baseConfig = createBaseViteConfig(modulePaths);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const baseConfig = createBaseViteConfig([
+  path.join(__dirname, "src", "assets"), 
+  onboardingAssets,
+  footerPagesAssets
+]);
 
 export default defineConfig(
   mergeConfig(baseConfig, {
