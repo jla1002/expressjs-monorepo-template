@@ -81,12 +81,12 @@ PROMPT FOR AGENT:
 3. Error handling implementation
 4. RESTful API endpoints if the user story requires them
 5. Database schema if the user story requires it
-6. If there are any ambiguities, ask the user for clarification
+6. Flag any ambiguities in a 'CLARIFICATIONS NEEDED' section at the end
 IMPORTANT: Only focus on issues related to this ticket, do not try to solve cross-cutting concerns."
 
 VERIFY: Implementation details in specification
 ```
-*Mark "Add technical implementation details" as completed*
+*Mark "Add technical specification" as completed*
 
 *Mark "Review infrastructure requirements" as in_progress*
 
@@ -149,9 +149,28 @@ Review TodoWrite list - all items should be marked completed.
 If any items remain incomplete, identify and complete them.
 ```
 
-### Step 4: Clarifying Questions
+## PHASE 4: Final Review and Clarifications
 
-Consolidate all clarifying questions from the sub-agents and relay to the user.
+### Step 4.1: Consolidate Questions
+```
+ACTION: Review all agent outputs for clarifying questions
+1. Check specification.md for any questions or ambiguities noted
+2. Check infrastructure assessment for any blockers
+3. If questions exist:
+   - Consolidate into a single list
+   - Present to user with context
+   - Wait for user response before proceeding
+4. If no questions:
+   - Proceed to completion
+```
 
 ## Success Output
-"Task $ARGUMENT setup complete. Documentation created at docs/tickets/$ARGUMENT/"
+"Task $ARGUMENT planning phase complete:
+- ✅ JIRA ticket retrieved and documented
+- ✅ Git branch created: feature/$ARGUMENT-[name]
+- ✅ Technical specification created
+- ✅ Infrastructure requirements assessed
+- ✅ Task assignments documented
+
+Documentation created at: docs/tickets/$ARGUMENT/
+Next step: Run /wf-implement $ARGUMENT to begin implementation"

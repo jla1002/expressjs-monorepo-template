@@ -1,5 +1,5 @@
 ---
-description: Implement a JIRA ticket with parallel engineering, testing, and infrastructure work
+description: Review implementation of a JIRA ticket with code review and quality checks
 argument-hint: <ticket-id>
 allowed-tools:
   - Task
@@ -14,7 +14,7 @@ allowed-tools:
   - Grep
 ---
 
-# Implement Task: $ARGUMENT
+# Review Task: $ARGUMENT
 
 ## Initialize TodoWrite Progress Tracking
 Use TodoWrite to create this checklist:
@@ -22,7 +22,7 @@ Use TodoWrite to create this checklist:
 - [ ] Retrieve $ARGUMENT specifications in /docs/tickets/$ARGUMENT/
 - [ ] Perform code review
 - [ ] Run code quality checks (lint, unit test, e2e tests)
-- [ ] Final REVIEW
+- [ ] Final verification
 ```
 
 ## PHASE 1: Setup and Preparation
@@ -30,9 +30,8 @@ Use TodoWrite to create this checklist:
 
 ### Step 1.1: Documentation Loading
 ```
-AGENT: code-reviewer
 ACTION: Read specification
-READ: docs/tickets/$ARGUMENT/user-story.md
+READ: docs/tickets/$ARGUMENT/ticket.md
 READ: docs/tickets/$ARGUMENT/specification.md
 READ: docs/tickets/$ARGUMENT/tasks.md
 VERIFY: All documentation available
@@ -86,7 +85,7 @@ IF tests fail:
 ```
 *Mark "Run code quality checks (lint, unit test, e2e tests)" as completed*
 
-## PHASE 6: Final Verification
+## PHASE 3: Final Verification
 *Mark "Final verification" as in_progress*
 
 ### Step 6.1: Final Checks
@@ -119,13 +118,12 @@ FINAL VALIDATION:
 ```
 
 ## Success Output
-"Implementation of $ARGUMENT complete:
+"Review of $ARGUMENT complete:
 - ✅ All engineering tasks implemented
 - ✅ Code review completed
 - ✅ Lint checks passing
 - ✅ Unit tests passing
 - ✅ E2E tests passing
 
-The code review agent recommends the following improvements:
-$REVIEW_SUMMARY
+Review completed. Check docs/tickets/$ARGUMENT/review.md for detailed feedback and recommendations.
 "

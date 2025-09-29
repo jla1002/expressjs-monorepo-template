@@ -21,7 +21,8 @@ Use TodoWrite to create this checklist:
 ```
 - [ ] Retrieve $ARGUMENT specifications in /docs/tickets/$ARGUMENT/
 - [ ] Execute parallel implementation (engineering, testing, infrastructure)
-- [ ] Complete implementation of tests
+- [ ] Complete implementation of tests and run tests
+- [ ] Final verification
 ```
 
 ## PHASE 1: Setup and Preparation
@@ -77,7 +78,7 @@ PROMPT FOR AGENT:
 4. If the ticket involves a user journey, create E2E tests for the happy path using Playwright in e2e-tests/
 5. Include accessibility tests using axe-core in the happy path tests (not separate tests)
 6. BEFORE FINISHING: Verify all your tasks in docs/tickets/$ARGUMENT/tasks.md are marked as [x]
-IMPORTANT: Do not run yarn test:e2e until the full-stack-engineer has completed their work - the orchestrator will handle this"
+IMPORTANT: Create the E2E tests but do not run them yet - they will be run in the final testing phase"
 ```
 
 #### Infrastructure Implementation Agent
@@ -106,9 +107,9 @@ WAIT FOR ALL AGENTS TO COMPLETE
 VERIFY: All three agents have finished their tasks
 
 ### Step 2.2: Code Review and Quality Checks
-*Mark "Complete implementation of tests" as in_progress*
+*Mark "Complete implementation of tests and run tests" as in_progress*
 
-#### Full Stack Engineer Agent 
+#### Full Stack Engineer Final Checks 
 ```
 AGENT: full-stack-engineer
 TASK: Ensure unit tests are passing and the app is booting
@@ -116,12 +117,12 @@ TASK: Ensure unit tests are passing and the app is booting
 PROMPT FOR AGENT:
 "Finalize your implementation for ticket $ARGUMENT:
 1. Ensure all unit tests pass
-2. Ensure the application boots without errors
+2. Ensure the application boots with `yarn dev` without errors
 3. Address any issues found during testing
 4. Update docs/tickets/$ARGUMENT/tasks.md to reflect your review status
 ```
 
-#### Test Engineer Agent 
+#### Test Engineer Final Checks 
 
 ```
 AGENT: test-engineer
@@ -143,8 +144,9 @@ EXECUTE FINAL VERIFICATION:
 - All tasks from docs/tickets/$ARGUMENT/tasks.md completed
 - All blocking review issues resolved
 ```
-*Mark "Final verification" as completed*
- 
+*Mark "Complete implementation of tests and run tests" as completed*
+*Mark "Final verification" as in_progress*
+
 ## COMPLETION CHECK
 ```
 ACTION: Final validation of task tracking
@@ -171,3 +173,6 @@ FINAL VALIDATION:
 - ✅ All engineering tasks implemented
 - ✅ All tests written and passing
 - ✅ Infrastructure updated (if needed)
+- ✅ Task tracking updated in docs/tickets/$ARGUMENT/tasks.md
+
+Next step: Run /wf-review $ARGUMENT to perform code review and final validation"
