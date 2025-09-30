@@ -49,7 +49,8 @@ echo ""
 echo "📝 Configuration:"
 echo "  Team (rpe): $TEAM_NAME_LOWER"
 echo "  Team (RPE): $TEAM_NAME_INPUT"
-echo "  Product: $PRODUCT_NAME_LOWER"
+echo "  Product (lowercase): $PRODUCT_NAME_LOWER"
+echo "  Product (original): $PRODUCT_NAME_INPUT"
 echo "  Full name: ${TEAM_NAME_LOWER}-${PRODUCT_NAME_LOWER}"
 echo ""
 read -p "Continue with these values? (y/n): " CONFIRM
@@ -84,16 +85,16 @@ echo "Replacing expressjs-monorepo-template..."
 replace_in_files "expressjs-monorepo-template" "${TEAM_NAME_LOWER}-${PRODUCT_NAME_LOWER}"
 
 echo "Replacing ExpressJS Monorepo Template..."
-replace_in_files "ExpressJS Monorepo Template" "$PRODUCT_NAME_LOWER"
+replace_in_files "ExpressJS Monorepo Template" "$PRODUCT_NAME_INPUT"
 
 echo "Replacing expressjs-monorepo..."
 replace_in_files "expressjs-monorepo" "$PRODUCT_NAME_LOWER"
 
 echo "Replacing RPE..."
-replace_in_files "RPE" "$TEAM_NAME_INPUT"
+replace_in_files "\\bRPE\\b" "$TEAM_NAME_INPUT"
 
 echo "Replacing rpe..."
-replace_in_files "rpe" "$TEAM_NAME_LOWER"
+replace_in_files "\\brpe\\b" "$TEAM_NAME_LOWER"
 
 echo ""
 echo "📦 Rebuilding lockfile..."
