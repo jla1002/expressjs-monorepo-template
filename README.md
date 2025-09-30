@@ -6,6 +6,36 @@ Production-ready Node.js starter with cloud-native capabilities for building HMC
 
 This template provides everything you need to create accessible, secure, and scalable applications that meet GDS and HMCTS standards.
 
+## 📋 Using This Template
+
+After creating a new repository from this template:
+
+1. **Clone your new repository**:
+```bash
+git clone https://github.com/your-org/your-repo.git
+cd your-repo
+```
+
+2. **Run the initialization script**:
+```bash
+./.github/scripts/init.sh
+```
+
+The script will:
+- Prompt for your team name (e.g., `cath`)
+- Prompt for your product name (e.g., `service`)
+- Replace all template values throughout the codebase
+- Rebuild the yarn lockfile
+- Run tests to verify everything works
+- Remove itself after completion
+
+3. **Review and commit**:
+```bash
+git add .
+git commit -m "Initialize from template"
+git push
+```
+
 ## ✨ Key Features
 
 ### Cloud Native Platform
