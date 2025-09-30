@@ -20,7 +20,7 @@ allowed-tools:
 Use TodoWrite to create this checklist:
 ```
 - [ ] Retrieve JIRA ticket and setup branch
-- [ ] Generate technical specification
+- [ ] Generate technical specification and tasks
 - [ ] Parallel implementation (engineering, testing, infrastructure)
 - [ ] Run all tests and quality checks
 - [ ] Code review and final verification
@@ -49,14 +49,13 @@ VERIFY: Branch created, folder exists, ticket documented
 *Mark "Retrieve JIRA ticket and setup branch" as completed*
 
 ## PHASE 2: Specification Development
-*Mark "Generate technical specification" as in_progress*
+*Mark "Generate technical specification and tasks" as in_progress*
 
-### Step 2.1: Create Specification and Plan [PARALLEL AGENTS]
+### Step 2.1: Create Specification
 
 ```
-LAUNCH 3 AGENTS IN PARALLEL:
-
-AGENT 1: full-stack-engineer
+STEP 1: Create Technical Specification
+AGENT: full-stack-engineer
 TASK: Create technical specification
 PROMPT FOR AGENT:
 "Create docs/tickets/$ARGUMENT/specification.md based on docs/tickets/$ARGUMENT/ticket.md covering:
@@ -67,10 +66,11 @@ PROMPT FOR AGENT:
 5. Database schema if needed
 IMPORTANT: Only focus on this ticket, no cross-cutting concerns."
 
-AGENT 2: infrastructure-engineer
+STEP 2: Create Infrastructure Assessment
+AGENT: infrastructure-engineer
 TASK: Assess infrastructure needs
 PROMPT FOR AGENT:
-"Review docs/tickets/$ARGUMENT/ticket.md and determine infrastructure needs.
+"Review docs/tickets/$ARGUMENT/specification.md and determine infrastructure needs.
 If changes needed, ADD infrastructure section to docs/tickets/$ARGUMENT/specification.md covering:
 1. Database changes
 2. Environment variables
@@ -80,7 +80,8 @@ If changes needed, ADD infrastructure section to docs/tickets/$ARGUMENT/specific
 If no changes needed, skip this step.
 IMPORTANT: Only focus on this ticket."
 
-AGENT 3: test-engineer
+STEP 3: CREATE TASK LIST
+AGENT: orchestrator
 TASK: Create task breakdown
 PROMPT FOR AGENT:
 "Create docs/tickets/$ARGUMENT/tasks.md with structure:
@@ -100,11 +101,10 @@ PROMPT FOR AGENT:
 - [ ] Ensure 80-90% test coverage
 - [ ] Check security implementation
 
-Base this on the ticket requirements in docs/tickets/$ARGUMENT/ticket.md"
+Base this on the specification in docs/tickets/$ARGUMENT/specification.md"
 
-WAIT FOR ALL AGENTS TO COMPLETE
 ```
-*Mark "Generate technical specification" as completed*
+*Mark "Generate technical specification and tasks" as completed*
 
 ## PHASE 3: Parallel Implementation
 *Mark "Parallel implementation (engineering, testing, infrastructure)" as in_progress*
@@ -161,7 +161,7 @@ EXECUTE IN SEQUENCE:
 4. yarn test:e2e (E2E tests)
 
 IF ANY FAILURES:
-  - Use full-stack-engineer agent to fix issues
+  - Use test engineer to fix e2e tests, use full-stack-engineer agent to fix everything else
   - Re-run failed tests
   - Repeat until all pass
 

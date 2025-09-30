@@ -22,7 +22,6 @@ Use TodoWrite to create this checklist:
 - [ ] Retrieve JIRA ticket and setup branch
 - [ ] Implement feature with tests
 - [ ] Run quality checks
-- [ ] Final verification
 ```
 
 ## PHASE 1: Setup
@@ -95,35 +94,13 @@ EXECUTE IN SEQUENCE:
 4. yarn test:e2e
 
 IF FAILURES:
-  - Fix with full-stack-engineer agent
+  - Fix with e2e tests with test-engineer, everything else with full-stack-engineer agent
   - Re-run failed tests
   - Repeat until passing
 
 VERIFY: All checks pass
 ```
 *Mark "Run quality checks" as completed*
-
-## PHASE 4: Final Verification
-*Mark "Final verification" as in_progress*
-
-### Step 4.1: Quick Review and Completion Check
-```
-ACTIONS:
-1. Run git diff master to review changes
-2. Verify CLAUDE.md adherence:
-   - Naming conventions
-   - Welsh translations (if applicable)
-   - No hardcoded values
-   - TypeScript strict compliance
-3. Read docs/tickets/$ARGUMENT/tasks.md
-4. Verify all tasks marked [x] or N/A
-
-IF ISSUES FOUND:
-  - Fix critical issues
-  - Re-run tests if needed
-  - Update tasks.md
-```
-*Mark "Final verification" as completed*
 
 ## COMPLETION CHECK
 ```
