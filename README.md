@@ -6,6 +6,42 @@ Production-ready Node.js starter with cloud-native capabilities for building HMC
 
 This template provides everything you need to create accessible, secure, and scalable applications that meet GDS and HMCTS standards.
 
+## 📋 Using This Template
+
+This monorepo will contain all your apps, libraries, and infrastructure for your HMCTS service.
+
+### Naming Convention
+
+- **Team name**: Your HMCTS service (e.g., CaTH, Divorce, Civil)
+- **Product name**: The specific product/service (e.g., Possessions, Money-Claims)
+- If the product encompasses the whole service, use "Service"
+
+**Examples:**
+- Team: CaTH, Product: Service → `cath-service`
+- Team: Civil, Product: Money-Claims → `civil-money-claims`
+
+### Setup Steps
+
+1. **Run the initialization script**:
+```bash
+./.github/scripts/init.sh
+```
+
+The script will:
+- Prompt for your team name (e.g., `CaTH`)
+- Prompt for your product name (e.g., `Service`)
+- Replace all template values throughout the codebase
+- Rebuild the yarn lockfile
+- Run tests to verify everything works
+- Remove itself after completion
+
+3. **Review and commit**:
+```bash
+git add .
+git commit -m "Initialize from template"
+git push
+```
+
 ## ✨ Key Features
 
 ### Cloud Native Platform
@@ -205,7 +241,6 @@ export const assets = path.join(__dirname, "assets/");
 | Type | Tool | Location | Purpose |
 |------|------|----------|---------|
 | **Unit Tests** | Vitest | Co-located `*.test.ts` | Business logic validation |
-| **Integration Tests** | Vitest + Supertest | `apps/*/src/**/*.test.ts` | API endpoint testing |
 | **E2E Tests** | Playwright | `e2e-tests/` | User journey validation |
 | **Accessibility Tests** | Axe-core + Playwright | `e2e-tests/` | WCAG 2.1 AA compliance |
 
