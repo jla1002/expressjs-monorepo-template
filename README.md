@@ -8,22 +8,28 @@ This template provides everything you need to create accessible, secure, and sca
 
 ## 📋 Using This Template
 
-After creating a new repository from this template:
+This monorepo will contain all your apps, libraries, and infrastructure for your HMCTS service.
 
-1. **Clone your new repository**:
-```bash
-git clone https://github.com/your-org/your-repo.git
-cd your-repo
-```
+### Naming Convention
 
-2. **Run the initialization script**:
+- **Team name**: Your HMCTS service (e.g., CaTH, Divorce, Civil)
+- **Product name**: The specific product/service (e.g., Possessions, Money-Claims)
+- If the product encompasses the whole service, use "Service"
+
+**Examples:**
+- Team: CaTH, Product: Service → `cath-service`
+- Team: Civil, Product: Money-Claims → `civil-money-claims`
+
+### Setup Steps
+
+1. **Run the initialization script**:
 ```bash
 ./.github/scripts/init.sh
 ```
 
 The script will:
-- Prompt for your team name (e.g., `cath`)
-- Prompt for your product name (e.g., `service`)
+- Prompt for your team name (e.g., `CaTH`)
+- Prompt for your product name (e.g., `Service`)
 - Replace all template values throughout the codebase
 - Rebuild the yarn lockfile
 - Run tests to verify everything works
@@ -235,7 +241,6 @@ export const assets = path.join(__dirname, "assets/");
 | Type | Tool | Location | Purpose |
 |------|------|----------|---------|
 | **Unit Tests** | Vitest | Co-located `*.test.ts` | Business logic validation |
-| **Integration Tests** | Vitest + Supertest | `apps/*/src/**/*.test.ts` | API endpoint testing |
 | **E2E Tests** | Playwright | `e2e-tests/` | User journey validation |
 | **Accessibility Tests** | Axe-core + Playwright | `e2e-tests/` | WCAG 2.1 AA compliance |
 

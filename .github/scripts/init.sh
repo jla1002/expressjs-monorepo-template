@@ -3,25 +3,54 @@ set -e
 
 echo "🚀 Initializing HMCTS Express Monorepo Template"
 echo ""
+echo "This monorepo will contain all your apps, libraries, and infrastructure."
+echo ""
+echo "📋 Naming Guidance:"
+echo "  • Team name: Your HMCTS service (e.g., CaTH, Divorce, Civil)"
+echo "  • Product name: The specific product/service (e.g., Possessions, Money-Claims)"
+echo "  • If the product encompasses the whole service, use 'Service'"
+echo ""
+echo "Examples:"
+echo "  • Team: CaTH, Product: Service → cath-service"
+echo "  • Team: Civil, Product: Money-Claims → civil-money-claims"
+echo ""
 
 # Prompt for team name
-read -p "Enter team name (e.g., cath): " TEAM_NAME
-if [ -z "$TEAM_NAME" ]; then
+read -p "Enter team name (e.g., CaTH): " TEAM_NAME_INPUT
+if [ -z "$TEAM_NAME_INPUT" ]; then
   echo "❌ Team name is required"
   exit 1
 fi
 
+# Validate team name (alphanumeric, spaces, and hyphens only)
+if ! [[ "$TEAM_NAME_INPUT" =~ ^[a-zA-Z0-9\ -]+$ ]]; then
+  echo "❌ Team name must contain only alphanumeric characters, spaces, and hyphens"
+  exit 1
+fi
+
 # Prompt for product name
-read -p "Enter product name (e.g., service): " PRODUCT_NAME
-if [ -z "$PRODUCT_NAME" ]; then
+read -p "Enter product name (e.g., Service): " PRODUCT_NAME_INPUT
+if [ -z "$PRODUCT_NAME_INPUT" ]; then
   echo "❌ Product name is required"
   exit 1
 fi
 
+# Validate product name (alphanumeric, spaces, and hyphens only)
+if ! [[ "$PRODUCT_NAME_INPUT" =~ ^[a-zA-Z0-9\ -]+$ ]]; then
+  echo "❌ Product name must contain only alphanumeric characters, spaces, and hyphens"
+  exit 1
+fi
+
+# Convert to appropriate cases
+TEAM_NAME_LOWER=$(echo "$TEAM_NAME_INPUT" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+PRODUCT_NAME_LOWER=$(echo "$PRODUCT_NAME_INPUT" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
 echo ""
 echo "📝 Configuration:"
-echo "  Team: $TEAM_NAME"
-echo "  Product: $PRODUCT_NAME"
+echo "  Team (rpe): $TEAM_NAME_LOWER"
+echo "  Team (RPE): $TEAM_NAME_INPUT"
+echo "  Product: $PRODUCT_NAME_LOWER"
+echo "  Full name: ${TEAM_NAME_LOWER}-${PRODUCT_NAME_LOWER}"
 echo ""
 read -p "Continue with these values? (y/n): " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
@@ -52,19 +81,19 @@ replace_in_files() {
 
 # Replace in order to avoid partial matches
 echo "Replacing expressjs-monorepo-template..."
-replace_in_files "expressjs-monorepo-template" "$PRODUCT_NAME"
+replace_in_files "expressjs-monorepo-template" "${TEAM_NAME_LOWER}-${PRODUCT_NAME_LOWER}"
 
 echo "Replacing ExpressJS Monorepo Template..."
-replace_in_files "ExpressJS Monorepo Template" "$PRODUCT_NAME"
+replace_in_files "ExpressJS Monorepo Template" "$PRODUCT_NAME_LOWER"
 
 echo "Replacing expressjs-monorepo..."
-replace_in_files "expressjs-monorepo" "$PRODUCT_NAME"
+replace_in_files "expressjs-monorepo" "$PRODUCT_NAME_LOWER"
 
-echo "Replacing RPE (uppercase)..."
-replace_in_files "RPE" "$(echo "$TEAM_NAME" | tr '[:lower:]' '[:upper:]')"
+echo "Replacing RPE..."
+replace_in_files "RPE" "$TEAM_NAME_INPUT"
 
-echo "Replacing rpe (lowercase)..."
-replace_in_files "rpe" "$TEAM_NAME"
+echo "Replacing rpe..."
+replace_in_files "rpe" "$TEAM_NAME_LOWER"
 
 echo ""
 echo "📦 Rebuilding lockfile..."
