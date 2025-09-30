@@ -1,3 +1,4 @@
 - Find a place for the team name
 - Infrastructure folder for terraform
 - Setup script to add product name to packages, e.g. @hmcts/sptribs-web
+- Remove .env file for postgres app in favour of config?
