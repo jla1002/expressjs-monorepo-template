@@ -4,7 +4,7 @@ nodejs:
   ingressHost: expressjs-monorepo-template-api.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'hmctspublic.azurecr.io/rpe/expressjs-monorepo:latest'
   environment:
-    REDIS_HOST: 'rpe-{{ .Values.global.environment }}.redis.cache.windows.net'
+    REDIS_HOST: 'rpe-redis-{{ .Values.global.environment }}.redis.cache.windows.net'
   keyVaults:
     rpe:
       secrets:
