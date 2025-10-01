@@ -262,7 +262,11 @@ Nunjucks templates need to be copied to `dist/` for production. Use a build scri
     "build": "tsc && yarn build:nunjucks",
     "build:nunjucks": "mkdir -p dist/pages && cd src/pages && find . -name '*.njk' -exec sh -c 'mkdir -p ../../dist/pages/$(dirname {}) && cp {} ../../dist/pages/{}' \\;",
     "dev": "tsc --watch",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "peerDependencies": {
     "express": "^5.1.0"
