@@ -4,6 +4,10 @@
         {
           "matcher": "Bash",
           "hooks": [{ "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-bash.sh" }]
+        },
+        {
+          "matcher": "Edit|Write|MultiEdit|Read|Glob|Grep|Bash",
+          "hooks": [{ "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/tool_analytics_hook.js" }]
         }
       ],
       "PostToolUse": [
