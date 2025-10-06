@@ -362,6 +362,15 @@ class ToolAnalytics {
                             comment_url TEXT,
                             fetched_at INTEGER NOT NULL,
 
+                            -- GitHub Checks support (NEW)
+                            source TEXT DEFAULT 'comment', -- 'comment' or 'check_run'
+                            check_name TEXT,
+                            check_status TEXT,
+                            check_conclusion TEXT,
+                            check_suite_id TEXT,
+                            details_url TEXT,
+                            raw_output TEXT,
+
                             FOREIGN KEY (pr_number) REFERENCES pull_requests(pr_number),
                             FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
                         )
@@ -372,7 +381,23 @@ class ToolAnalytics {
                     db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_commit ON sonarqube_metrics(commit_sha)`);
                     db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_session ON sonarqube_metrics(session_id)`);
                     db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_quality_gate ON sonarqube_metrics(quality_gate_status)`);
-                    db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_analysis_date ON sonarqube_metrics(analysis_date)`, () => {
+                    db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_analysis_date ON sonarqube_metrics(analysis_date)`);
+
+                    // GitHub Checks schema migration (NEW)
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN source TEXT DEFAULT 'comment'`, () => {
+                        // Ignore errors if column already exists
+                    });
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN check_name TEXT`, () => {});
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN check_status TEXT`, () => {});
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN check_conclusion TEXT`, () => {});
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN check_suite_id TEXT`, () => {});
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN details_url TEXT`, () => {});
+                    db.run(`ALTER TABLE sonarqube_metrics ADD COLUMN raw_output TEXT`, () => {});
+
+                    // GitHub Checks indexes (NEW)
+                    db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_source ON sonarqube_metrics(source)`);
+                    db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_check_name ON sonarqube_metrics(check_name)`);
+                    db.run(`CREATE INDEX IF NOT EXISTS idx_sonar_check_conclusion ON sonarqube_metrics(check_conclusion)`, () => {
                         db.close();
                         if (err) {
                             this.log(`Database initialization error: ${err.message}`);
@@ -1007,6 +1032,9 @@ class ToolAnalytics {
                 if (turn) {
                     await this.detectAndFetchPRData(session_id, turn.id, cwd || process.cwd());
                 }
+
+                // Enhanced: Background scan for ALL recent PRs (including manually created ones)
+                await this.backgroundScanAllRecentPRs(session_id, cwd || process.cwd());
 
                 // Close the current turn
                 db.run(`
@@ -1768,27 +1796,120 @@ class ToolAnalytics {
 
     async fetchSonarQubeMetrics(prNumber, repoPath = null) {
         /**
-         * Fetch and parse SonarQube metrics from PR comments
+         * Fetch and parse SonarQube metrics from PR comments AND GitHub Checks
          */
         try {
-            const comments = await this.fetchPRComments(prNumber, repoPath);
             const sonarMetrics = [];
 
+            // 1. Check PR comments (existing functionality)
+            const comments = await this.fetchPRComments(prNumber, repoPath);
             for (const comment of comments) {
                 if (this.sonarParser.isSonarQubeComment(comment)) {
                     const metrics = this.sonarParser.parseMetrics(comment);
                     if (metrics) {
                         metrics.pr_number = prNumber;
+                        metrics.source = 'comment';
                         sonarMetrics.push(metrics);
                     }
                 }
             }
 
-            this.log(`Found ${sonarMetrics.length} SonarQube metrics for PR #${prNumber}`);
+            // 2. Check GitHub Check Runs for SonarQube (NEW)
+            const checks = await this.fetchPRChecksFromGitHub(prNumber, repoPath);
+            for (const check of checks) {
+                if (this.isSonarQubeCheck(check)) {
+                    const metrics = await this.parseSonarQubeFromCheck(check, prNumber, repoPath);
+                    if (metrics) {
+                        metrics.pr_number = prNumber;
+                        metrics.source = 'check_run';
+                        sonarMetrics.push(metrics);
+                    }
+                }
+            }
+
+            this.log(`Found ${sonarMetrics.length} SonarQube metrics for PR #${prNumber} (${sonarMetrics.filter(m => m.source === 'comment').length} from comments, ${sonarMetrics.filter(m => m.source === 'check_run').length} from checks)`);
             return sonarMetrics;
         } catch (error) {
             this.log(`Failed to fetch SonarQube metrics for PR #${prNumber}: ${error.message}`);
             return [];
+        }
+    }
+
+    isSonarQubeCheck(check) {
+        /**
+         * Determine if a GitHub check run is from SonarQube
+         */
+        if (!check || !check.name) return false;
+
+        const sonarNames = [
+            'sonarqube',
+            'sonar',
+            'sonarcloud',
+            'quality gate',
+            'code quality',
+            'static analysis'
+        ];
+
+        const checkName = check.name.toLowerCase();
+        return sonarNames.some(name => checkName.includes(name));
+    }
+
+    async parseSonarQubeFromCheck(check, prNumber, repoPath) {
+        /**
+         * Parse SonarQube metrics from GitHub Check Run data
+         */
+        try {
+            if (!check) return null;
+
+            // Basic metrics from check run
+            const metrics = {
+                quality_gate_status: check.conclusion === 'success' ? 'PASSED' : 'FAILED',
+                check_name: check.name,
+                check_status: check.status,
+                check_conclusion: check.conclusion,
+                started_at: check.started_at,
+                completed_at: check.completed_at,
+                details_url: check.details_url,
+                check_suite_id: check.check_suite_id
+            };
+
+            // Try to fetch detailed check run info if available
+            if (check.details_url) {
+                try {
+                    // Attempt to get more detailed metrics from check run details
+                    const execOptions = this.getExecOptions(repoPath);
+                    const detailedCheck = execSync(`gh api ${check.details_url.replace('https://api.github.com', '')} --jq '{output: .output, pull_requests: .pull_requests}'`, execOptions);
+
+                    if (detailedCheck.trim()) {
+                        const details = JSON.parse(detailedCheck.trim());
+
+                        // Parse output for SonarQube metrics
+                        if (details.output && details.output.summary) {
+                            // Look for quality gate info in summary
+                            const summary = details.output.summary.toLowerCase();
+                            if (summary.includes('quality gate')) {
+                                if (summary.includes('passed') || summary.includes('success')) {
+                                    metrics.quality_gate_status = 'PASSED';
+                                } else if (summary.includes('failed') || summary.includes('error')) {
+                                    metrics.quality_gate_status = 'FAILED';
+                                }
+                            }
+
+                            // Extract metrics from text if available
+                            const text = details.output.text || details.output.summary || '';
+                            metrics.raw_output = text.substring(0, 2000); // Store first 2000 chars
+                        }
+                    }
+                } catch (detailError) {
+                    // Detailed parsing failed, use basic info
+                    this.log(`Could not fetch detailed check info: ${detailError.message}`);
+                }
+            }
+
+            return metrics;
+        } catch (error) {
+            this.logError('parseSonarQubeFromCheck', error, `check: ${check?.name}`);
+            return null;
         }
     }
 
@@ -1928,8 +2049,9 @@ class ToolAnalytics {
                         line_coverage_percent, branch_coverage_percent, coverage_on_new_code_percent,
                         maintainability_rating, reliability_rating, security_rating,
                         duplicated_lines_percent, sonar_project_key, analysis_date,
-                        comment_url, fetched_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        comment_url, fetched_at, source, check_name, check_status,
+                        check_conclusion, check_suite_id, details_url, raw_output
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `, [
                     metric.pr_number,
                     sessionId,
@@ -1957,7 +2079,14 @@ class ToolAnalytics {
                     metric.sonar_project_key,
                     metric.analysis_date,
                     metric.comment_url,
-                    now
+                    now,
+                    metric.source || 'comment',
+                    metric.check_name,
+                    metric.check_status,
+                    metric.check_conclusion,
+                    metric.check_suite_id,
+                    metric.details_url,
+                    metric.raw_output
                 ], (err) => {
                     if (err) {
                         this.log(`Error saving SonarQube metrics for PR #${metric.pr_number}: ${err.message}`);
@@ -2186,6 +2315,188 @@ class ToolAnalytics {
         } catch (error) {
             this.log(`No PR found for branch ${branchName}: ${error.message}`);
             return null;
+        }
+    }
+
+    async backgroundScanAllRecentPRs(sessionId, repoPath) {
+        /**
+         * Enhanced: Scan ALL recent PRs in the repo (not just session-related ones)
+         * and check if they contain Claude-generated commits
+         */
+        try {
+            this.log('🔍 Starting background scan for recent PRs...');
+
+            const execOptions = this.getExecOptions(repoPath);
+
+            // Get all PRs from last 30 days (both open and recently closed)
+            const result = execSync(`gh pr list --limit 50 --state all --json number,title,headRefName,createdAt,closedAt,mergedAt --jq '.[] | select(.createdAt > (now - 30*24*3600) or (.closedAt // .mergedAt // empty) > (now - 7*24*3600))'`, execOptions);
+
+            if (!result.trim()) {
+                this.log('📋 No recent PRs found in background scan');
+                return;
+            }
+
+            const recentPRs = result.trim().split('\n').map(line => JSON.parse(line));
+            this.log(`📊 Found ${recentPRs.length} recent PRs to analyze`);
+
+            for (const pr of recentPRs) {
+                await this.analyzeAndProcessPR(pr.number, pr, sessionId, repoPath);
+            }
+
+            this.log(`✅ Background PR scan complete: analyzed ${recentPRs.length} PRs`);
+
+        } catch (error) {
+            this.log(`⚠️  Background PR scan failed: ${error.message}`);
+        }
+    }
+
+    async analyzeAndProcessPR(prNumber, prData, currentSessionId, repoPath) {
+        /**
+         * Analyze a specific PR to see if it contains Claude-generated commits
+         * and process SonarQube metrics if so
+         */
+        try {
+            const db = this.getDbConnection();
+
+            return new Promise(async (resolve) => {
+                // Get all commits in this PR
+                const prCommits = await this.getPRCommits(prNumber, repoPath);
+                if (!prCommits || prCommits.length === 0) {
+                    db.close();
+                    resolve();
+                    return;
+                }
+
+                // Check if any commits in this PR are from Claude sessions
+                const commitShas = prCommits.map(c => c.sha);
+                const placeholders = commitShas.map(() => '?').join(',');
+
+                db.all(`
+                    SELECT DISTINCT session_id, commit_sha
+                    FROM git_commits
+                    WHERE commit_sha IN (${placeholders})
+                    AND session_id IS NOT NULL
+                `, commitShas, async (err, claudeCommits) => {
+                    if (err) {
+                        this.logError('analyzeAndProcessPR', err, `PR #${prNumber}`);
+                        db.close();
+                        resolve();
+                        return;
+                    }
+
+                    if (!claudeCommits || claudeCommits.length === 0) {
+                        // No Claude commits in this PR - skip
+                        db.close();
+                        resolve();
+                        return;
+                    }
+
+                    this.log(`🎯 Found PR #${prNumber} with ${claudeCommits.length} Claude commits from ${new Set(claudeCommits.map(c => c.session_id)).size} sessions`);
+
+                    // Check if we've already processed SonarQube metrics for this PR
+                    db.get(`
+                        SELECT COUNT(*) as count
+                        FROM sonarqube_metrics
+                        WHERE pr_number = ?
+                    `, [prNumber], async (err, existing) => {
+                        const alreadyProcessed = existing && existing.count > 0;
+
+                        if (alreadyProcessed) {
+                            this.log(`📋 PR #${prNumber} already has SonarQube metrics - skipping`);
+                        } else {
+                            // Fetch and save SonarQube metrics for this Claude-related PR
+                            this.log(`📊 Fetching SonarQube metrics for PR #${prNumber} (contains Claude code)`);
+
+                            const sonarMetrics = await this.fetchSonarQubeMetrics(prNumber, repoPath);
+                            if (sonarMetrics && sonarMetrics.length > 0) {
+                                // Use the primary Claude session ID for attribution
+                                const primarySessionId = claudeCommits[0].session_id;
+                                await this.saveSonarQubeMetrics(primarySessionId, sonarMetrics);
+                                this.log(`✅ Saved ${sonarMetrics.length} SonarQube metrics for PR #${prNumber} (attributed to session ${primarySessionId})`);
+                            } else {
+                                this.log(`📋 No SonarQube metrics found for PR #${prNumber}`);
+                            }
+                        }
+
+                        // Also save/update PR data if not already tracked
+                        await this.savePRDataIfNeeded(prNumber, prData, claudeCommits[0].session_id, repoPath);
+
+                        db.close();
+                        resolve();
+                    });
+                });
+            });
+
+        } catch (error) {
+            this.logError('analyzeAndProcessPR', error, `PR #${prNumber}`);
+        }
+    }
+
+    async getPRCommits(prNumber, repoPath) {
+        /**
+         * Get all commits in a specific PR
+         */
+        try {
+            const execOptions = this.getExecOptions(repoPath);
+            const result = execSync(`gh pr view ${prNumber} --json commits --jq '.commits[] | {sha: .oid, message: .messageHeadline}'`, execOptions);
+
+            if (!result.trim()) {
+                return [];
+            }
+
+            return result.trim().split('\n').map(line => JSON.parse(line));
+        } catch (error) {
+            this.log(`Failed to get commits for PR #${prNumber}: ${error.message}`);
+            return [];
+        }
+    }
+
+    async savePRDataIfNeeded(prNumber, prData, sessionId, repoPath) {
+        /**
+         * Save PR data if we haven't seen it before
+         */
+        try {
+            const db = this.getDbConnection();
+
+            return new Promise((resolve) => {
+                db.get(`SELECT id FROM pull_requests WHERE pr_number = ?`, [prNumber], (err, existing) => {
+                    if (existing) {
+                        // PR already tracked
+                        db.close();
+                        resolve();
+                        return;
+                    }
+
+                    // Save new PR data
+                    const now = Date.now();
+                    db.run(`
+                        INSERT INTO pull_requests (
+                            pr_number, session_id, title, head_ref_name, base_ref_name,
+                            state, created_at, merged_at, closed_at, repo_url, pr_url
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `, [
+                        prNumber,
+                        sessionId,
+                        prData.title || 'Background discovered PR',
+                        prData.headRefName || 'unknown',
+                        'main', // Default base branch
+                        prData.state || 'unknown',
+                        prData.createdAt ? new Date(prData.createdAt).getTime() : now,
+                        prData.mergedAt ? new Date(prData.mergedAt).getTime() : null,
+                        prData.closedAt ? new Date(prData.closedAt).getTime() : null,
+                        null, // We'll derive this from repo context
+                        `https://github.com/owner/repo/pull/${prNumber}` // Generic URL
+                    ], (err) => {
+                        if (!err) {
+                            this.log(`📝 Saved background-discovered PR #${prNumber} data`);
+                        }
+                        db.close();
+                        resolve();
+                    });
+                });
+            });
+        } catch (error) {
+            this.logError('savePRDataIfNeeded', error, `PR #${prNumber}`);
         }
     }
 
