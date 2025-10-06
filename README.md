@@ -121,6 +121,7 @@ yarn install
 cd .claude/hooks
 yarn install
 gh auth login
+chmod +x tool_analytics_hook.js
 
 # Return to project root and run development server
 cd ../..
