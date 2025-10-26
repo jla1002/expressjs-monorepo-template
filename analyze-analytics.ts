@@ -7,8 +7,7 @@ const analyticsDir = '.claude/analytics';
 function deduplicate(csvContent: string): string[][] {
   const lines = csvContent.trim().split('\n');
 
-  // Skip first 2 rows (header appears twice)
-  // Then take only odd-indexed rows (0, 2, 4...) from remaining to skip duplicates
+  
   const dataRows = lines.slice(2).filter((_, idx) => idx % 2 === 0);
 
   return dataRows.map(line => line.split(','));
