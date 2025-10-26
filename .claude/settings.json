@@ -1,14 +1,3 @@
 {
-  "extraKnownMarketplaces": {
-    "team-tools": {
-      "source": {
-        "source": "github",
-        "repo": "hmcts/.claude"
-      }
-    }
-  },
-  "enabledPlugins": [
-    "expressjs-monorepo"
-  ],
-  "enableAllProjectMcpServers": true
-}
+    "enableAllProjectMcpServers": true
+  }
